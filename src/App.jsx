@@ -2,21 +2,24 @@ import React, { useState, useEffect, useMemo } from "react";
 import {
   seedMembers, seedTrainers, seedClasses, seedPayments,
   seedProducts, seedSales, seedLeads, seedAccessLogs,
-  seedMessages, seedTemplates, NAV_BY_ROLE,
+  seedMessages, seedTemplates, seedMemberStocks, seedDirectMessages, seedNotifications,
+  NAV_BY_ROLE,
 } from "./data/seed";
 import { loadData, saveData, clearData } from "./utils/storage";
 import { Sidebar, Header } from "./components/Layout";
 import { LoginScreen } from "./views/LoginScreen";
 import {
   Dashboard, MembersView, MemberDetail, ClassesView, TrainersView,
-  CheckInsView, PaymentsView, AnalyticsView,
+  CheckInsView, PaymentsView, AnalyticsView, MemberStocksView,
 } from "./views/CoreViews";
 import { POSView } from "./views/POSView";
 import { LeadsView, AccessControlView, MessagesView } from "./views/PipelineViews";
 import {
   TrainerHome, TrainerClasses, TrainerClients,
-  MemberHome, MemberQRView, MemberBookClasses, MemberHistory, MemberPayments, MemberShop,
+  MemberHome, MemberQRView, MemberBookClasses, MemberHistory, MemberPayments,
+  MemberShop, MemberStock,
 } from "./views/RoleViews";
+import { ChatView } from "./views/MessagingViews";
 
 export default function App() {
   // ----------------- Auth -----------------
@@ -35,6 +38,9 @@ export default function App() {
   const [messages, setMessages] = useState(() => loadData("messages", seedMessages));
   const [templates, setTemplates] = useState(() => loadData("templates", seedTemplates));
   const [shopOrders, setShopOrders] = useState(() => loadData("shopOrders", []));
+  const [memberStocks, setMemberStocks] = useState(() => loadData("memberStocks", seedMemberStocks));
+  const [directMessages, setDirectMessages] = useState(() => loadData("directMessages", seedDirectMessages));
+  const [notifications, setNotifications] = useState(() => loadData("notifications", seedNotifications));
 
   // ----------------- UI state -----------------
   const [view, setView] = useState(null);
@@ -54,6 +60,9 @@ export default function App() {
   useEffect(() => { saveData("messages", messages); }, [messages]);
   useEffect(() => { saveData("templates", templates); }, [templates]);
   useEffect(() => { saveData("shopOrders", shopOrders); }, [shopOrders]);
+  useEffect(() => { saveData("memberStocks", memberStocks); }, [memberStocks]);
+  useEffect(() => { saveData("directMessages", directMessages); }, [directMessages]);
+  useEffect(() => { saveData("notifications", notifications); }, [notifications]);
 
   // ----------------- Set default view when user logs in -----------------
   useEffect(() => {
@@ -119,7 +128,13 @@ export default function App() {
       )}
 
       <div className="flex-1 flex flex-col min-w-0">
-        <Header view={view} onMenuClick={() => setSidebarOpen(true)} user={user} />
+        <Header
+          view={view}
+          onMenuClick={() => setSidebarOpen(true)}
+          user={user}
+          notifications={notifications}
+          setNotifications={setNotifications}
+        />
 
         <main className="flex-1 px-4 sm:px-6 lg:px-8 py-6 lg:py-8 max-w-7xl w-full">
           {/* ---------- ADMIN & RECEPTIONIST VIEWS ---------- */}
@@ -205,6 +220,19 @@ export default function App() {
             <AnalyticsView members={members} payments={payments} classes={classes} />
           )}
 
+          {view === "member-stocks" && (
+            <MemberStocksView members={members} memberStocks={memberStocks} />
+          )}
+
+          {view === "chat" && (
+            <ChatView
+              user={user}
+              directMessages={directMessages}
+              setDirectMessages={setDirectMessages}
+              setNotifications={setNotifications}
+            />
+          )}
+
           {/* ---------- TRAINER VIEWS ---------- */}
           {view === "trainer-home" && (
             <TrainerHome user={user} classes={classes} members={members} />
@@ -254,7 +282,22 @@ export default function App() {
           )}
 
           {view === "my-shop" && (
-            <MemberShop user={user} shopOrders={shopOrders} setShopOrders={setShopOrders} />
+            <MemberShop
+              user={user}
+              shopOrders={shopOrders}
+              setShopOrders={setShopOrders}
+              memberStocks={memberStocks}
+              setMemberStocks={setMemberStocks}
+            />
+          )}
+
+          {view === "my-stock" && (
+            <MemberStock
+              user={user}
+              memberStocks={memberStocks}
+              setMemberStocks={setMemberStocks}
+              onNavigate={setView}
+            />
           )}
         </main>
       </div>

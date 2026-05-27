@@ -2,9 +2,10 @@ import React, { useState } from "react";
 import {
   Users, CalendarDays, Activity, Flame, CheckCircle2, AlertTriangle,
   Calendar, Award, UserCheck, QrCode, Camera, ShoppingBag, ShoppingCart,
-  Plus, Minus, Trash2, PackageCheck,
+  Plus, Minus, Trash2, PackageCheck, CreditCard, DollarSign, Truck, Store,
+  Layers, RefreshCw, Bell,
 } from "lucide-react";
-import { StatCard, EmptyState } from "../components/ui";
+import { StatCard, EmptyState, Modal } from "../components/ui";
 import { planBadge, today, nowTime } from "../utils/storage";
 import { PLAN_PRICES, seedShopProducts } from "../data/seed";
 import { MemberQRScanner } from "../components/QRScanner";
@@ -17,6 +18,8 @@ export function TrainerHome({ user, classes, members }) {
   const myClients = members.filter((m) => m.trainerId === user.trainerId);
   const totalBooked = myClasses.reduce((s, c) => s + c.booked, 0);
   const totalCapacity = myClasses.reduce((s, c) => s + c.capacity, 0);
+  const todayDay = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][new Date().getDay()];
+  const todaysClasses = myClasses.filter((c) => c.day === todayDay).sort((a, b) => a.time.localeCompare(b.time));
 
   return (
     <div className="space-y-6">
@@ -26,6 +29,26 @@ export function TrainerHome({ user, classes, members }) {
         <StatCard className="fade-up stagger-3" label="Total bookings" value={totalBooked} icon={Activity} accent="bg-amber-100 text-amber-900" />
         <StatCard className="fade-up stagger-4" label="Capacity used" value={`${Math.round((totalBooked / Math.max(1, totalCapacity)) * 100)}%`} icon={Flame} accent="bg-rose-100 text-rose-900" />
       </div>
+
+      {todaysClasses.length > 0 && (
+        <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
+          <div className="flex items-center gap-2 mb-3">
+            <Bell className="w-4 h-4 text-amber-700" />
+            <div className="text-sm font-semibold text-amber-900">Today's classes — {todaysClasses.length} session{todaysClasses.length > 1 ? "s" : ""}</div>
+          </div>
+          <div className="space-y-2">
+            {todaysClasses.map((c) => (
+              <div key={c.id} className="flex items-center justify-between bg-white rounded-lg px-3 py-2 border border-amber-100">
+                <div>
+                  <div className="text-sm font-medium">{c.name}</div>
+                  <div className="text-xs text-stone-500">{c.booked}/{c.capacity} members booked</div>
+                </div>
+                <div className="text-sm font-mono font-semibold text-amber-800">{c.time}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       <div className="relative overflow-hidden rounded-2xl bg-stone-900 text-white p-6 sm:p-8 fade-up">
         <div className="absolute inset-0 noise-bg opacity-30 pointer-events-none" />
@@ -181,6 +204,10 @@ export function MemberHome({ user, members, classes, payments, checkIns, onNavig
   const daysToExpiry = Math.ceil((new Date(me.expiryDate) - new Date()) / (1000 * 60 * 60 * 24));
   const overdue = myPayments.find((p) => p.status === "overdue");
 
+  // Today's classes
+  const todayDay = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][new Date().getDay()];
+  const todaysClasses = myClasses.filter((c) => c.day === todayDay).sort((a, b) => a.time.localeCompare(b.time));
+
   return (
     <div className="space-y-6">
       {overdue && (
@@ -191,6 +218,27 @@ export function MemberHome({ user, members, classes, payments, checkIns, onNavig
           <div className="flex-1 min-w-0">
             <div className="text-sm font-semibold">Overdue payment</div>
             <div className="text-xs text-rose-700">₦{overdue.amount.toLocaleString()} — please contact the front desk</div>
+          </div>
+        </div>
+      )}
+
+      {/* Today's class reminders */}
+      {todaysClasses.length > 0 && (
+        <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
+          <div className="flex items-center gap-2 mb-3">
+            <Bell className="w-4 h-4 text-amber-700" />
+            <div className="text-sm font-semibold text-amber-900">You have {todaysClasses.length} class{todaysClasses.length > 1 ? "es" : ""} today</div>
+          </div>
+          <div className="space-y-2">
+            {todaysClasses.map((c) => (
+              <div key={c.id} className="flex items-center justify-between bg-white rounded-lg px-3 py-2 border border-amber-100">
+                <div>
+                  <div className="text-sm font-medium">{c.name}</div>
+                  <div className="text-xs text-stone-500">with {c.trainer}</div>
+                </div>
+                <div className="text-sm font-mono font-semibold text-amber-800">{c.time}</div>
+              </div>
+            ))}
           </div>
         </div>
       )}
@@ -475,9 +523,10 @@ export function MemberHistory({ user, checkIns, classes }) {
 // ========================================================================
 const SHOP_CATEGORIES = ["Fitness Accessories", "Daily Essentials"];
 
-export function MemberShop({ user, shopOrders, setShopOrders }) {
+export function MemberShop({ user, shopOrders, setShopOrders, memberStocks, setMemberStocks }) {
   const [category, setCategory] = useState("Fitness Accessories");
   const [cart, setCart] = useState({});
+  const [showCheckout, setShowCheckout] = useState(false);
   const [ordered, setOrdered] = useState(false);
 
   const products = seedShopProducts.filter((p) => p.category === category);
@@ -497,7 +546,10 @@ export function MemberShop({ user, shopOrders, setShopOrders }) {
   const cartTotal = cartItems.reduce((s, i) => s + i.price * i.qty, 0);
   const cartCount = cartItems.reduce((s, i) => s + i.qty, 0);
 
-  const placeOrder = () => {
+  const hasAccessories = cartItems.some((i) => i.category === "Fitness Accessories");
+  const hasEssentials = cartItems.some((i) => i.category === "Daily Essentials");
+
+  const confirmOrder = ({ paymentMethod, deliveryOption }) => {
     if (cartItems.length === 0) return;
     const order = {
       id: `ord${Date.now()}`,
@@ -506,12 +558,42 @@ export function MemberShop({ user, shopOrders, setShopOrders }) {
       items: cartItems,
       total: cartTotal,
       date: today(),
-      status: "pending",
+      paymentMethod,
+      deliveryOption: hasAccessories ? deliveryOption : "N/A",
+      status: "confirmed",
     };
     setShopOrders([order, ...shopOrders]);
+
+    // Add daily essentials to member personal stock
+    if (hasEssentials) {
+      const essentials = cartItems.filter((i) => i.category === "Daily Essentials");
+      setMemberStocks((stocks) => {
+        const existing = stocks.find((s) => s.memberId === user.memberId);
+        if (existing) {
+          return stocks.map((s) => {
+            if (s.memberId !== user.memberId) return s;
+            const updatedItems = [...s.items];
+            essentials.forEach((e) => {
+              const idx = updatedItems.findIndex((x) => x.productId === e.id);
+              if (idx >= 0) updatedItems[idx] = { ...updatedItems[idx], qty: updatedItems[idx].qty + e.qty };
+              else updatedItems.push({ productId: e.id, name: e.name, qty: e.qty, lastUpdated: today() });
+            });
+            return { ...s, items: updatedItems };
+          });
+        } else {
+          return [...stocks, {
+            memberId: user.memberId,
+            memberName: user.name,
+            items: essentials.map((e) => ({ productId: e.id, name: e.name, qty: e.qty, lastUpdated: today() })),
+          }];
+        }
+      });
+    }
+
     clearCart();
+    setShowCheckout(false);
     setOrdered(true);
-    setTimeout(() => setOrdered(false), 4000);
+    setTimeout(() => setOrdered(false), 5000);
   };
 
   return (
@@ -609,16 +691,172 @@ export function MemberShop({ user, shopOrders, setShopOrders }) {
                   <span className="font-semibold">Total</span>
                   <span className="font-display text-xl font-semibold">₦{cartTotal.toLocaleString()}</span>
                 </div>
-                <button onClick={placeOrder}
+                <button onClick={() => setShowCheckout(true)}
                   className="w-full py-3 bg-red-500 text-white rounded-lg text-sm font-semibold hover:bg-red-600 transition">
-                  Place order
+                  Checkout
                 </button>
-                <p className="text-[10px] text-stone-400 text-center mt-2">Collect & pay at the front desk</p>
+                {hasEssentials && <p className="text-[10px] text-stone-400 text-center mt-2">Daily essentials go to your personal stock</p>}
               </div>
             </div>
           )}
         </div>
       </div>
+      {showCheckout && (
+        <ShopCheckoutModal
+          cartItems={cartItems}
+          cartTotal={cartTotal}
+          hasAccessories={hasAccessories}
+          hasEssentials={hasEssentials}
+          onConfirm={confirmOrder}
+          onClose={() => setShowCheckout(false)}
+        />
+      )}
+    </div>
+  );
+}
+
+function ShopCheckoutModal({ cartItems, cartTotal, hasAccessories, hasEssentials, onConfirm, onClose }) {
+  const [paymentMethod, setPaymentMethod] = useState("Cash");
+  const [deliveryOption, setDeliveryOption] = useState("Pickup");
+
+  return (
+    <Modal title="Checkout" subtitle={`${cartItems.length} item${cartItems.length !== 1 ? "s" : ""} · ₦${cartTotal.toLocaleString()}`} onClose={onClose}>
+      <div className="space-y-5">
+        {/* Order summary */}
+        <div className="bg-stone-50 rounded-lg p-3 space-y-1.5">
+          {cartItems.map((item) => (
+            <div key={item.id} className="flex justify-between text-sm">
+              <span className="text-stone-700">{item.qty}× {item.name}</span>
+              <span className="font-mono font-medium">₦{(item.price * item.qty).toLocaleString()}</span>
+            </div>
+          ))}
+          <div className="border-t border-stone-200 pt-2 flex justify-between font-semibold text-sm">
+            <span>Total</span>
+            <span>₦{cartTotal.toLocaleString()}</span>
+          </div>
+        </div>
+
+        {/* Payment method */}
+        <div>
+          <label className="text-xs font-mono tracking-wider text-stone-500 uppercase mb-2 block">Payment method</label>
+          <div className="grid grid-cols-3 gap-2">
+            {[
+              { id: "Cash", label: "Cash", icon: DollarSign },
+              { id: "Card", label: "Card", icon: CreditCard },
+              { id: "Transfer", label: "Transfer", icon: CreditCard },
+            ].map(({ id, label, icon: Icon }) => (
+              <button key={id} onClick={() => setPaymentMethod(id)}
+                className={`flex flex-col items-center gap-1.5 py-3 rounded-lg border text-xs font-medium transition ${paymentMethod === id ? "bg-stone-900 text-white border-stone-900" : "bg-white border-stone-200 hover:border-stone-400"}`}>
+                <Icon className="w-4 h-4" />
+                {label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Delivery option — only for fitness accessories */}
+        {hasAccessories && (
+          <div>
+            <label className="text-xs font-mono tracking-wider text-stone-500 uppercase mb-2 block">Delivery option</label>
+            <div className="grid grid-cols-2 gap-2">
+              {[
+                { id: "Pickup", label: "Pickup at desk", icon: Store },
+                { id: "Delivery", label: "Home delivery", icon: Truck },
+              ].map(({ id, label, icon: Icon }) => (
+                <button key={id} onClick={() => setDeliveryOption(id)}
+                  className={`flex items-center gap-2 px-4 py-3 rounded-lg border text-sm font-medium transition ${deliveryOption === id ? "bg-stone-900 text-white border-stone-900" : "bg-white border-stone-200 hover:border-stone-400"}`}>
+                  <Icon className="w-4 h-4" />{label}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Stock note */}
+        {hasEssentials && (
+          <div className="flex items-start gap-2 p-3 bg-sky-50 border border-sky-200 rounded-lg text-xs text-sky-800">
+            <Layers className="w-4 h-4 shrink-0 mt-0.5" />
+            <span>Daily essentials will be added to your personal stock. View and manage them in <strong>My Stock</strong>.</span>
+          </div>
+        )}
+
+        <button onClick={() => onConfirm({ paymentMethod, deliveryOption })}
+          className="w-full py-3 bg-red-500 text-white rounded-lg text-sm font-semibold hover:bg-red-600 transition">
+          Confirm order · ₦{cartTotal.toLocaleString()}
+        </button>
+        <p className="text-[10px] text-stone-400 text-center -mt-3">
+          {deliveryOption === "Delivery" ? "Pay on delivery" : "Pay at the front desk"}
+        </p>
+      </div>
+    </Modal>
+  );
+}
+
+// ========================================================================
+// MEMBER STOCK — Personal daily essentials inventory
+// ========================================================================
+export function MemberStock({ user, memberStocks, setMemberStocks, onNavigate }) {
+  const myStock = memberStocks.find((s) => s.memberId === user.memberId);
+  const items = myStock?.items?.filter((i) => i.qty > 0) || [];
+
+  const useItem = (productId) => {
+    setMemberStocks((stocks) =>
+      stocks.map((s) => {
+        if (s.memberId !== user.memberId) return s;
+        return {
+          ...s,
+          items: s.items.map((i) =>
+            i.productId === productId ? { ...i, qty: Math.max(0, i.qty - 1), lastUpdated: today() } : i
+          ),
+        };
+      })
+    );
+  };
+
+  return (
+    <div className="space-y-6">
+      <div className="bg-stone-100 border border-stone-200 rounded-xl p-4 text-sm text-stone-700">
+        Your personal stock of daily essentials. Tap <strong>Use 1</strong> when you take an item at the gym.
+        Running low? Head to the <button onClick={() => onNavigate("my-shop")} className="text-red-600 font-semibold underline">Shop</button> to reorder.
+      </div>
+
+      {items.length === 0 ? (
+        <div className="bg-white rounded-xl border border-stone-200 p-12 text-center">
+          <Layers className="w-10 h-10 mx-auto mb-3 text-stone-300" />
+          <p className="font-medium text-stone-600">No stock yet</p>
+          <p className="text-sm text-stone-500 mt-1 mb-4">Order daily essentials from the shop to build your stock.</p>
+          <button onClick={() => onNavigate("my-shop")}
+            className="px-5 py-2.5 bg-red-500 text-white text-sm font-semibold rounded-lg hover:bg-red-600 transition">
+            Go to Shop
+          </button>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {items.map((item) => {
+            const low = item.qty <= 2;
+            return (
+              <div key={item.productId} className={`bg-white rounded-xl border p-5 ${low ? "border-amber-300 bg-amber-50" : "border-stone-200"}`}>
+                <div className="flex items-start justify-between mb-3">
+                  <div className="font-medium text-sm">{item.name}</div>
+                  {low && <span className="text-[10px] font-mono bg-amber-200 text-amber-900 px-2 py-0.5 rounded-full shrink-0">Low</span>}
+                </div>
+                <div className="font-display text-4xl font-semibold mb-1">{item.qty}</div>
+                <div className="text-xs text-stone-500 mb-4">units remaining</div>
+                <div className="flex gap-2">
+                  <button onClick={() => useItem(item.productId)}
+                    className="flex-1 py-2 bg-stone-900 text-white text-xs font-semibold rounded-lg hover:bg-stone-800 transition">
+                    Use 1
+                  </button>
+                  <button onClick={() => onNavigate("my-shop")}
+                    className="p-2 border border-stone-200 rounded-lg hover:border-stone-900 transition" title="Reorder">
+                    <RefreshCw className="w-4 h-4 text-stone-500" />
+                  </button>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }

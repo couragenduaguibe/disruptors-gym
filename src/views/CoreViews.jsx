@@ -2,7 +2,7 @@ import React, { useState, useMemo } from "react";
 import {
   Users, CalendarDays, UserCheck, Plus, Search, Edit2, Trash2, Clock,
   DollarSign, Activity, Flame, CheckCircle2, AlertCircle, User, Mail, Phone,
-  ChevronRight, AlertTriangle, Receipt, Calendar, Award, X, QrCode,
+  ChevronRight, AlertTriangle, Receipt, Calendar, Award, X, QrCode, Package, Layers,
 } from "lucide-react";
 import {
   LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis,
@@ -694,6 +694,87 @@ export function PaymentsView({ payments, setPayments, user }) {
           </div>
         ))}
       </div>
+    </div>
+  );
+}
+
+// ---------- Member Stocks (staff view) ----------
+export function MemberStocksView({ members, memberStocks }) {
+  const [search, setSearch] = useState("");
+
+  const stockedMembers = memberStocks.filter((s) => s.items?.some((i) => i.qty > 0));
+  const filtered = stockedMembers.filter((s) =>
+    s.memberName.toLowerCase().includes(search.toLowerCase())
+  );
+
+  const totalItems = memberStocks.reduce((sum, s) => sum + (s.items?.reduce((a, i) => a + i.qty, 0) || 0), 0);
+  const lowStockCount = memberStocks.reduce((sum, s) =>
+    sum + (s.items?.filter((i) => i.qty > 0 && i.qty <= 2).length || 0), 0
+  );
+
+  return (
+    <div className="space-y-6">
+      <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
+        <div className="bg-white rounded-xl border border-stone-200 p-4">
+          <div className="text-xs font-mono text-stone-500 tracking-wider uppercase">Members with stock</div>
+          <div className="font-display text-3xl font-semibold mt-1">{stockedMembers.length}</div>
+        </div>
+        <div className="bg-white rounded-xl border border-stone-200 p-4">
+          <div className="text-xs font-mono text-stone-500 tracking-wider uppercase">Total units</div>
+          <div className="font-display text-3xl font-semibold mt-1">{totalItems}</div>
+        </div>
+        <div className={`bg-white rounded-xl border p-4 ${lowStockCount > 0 ? "border-amber-300 bg-amber-50" : "border-stone-200"}`}>
+          <div className="text-xs font-mono text-stone-500 tracking-wider uppercase">Running low</div>
+          <div className={`font-display text-3xl font-semibold mt-1 ${lowStockCount > 0 ? "text-amber-700" : ""}`}>{lowStockCount}</div>
+        </div>
+      </div>
+
+      <div className="relative max-w-md">
+        <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-stone-400" />
+        <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search member name"
+          className="w-full pl-10 pr-4 py-2.5 bg-white border border-stone-200 rounded-lg text-sm focus:outline-none focus:border-stone-900" />
+      </div>
+
+      {filtered.length === 0 ? (
+        <div className="bg-white rounded-xl border border-stone-200 p-12 text-center">
+          <Layers className="w-10 h-10 mx-auto mb-3 text-stone-300" />
+          <p className="font-medium text-stone-600">{search ? "No matching members" : "No member stock yet"}</p>
+          <p className="text-sm text-stone-500 mt-1">Stock builds up when members order daily essentials from the shop.</p>
+        </div>
+      ) : (
+        <div className="space-y-4">
+          {filtered.map((stock) => {
+            const activeItems = stock.items.filter((i) => i.qty > 0);
+            const member = members.find((m) => m.id === stock.memberId);
+            return (
+              <div key={stock.memberId} className="bg-white rounded-xl border border-stone-200 p-5">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-9 h-9 rounded-full bg-gradient-to-br from-stone-200 to-stone-300 flex items-center justify-center font-semibold text-stone-700 shrink-0">
+                    {stock.memberName[0]}
+                  </div>
+                  <div>
+                    <div className="font-medium text-sm">{stock.memberName}</div>
+                    {member && <span className={`text-[10px] font-mono tracking-wider px-2 py-0.5 rounded-full ${planBadge(member.plan)}`}>{member.plan.toUpperCase()}</span>}
+                  </div>
+                  <div className="ml-auto text-xs font-mono text-stone-500">{activeItems.length} item type{activeItems.length !== 1 ? "s" : ""}</div>
+                </div>
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2">
+                  {activeItems.map((item) => {
+                    const low = item.qty <= 2;
+                    return (
+                      <div key={item.productId} className={`rounded-lg p-3 border ${low ? "border-amber-200 bg-amber-50" : "border-stone-100 bg-stone-50"}`}>
+                        <div className="text-xs font-medium truncate">{item.name}</div>
+                        <div className={`font-display text-2xl font-semibold mt-1 ${low ? "text-amber-700" : ""}`}>{item.qty}</div>
+                        {low && <div className="text-[10px] text-amber-700 font-mono">Running low</div>}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }

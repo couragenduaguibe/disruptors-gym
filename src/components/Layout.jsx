@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   Dumbbell, Users, CalendarDays, UserCheck, TrendingUp, X, Menu,
-  Award, BarChart3, CreditCard, LogOut, ShoppingCart, Megaphone, DoorOpen, Send, QrCode, ShoppingBag,
+  Award, BarChart3, CreditCard, LogOut, ShoppingCart, Megaphone, DoorOpen,
+  Send, QrCode, ShoppingBag, MessageSquare, Bell, Package, Layers,
 } from "lucide-react";
 import { ROLES } from "../data/roles";
 import { NAV_BY_ROLE } from "../data/seed";
@@ -17,7 +18,9 @@ const NAV_ITEMS = {
   pos: { label: "Point of Sale", icon: ShoppingCart },
   leads: { label: "Leads", icon: Megaphone },
   access: { label: "Access Control", icon: DoorOpen },
-  messages: { label: "Messages", icon: Send },
+  messages: { label: "Broadcasts", icon: Send },
+  "member-stocks": { label: "Member Stocks", icon: Package },
+  chat: { label: "Messages", icon: MessageSquare },
   "trainer-home": { label: "Today", icon: TrendingUp },
   "my-classes": { label: "My Classes", icon: CalendarDays },
   "my-clients": { label: "My Clients", icon: Users },
@@ -27,6 +30,7 @@ const NAV_ITEMS = {
   "my-history": { label: "My Visits", icon: UserCheck },
   "my-payments": { label: "Payments", icon: CreditCard },
   "my-shop": { label: "Shop", icon: ShoppingBag },
+  "my-stock": { label: "My Stock", icon: Layers },
 };
 
 export function Sidebar({ view, setView, isOpen, onClose, user, onLogout }) {
@@ -92,20 +96,44 @@ export function Sidebar({ view, setView, isOpen, onClose, user, onLogout }) {
   );
 }
 
-export function Header({ view, onMenuClick, user }) {
+export function Header({ view, onMenuClick, user, notifications, setNotifications }) {
+  const [showNotifs, setShowNotifs] = useState(false);
+  const bellRef = useRef(null);
+
+  const myNotifs = (notifications || [])
+    .filter((n) => n.userId === user.username)
+    .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+  const unreadCount = myNotifs.filter((n) => !n.read).length;
+
+  const markAllRead = () => {
+    setNotifications((ns) => ns.map((n) => n.userId === user.username ? { ...n, read: true } : n));
+  };
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    const handler = (e) => { if (bellRef.current && !bellRef.current.contains(e.target)) setShowNotifs(false); };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
+  const notifIcon = { message: "💬", class: "🏋️", payment: "💳", order: "📦" };
+
   const titles = {
     dashboard: "Overview", members: "Members", classes: "Class Schedule",
     trainers: "Trainers", checkins: "Check-in Log", payments: "Payments & Billing",
     analytics: "Analytics", pos: "Point of Sale", leads: "Sales Pipeline",
-    access: "Access Control", messages: "Messages & Marketing",
+    access: "Access Control", messages: "Broadcasts", chat: "Messages",
+    "member-stocks": "Member Stocks",
     "trainer-home": `Welcome, ${user.name.split(" ")[0]}`,
     "my-classes": "My Classes", "my-clients": "My Clients",
     "member-home": `Hi, ${user.name.split(" ")[0]}`,
     "my-qr": "My QR Code", "book-classes": "Book a Class",
     "my-history": "Visit History", "my-payments": "My Payments",
-    "my-shop": "Gym Shop",
+    "my-shop": "Gym Shop", "my-stock": "My Stock",
   };
+
   const now = new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
+
   return (
     <div className="px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6 lg:pt-8 pb-2 border-b border-stone-200 bg-white/60 backdrop-blur sticky top-0 z-30">
       <div className="flex items-center justify-between max-w-7xl gap-4">
@@ -115,6 +143,54 @@ export function Header({ view, onMenuClick, user }) {
         <div className="flex-1 min-w-0">
           <div className="text-[10px] sm:text-xs font-mono text-stone-500 tracking-widest uppercase mb-0.5 sm:mb-1 truncate">{now}</div>
           <h1 className="font-display text-2xl sm:text-3xl lg:text-4xl font-semibold truncate">{titles[view]}</h1>
+        </div>
+
+        {/* Notification bell */}
+        <div className="relative shrink-0" ref={bellRef}>
+          <button onClick={() => setShowNotifs((v) => !v)}
+            className="relative p-2 hover:bg-stone-100 rounded-lg transition">
+            <Bell className="w-5 h-5 text-stone-600" />
+            {unreadCount > 0 && (
+              <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-red-500 text-white text-[9px] rounded-full flex items-center justify-center font-bold">
+                {unreadCount > 9 ? "9+" : unreadCount}
+              </span>
+            )}
+          </button>
+
+          {showNotifs && (
+            <div className="absolute right-0 top-full mt-2 w-80 bg-white rounded-xl border border-stone-200 shadow-lg z-50">
+              <div className="flex items-center justify-between px-4 py-3 border-b border-stone-200">
+                <div className="font-semibold text-sm">Notifications</div>
+                {unreadCount > 0 && (
+                  <button onClick={markAllRead} className="text-xs text-red-500 hover:text-red-700 font-medium">
+                    Mark all read
+                  </button>
+                )}
+              </div>
+              <div className="max-h-80 overflow-y-auto">
+                {myNotifs.length === 0 ? (
+                  <div className="p-6 text-center text-stone-400 text-sm">No notifications</div>
+                ) : (
+                  myNotifs.slice(0, 10).map((n) => (
+                    <div key={n.id}
+                      className={`px-4 py-3 border-b border-stone-100 last:border-0 ${!n.read ? "bg-red-50" : ""}`}>
+                      <div className="flex gap-3">
+                        <span className="text-lg shrink-0">{notifIcon[n.type] || "🔔"}</span>
+                        <div className="flex-1 min-w-0">
+                          <div className={`text-sm truncate ${!n.read ? "font-semibold" : "font-medium"}`}>{n.title}</div>
+                          <div className="text-xs text-stone-500 mt-0.5 line-clamp-2">{n.body}</div>
+                          <div className="text-[10px] font-mono text-stone-400 mt-1">
+                            {new Date(n.timestamp).toLocaleString("en-US", { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}
+                          </div>
+                        </div>
+                        {!n.read && <div className="w-2 h-2 bg-red-500 rounded-full mt-1.5 shrink-0" />}
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

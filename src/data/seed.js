@@ -8,10 +8,10 @@ export const DEMO_ACCOUNTS = [
 ];
 
 export const NAV_BY_ROLE = {
-  admin: ["dashboard", "members", "classes", "trainers", "checkins", "payments", "pos", "leads", "access", "messages", "analytics"],
-  receptionist: ["dashboard", "members", "classes", "checkins", "payments", "pos", "leads", "messages"],
-  trainer: ["trainer-home", "my-classes", "my-clients"],
-  member: ["member-home", "my-qr", "book-classes", "my-history", "my-payments", "my-shop"],
+  admin: ["dashboard", "members", "classes", "trainers", "checkins", "payments", "pos", "leads", "access", "messages", "member-stocks", "chat", "analytics"],
+  receptionist: ["dashboard", "members", "classes", "checkins", "payments", "pos", "leads", "messages", "member-stocks", "chat"],
+  trainer: ["trainer-home", "my-classes", "my-clients", "chat"],
+  member: ["member-home", "my-qr", "book-classes", "my-history", "my-payments", "my-shop", "my-stock", "chat"],
 };
 
 export const seedMembers = [
@@ -133,6 +133,23 @@ export const seedMessages = [
   { id: "msg3", type: "manual", template: null, recipient: "All Premium Members", channel: "Email", status: "sent", date: "2026-04-21", time: "14:30", content: "Premium members: exclusive yoga retreat on May 15. RSVP via app." },
   { id: "msg4", type: "auto", template: "Welcome", recipient: "Sarah Mwangi", channel: "SMS", status: "sent", date: "2026-02-08", time: "10:00", content: "Welcome to Disruptors, Sarah! Your membership is now active." },
   { id: "msg5", type: "auto", template: "Class Reminder", recipient: "Amara Okafor", channel: "SMS", status: "scheduled", date: "2026-04-23", time: "05:30", content: "Reminder: Morning HIIT at 6:30am today. See you there!" },
+];
+
+export const seedMemberStocks = [];
+
+export const seedDirectMessages = [
+  { id: "dm1", fromId: "trainer", fromName: "Jordan Rivera", fromRole: "trainer", toId: "member", toName: "Amara Okafor", toRole: "member", content: "Great session this morning! Keep up the heavy lifting 💪", timestamp: "2026-05-26T11:30:00", read: false },
+  { id: "dm2", fromId: "admin", fromName: "Aisha Bello", fromRole: "admin", toId: "member", toName: "Amara Okafor", toRole: "member", content: "Hi Amara! Your Premium membership expires next month. Would you like to renew early?", timestamp: "2026-05-26T09:00:00", read: true },
+  { id: "dm3", fromId: "member", fromName: "Amara Okafor", fromRole: "member", toId: "admin", toName: "Aisha Bello", toRole: "admin", content: "Yes please! I'll come by the front desk today.", timestamp: "2026-05-26T09:15:00", read: true },
+  { id: "dm4", fromId: "reception", fromName: "Chioma Eze", fromRole: "receptionist", toId: "trainer", toName: "Jordan Rivera", toRole: "trainer", content: "Jordan, can you cover the 6:30am Saturday session next week?", timestamp: "2026-05-26T14:00:00", read: false },
+];
+
+export const seedNotifications = [
+  { id: "notif1", userId: "member", type: "message", title: "New message from Jordan Rivera", body: "Great session this morning! Keep up the heavy lifting 💪", timestamp: "2026-05-26T11:30:00", read: false },
+  { id: "notif2", userId: "admin", type: "payment", title: "Overdue payment alert", body: "Marcus Thompson's payment of ₦15,000 is now overdue.", timestamp: "2026-05-27T08:00:00", read: false },
+  { id: "notif3", userId: "trainer", type: "class", title: "Class today: Heavy Lifting", body: "Your Heavy Lifting class is at 18:00 tonight. 7 members booked.", timestamp: "2026-05-27T07:00:00", read: false },
+  { id: "notif4", userId: "member", type: "class", title: "Class today: Strength Circuit", body: "Strength Circuit with Jordan Rivera at 19:00 tonight. Get ready!", timestamp: "2026-05-27T07:00:00", read: false },
+  { id: "notif5", userId: "reception", type: "message", title: "New message from Jordan Rivera", body: "Jordan, can you cover the 6:30am Saturday session next week?", timestamp: "2026-05-26T14:00:00", read: false },
 ];
 
 export const seedTemplates = [

@@ -55,7 +55,7 @@ export function LeadsView({ leads, setLeads, members, setMembers }) {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         <StatCard label="Active leads" value={totalActive} icon={Megaphone} accent="bg-sky-100 text-sky-900" />
         <StatCard label="Hot leads" value={hotLeads} icon={Activity} accent="bg-amber-100 text-amber-900" />
-        <StatCard label="Conversion rate" value={`${conversionRate}%`} icon={TrendingUp} accent="bg-lime-100 text-lime-900" />
+        <StatCard label="Conversion rate" value={`${conversionRate}%`} icon={TrendingUp} accent="bg-red-100 text-red-900" />
         <StatCard label="Total in pipeline" value={leads.length} icon={Users} accent="bg-stone-100 text-stone-700" />
       </div>
 
@@ -98,7 +98,7 @@ export function LeadsView({ leads, setLeads, members, setMembers }) {
                   </div>
                   {stage.id === "trial" && (
                     <button onClick={(e) => { e.stopPropagation(); convertToMember(lead); }}
-                      className="mt-2 w-full py-1.5 bg-lime-400 text-stone-900 text-[10px] font-semibold rounded">
+                      className="mt-2 w-full py-1.5 bg-red-500 text-white text-[10px] font-semibold rounded">
                       Convert to member
                     </button>
                   )}
@@ -177,7 +177,7 @@ export function AccessControlView({ accessLogs, setAccessLogs, members }) {
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        <StatCard label="Today's entries" value={todayLogs.filter((a) => a.granted).length} icon={DoorOpen} accent="bg-lime-100 text-lime-900" />
+        <StatCard label="Today's entries" value={todayLogs.filter((a) => a.granted).length} icon={DoorOpen} accent="bg-red-100 text-red-900" />
         <StatCard label="Active doors" value={doors.filter((d) => d.status === "online").length} icon={Shield} accent="bg-sky-100 text-sky-900" />
         <StatCard label="Denied attempts" value={denied} icon={AlertTriangle} accent="bg-rose-100 text-rose-900" />
         <StatCard label="Total grants" value={granted} icon={CheckCircle2} accent="bg-amber-100 text-amber-900" />
@@ -189,11 +189,11 @@ export function AccessControlView({ accessLogs, setAccessLogs, members }) {
           {doors.map((d) => (
             <div key={d.id} className="bg-white rounded-xl border border-stone-200 p-5">
               <div className="flex items-start justify-between mb-3">
-                <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${d.status === "online" ? "bg-lime-100" : "bg-rose-100"}`}>
-                  <DoorOpen className={`w-5 h-5 ${d.status === "online" ? "text-lime-700" : "text-rose-700"}`} />
+                <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${d.status === "online" ? "bg-red-100" : "bg-rose-100"}`}>
+                  <DoorOpen className={`w-5 h-5 ${d.status === "online" ? "text-red-700" : "text-rose-700"}`} />
                 </div>
-                <span className={`inline-flex items-center gap-1.5 text-xs font-medium ${d.status === "online" ? "text-lime-700" : "text-rose-700"}`}>
-                  <span className={`w-1.5 h-1.5 rounded-full ${d.status === "online" ? "bg-lime-500 animate-pulse" : "bg-rose-500"}`} />
+                <span className={`inline-flex items-center gap-1.5 text-xs font-medium ${d.status === "online" ? "text-red-700" : "text-rose-700"}`}>
+                  <span className={`w-1.5 h-1.5 rounded-full ${d.status === "online" ? "bg-red-500 animate-pulse" : "bg-rose-500"}`} />
                   {d.status === "online" ? "Online" : "Locked"}
                 </span>
               </div>
@@ -216,8 +216,8 @@ export function AccessControlView({ accessLogs, setAccessLogs, members }) {
           <div className="space-y-1">
             {accessLogs.slice(0, 20).map((log) => (
               <div key={log.id} className={`flex items-center gap-3 py-2.5 px-3 rounded-lg ${log.granted ? "hover:bg-stone-50" : "bg-rose-50 hover:bg-rose-100"}`}>
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${log.granted ? "bg-lime-100" : "bg-rose-100"}`}>
-                  {log.granted ? <CheckCircle2 className="w-4 h-4 text-lime-700" /> : <AlertTriangle className="w-4 h-4 text-rose-700" />}
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${log.granted ? "bg-red-100" : "bg-rose-100"}`}>
+                  {log.granted ? <CheckCircle2 className="w-4 h-4 text-red-700" /> : <AlertTriangle className="w-4 h-4 text-rose-700" />}
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="text-sm font-medium">{log.memberName}</div>
@@ -251,7 +251,7 @@ export function MessagesView({ messages, setMessages, templates, setTemplates, m
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        <StatCard label="Sent today" value={sentToday} icon={Send} accent="bg-lime-100 text-lime-900" />
+        <StatCard label="Sent today" value={sentToday} icon={Send} accent="bg-red-100 text-red-900" />
         <StatCard label="Scheduled" value={scheduled} icon={Clock} accent="bg-amber-100 text-amber-900" />
         <StatCard label="Active templates" value={activeTemplates} icon={MessageSquare} accent="bg-sky-100 text-sky-900" />
         <StatCard label="Total sent" value={messages.filter((m) => m.status === "sent").length} icon={CheckCircle2} accent="bg-stone-100 text-stone-700" />
@@ -294,7 +294,7 @@ function MessagesList({ messages }) {
               <div className="space-y-2">
                 {msgs.map((m) => (
                   <div key={m.id} className="flex items-start gap-3 p-3 bg-stone-50 rounded-lg">
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${m.status === "sent" ? "bg-lime-100" : "bg-amber-100"}`}>
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${m.status === "sent" ? "bg-red-100" : "bg-amber-100"}`}>
                       {m.channel === "Email" ? <Mail className="w-4 h-4 text-stone-700" /> : <MessageSquare className="w-4 h-4 text-stone-700" />}
                     </div>
                     <div className="flex-1 min-w-0">
@@ -302,7 +302,7 @@ function MessagesList({ messages }) {
                         <div className="text-sm font-medium">{m.recipient}</div>
                         <span className="text-[10px] font-mono tracking-wider uppercase text-stone-500">{m.channel}</span>
                         {m.template && <span className="text-[10px] font-mono tracking-wider uppercase bg-stone-200 text-stone-700 px-2 py-0.5 rounded-full">{m.template}</span>}
-                        <span className={`text-[10px] font-mono tracking-wider uppercase px-2 py-0.5 rounded-full ${m.status === "sent" ? "bg-lime-100 text-lime-800" : "bg-amber-100 text-amber-800"}`}>{m.status}</span>
+                        <span className={`text-[10px] font-mono tracking-wider uppercase px-2 py-0.5 rounded-full ${m.status === "sent" ? "bg-red-100 text-red-800" : "bg-amber-100 text-amber-800"}`}>{m.status}</span>
                       </div>
                       <div className="text-xs text-stone-600 line-clamp-2">{m.content}</div>
                     </div>
@@ -339,7 +339,7 @@ function TemplatesList({ templates, setTemplates }) {
               <div className="text-xs text-stone-500">Trigger: {t.trigger}</div>
             </div>
             <button onClick={() => toggle(t.id)}
-              className={`relative w-11 h-6 rounded-full transition ${t.active ? "bg-lime-500" : "bg-stone-300"}`}>
+              className={`relative w-11 h-6 rounded-full transition ${t.active ? "bg-red-500" : "bg-stone-300"}`}>
               <span className={`absolute top-0.5 w-5 h-5 bg-white rounded-full transition ${t.active ? "left-5" : "left-0.5"}`} />
             </button>
           </div>

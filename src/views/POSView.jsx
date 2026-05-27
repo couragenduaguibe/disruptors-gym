@@ -76,7 +76,7 @@ export function POSView({ products, setProducts, sales, setSales, members, user 
     <div className="space-y-6">
       {/* Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        <StatCard label="Today's revenue" value={`₦${(todayRevenue / 1000).toFixed(0)}K`} icon={DollarSign} accent="bg-lime-100 text-lime-900" />
+        <StatCard label="Today's revenue" value={`₦${(todayRevenue / 1000).toFixed(0)}K`} icon={DollarSign} accent="bg-red-100 text-red-900" />
         <StatCard label="Today's sales" value={todaySales.length} icon={Receipt} accent="bg-sky-100 text-sky-900" />
         <StatCard label="SKUs in stock" value={products.filter((p) => p.category !== "Services").length} icon={Package} accent="bg-amber-100 text-amber-900" />
         <StatCard label="Low stock alerts" value={lowStockCount} icon={AlertTriangle} accent="bg-rose-100 text-rose-900" />
