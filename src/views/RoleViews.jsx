@@ -320,7 +320,7 @@ export function MemberHome({ user, members, classes, payments, checkIns, onNavig
 }
 
 // Member QR scan view — opens the camera scanner
-export function MemberQRView({ user, members, setMembers, checkIns, setCheckIns, onNavigate }) {
+export function MemberQRView({ user, members, setMembers, checkIns, setCheckIns, onNavigate, loyaltyPoints, setLoyaltyPoints }) {
   const [showScanner, setShowScanner] = useState(false);
   const [feedback, setFeedback] = useState(null);
 
@@ -344,7 +344,18 @@ export function MemberQRView({ user, members, setMembers, checkIns, setCheckIns,
 
     setMembers(members.map((m) => m.id === me.id ? { ...m, checkIns: m.checkIns + 1, lastVisit: today() } : m));
     setCheckIns([{ id: `ci${Date.now()}`, memberId: me.id, memberName: me.name, date: today(), time: nowTime(), method: "QR" }, ...checkIns]);
-    setFeedback({ type: "success", message: `Welcome back, ${me.name.split(" ")[0]}! That's visit #${me.checkIns + 1}.` });
+
+    // Award 5 loyalty points for check-in
+    if (setLoyaltyPoints) {
+      setLoyaltyPoints((lps) => {
+        const entry = { id: `lph${Date.now()}`, date: today(), points: 5, reason: "Gym check-in" };
+        const existing = lps.find((l) => l.memberId === me.id);
+        if (existing) return lps.map((l) => l.memberId === me.id ? { ...l, points: l.points + 5, history: [entry, ...l.history] } : l);
+        return [...lps, { memberId: me.id, points: 5, history: [entry] }];
+      });
+    }
+
+    setFeedback({ type: "success", message: `Welcome back, ${me.name.split(" ")[0]}! That's visit #${me.checkIns + 1}. +5 loyalty points!` });
     setShowScanner(false);
   };
 
@@ -406,16 +417,61 @@ export function MemberQRView({ user, members, setMembers, checkIns, setCheckIns,
   );
 }
 
-export function MemberBookClasses({ user, classes, setClasses }) {
+export function MemberBookClasses({ user, classes, setClasses, loyaltyPoints, setLoyaltyPoints, setNotifications }) {
   const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
   const dayNames = { Mon: "Monday", Tue: "Tuesday", Wed: "Wednesday", Thu: "Thursday", Fri: "Friday", Sat: "Saturday", Sun: "Sunday" };
+  const [bookedFeedback, setBookedFeedback] = useState(null);
+
+  const awardPoints = (reason) => {
+    if (!setLoyaltyPoints || !user.memberId) return;
+    setLoyaltyPoints((lps) => {
+      const entry = { id: `lph${Date.now()}`, date: new Date().toISOString().slice(0, 10), points: 10, reason };
+      const existing = lps.find((l) => l.memberId === user.memberId);
+      if (existing) return lps.map((l) => l.memberId === user.memberId ? { ...l, points: l.points + 10, history: [entry, ...l.history] } : l);
+      return [...lps, { memberId: user.memberId, points: 10, history: [entry] }];
+    });
+  };
 
   const toggleBooking = (cls) => {
     const isBooked = (cls.bookedMemberIds || []).includes(user.memberId);
+    const onWaitlist = (cls.waitlist || []).some((w) => w.memberId === user.memberId);
+
     setClasses(classes.map((c) => {
       if (c.id !== cls.id) return c;
-      if (isBooked) return { ...c, booked: Math.max(0, c.booked - 1), bookedMemberIds: c.bookedMemberIds.filter((id) => id !== user.memberId) };
-      if (c.booked >= c.capacity) return c;
+      if (isBooked) {
+        // Cancel: if waitlist exists, auto-move first person in
+        const waitlist = c.waitlist || [];
+        if (waitlist.length > 0) {
+          const [next, ...rest] = waitlist;
+          // Notify next person via notification
+          if (setNotifications) {
+            setNotifications((ns) => [{
+              id: `notif-wl-${Date.now()}`,
+              userId: next.memberId,
+              type: "class",
+              title: `You're booked for ${c.name}!`,
+              body: `A spot opened up in ${c.name} (${c.day} ${c.time}). You've been automatically booked in.`,
+              timestamp: new Date().toISOString(),
+              read: false,
+            }, ...ns]);
+          }
+          return { ...c, bookedMemberIds: [...c.bookedMemberIds.filter((id) => id !== user.memberId), next.memberId], waitlist: rest };
+        }
+        return { ...c, booked: Math.max(0, c.booked - 1), bookedMemberIds: c.bookedMemberIds.filter((id) => id !== user.memberId) };
+      }
+      if (onWaitlist) {
+        return { ...c, waitlist: (c.waitlist || []).filter((w) => w.memberId !== user.memberId) };
+      }
+      if (c.booked >= c.capacity) {
+        // Join waitlist
+        setBookedFeedback({ id: c.id, type: "waitlist" });
+        setTimeout(() => setBookedFeedback(null), 3000);
+        return { ...c, waitlist: [...(c.waitlist || []), { memberId: user.memberId, memberName: user.name }] };
+      }
+      // Book class + award loyalty points
+      awardPoints(`Class booked: ${c.name}`);
+      setBookedFeedback({ id: c.id, type: "booked" });
+      setTimeout(() => setBookedFeedback(null), 3000);
       return { ...c, booked: c.booked + 1, bookedMemberIds: [...(c.bookedMemberIds || []), user.memberId] };
     }));
   };
@@ -423,7 +479,7 @@ export function MemberBookClasses({ user, classes, setClasses }) {
   return (
     <div className="space-y-6">
       <div className="bg-stone-100 border border-stone-200 rounded-xl p-4">
-        <p className="text-sm text-stone-700">Tap a class to book or cancel your spot.</p>
+        <p className="text-sm text-stone-700">Tap a class to book or cancel. Full classes have a waitlist — join to be auto-booked when a spot opens. Booking earns <strong>10 loyalty points</strong>.</p>
       </div>
 
       {days.map((day) => {
@@ -435,10 +491,22 @@ export function MemberBookClasses({ user, classes, setClasses }) {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
               {dayClasses.map((c) => {
                 const isBooked = (c.bookedMemberIds || []).includes(user.memberId);
+                const onWaitlist = (c.waitlist || []).some((w) => w.memberId === user.memberId);
                 const full = c.booked >= c.capacity && !isBooked;
                 const pct = Math.round((c.booked / c.capacity) * 100);
+                const feedback = bookedFeedback?.id === c.id ? bookedFeedback.type : null;
+                const waitlistCount = (c.waitlist || []).length;
                 return (
-                  <div key={c.id} className={`bg-white border rounded-xl p-4 transition ${isBooked ? "border-red-500 bg-red-50" : "border-stone-200"}`}>
+                  <div key={c.id} className={`bg-white border rounded-xl p-4 transition ${
+                    isBooked ? "border-red-500 bg-red-50" :
+                    onWaitlist ? "border-amber-400 bg-amber-50" :
+                    "border-stone-200"
+                  }`}>
+                    {feedback && (
+                      <div className={`text-xs font-semibold mb-2 px-2 py-1 rounded-lg text-center ${feedback === "waitlist" ? "bg-amber-100 text-amber-800" : "bg-red-100 text-red-800"}`}>
+                        {feedback === "waitlist" ? "Added to waitlist!" : "Booked! +10 pts"}
+                      </div>
+                    )}
                     <div className="flex items-start justify-between mb-2">
                       <div className="min-w-0">
                         <div className="font-semibold truncate">{c.name}</div>
@@ -450,17 +518,21 @@ export function MemberBookClasses({ user, classes, setClasses }) {
                     </div>
                     <div className="flex items-center gap-2 mb-3">
                       <div className="flex-1 h-1 bg-stone-200 rounded-full overflow-hidden">
-                        <div className={`h-full rounded-full ${pct >= 90 ? "bg-rose-500" : "bg-red-500"}`} style={{ width: `${pct}%` }} />
+                        <div className={`h-full rounded-full ${pct >= 100 ? "bg-rose-500" : pct >= 90 ? "bg-orange-500" : "bg-red-500"}`} style={{ width: `${Math.min(pct, 100)}%` }} />
                       </div>
                       <span className="text-[10px] font-mono text-stone-500">{c.booked}/{c.capacity}</span>
                     </div>
-                    <button onClick={() => toggleBooking(c)} disabled={full}
+                    {waitlistCount > 0 && !isBooked && (
+                      <div className="text-[10px] text-amber-700 font-mono mb-2">{waitlistCount} on waitlist</div>
+                    )}
+                    <button onClick={() => toggleBooking(c)}
                       className={`w-full py-2 text-xs font-semibold rounded-lg transition ${
                         isBooked ? "bg-stone-900 text-white hover:bg-stone-800" :
-                        full ? "bg-stone-100 text-stone-400 cursor-not-allowed" :
+                        onWaitlist ? "bg-amber-500 text-white hover:bg-amber-600" :
+                        full ? "bg-stone-800 text-white hover:bg-stone-700" :
                         "bg-red-500 text-white hover:bg-red-600"
                       }`}>
-                      {isBooked ? "Cancel booking" : full ? "Class full" : "Book spot"}
+                      {isBooked ? "Cancel booking" : onWaitlist ? "Leave waitlist" : full ? "Join waitlist" : "Book spot"}
                     </button>
                   </div>
                 );

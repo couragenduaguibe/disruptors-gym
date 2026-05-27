@@ -3,6 +3,7 @@ import {
   Dumbbell, Users, CalendarDays, UserCheck, TrendingUp, X, Menu,
   Award, BarChart3, CreditCard, LogOut, ShoppingCart, Megaphone, DoorOpen,
   Send, QrCode, ShoppingBag, MessageSquare, Bell, Package, Layers,
+  Activity, Gift, Clock, Wrench, DollarSign, Video, Trophy,
 } from "lucide-react";
 import { ROLES } from "../data/roles";
 import { NAV_BY_ROLE } from "../data/seed";
@@ -31,6 +32,15 @@ const NAV_ITEMS = {
   "my-payments": { label: "Payments", icon: CreditCard },
   "my-shop": { label: "Shop", icon: ShoppingBag },
   "my-stock": { label: "My Stock", icon: Layers },
+  "my-workouts": { label: "Workout Log", icon: Dumbbell },
+  "my-metrics": { label: "Body Metrics", icon: Activity },
+  "my-rewards": { label: "Rewards", icon: Gift },
+  "my-referrals": { label: "Referrals", icon: Users },
+  "challenges": { label: "Challenges", icon: Trophy },
+  "shifts": { label: "Staff Shifts", icon: Clock },
+  "equipment": { label: "Equipment", icon: Wrench },
+  "expenses": { label: "Expenses & P&L", icon: DollarSign },
+  "video-library": { label: "Video Library", icon: Video },
 };
 
 export function Sidebar({ view, setView, isOpen, onClose, user, onLogout }) {
@@ -130,6 +140,11 @@ export function Header({ view, onMenuClick, user, notifications, setNotification
     "my-qr": "My QR Code", "book-classes": "Book a Class",
     "my-history": "Visit History", "my-payments": "My Payments",
     "my-shop": "Gym Shop", "my-stock": "My Stock",
+    "my-workouts": "Workout Log", "my-metrics": "Body Metrics",
+    "my-rewards": "My Rewards", "my-referrals": "Referrals",
+    "challenges": "Challenges", "shifts": "Staff Shifts",
+    "equipment": "Equipment", "expenses": "Expenses & P&L",
+    "video-library": "Video Library",
   };
 
   const now = new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });

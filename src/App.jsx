@@ -2,7 +2,9 @@ import React, { useState, useEffect, useMemo } from "react";
 import {
   seedMembers, seedTrainers, seedClasses, seedPayments,
   seedProducts, seedSales, seedLeads, seedAccessLogs,
-  seedMessages, seedTemplates, seedMemberStocks, seedDirectMessages, seedNotifications,
+  seedMessages, seedTemplates, seedMemberStocks, seedDirectMessages,
+  seedNotifications, seedWorkoutLogs, seedBodyMetrics, seedLoyaltyPoints,
+  seedChallenges, seedShifts, seedEquipment, seedExpenses, seedVideos,
   NAV_BY_ROLE,
 } from "./data/seed";
 import { loadData, saveData, clearData } from "./utils/storage";
@@ -20,12 +22,15 @@ import {
   MemberShop, MemberStock,
 } from "./views/RoleViews";
 import { ChatView } from "./views/MessagingViews";
+import { WorkoutLogView, BodyMetricsView } from "./views/FitnessViews";
+import { LoyaltyRewardsView, ReferralView, ChallengesView } from "./views/GrowthViews";
+import { StaffShiftsView, EquipmentView, ExpensesView, VideoLibraryView } from "./views/OpsViews";
 
 export default function App() {
-  // ----------------- Auth -----------------
+  // ─── Auth ──────────────────────────────────────────────────────────────────
   const [user, setUser] = useState(() => loadData("session", null));
 
-  // ----------------- Persistent state -----------------
+  // ─── Persistent state ──────────────────────────────────────────────────────
   const [members, setMembers] = useState(() => loadData("members", seedMembers));
   const [trainers, setTrainers] = useState(() => loadData("trainers", seedTrainers));
   const [classes, setClasses] = useState(() => loadData("classes", seedClasses));
@@ -41,13 +46,21 @@ export default function App() {
   const [memberStocks, setMemberStocks] = useState(() => loadData("memberStocks", seedMemberStocks));
   const [directMessages, setDirectMessages] = useState(() => loadData("directMessages", seedDirectMessages));
   const [notifications, setNotifications] = useState(() => loadData("notifications", seedNotifications));
+  const [workoutLogs, setWorkoutLogs] = useState(() => loadData("workoutLogs", seedWorkoutLogs));
+  const [bodyMetrics, setBodyMetrics] = useState(() => loadData("bodyMetrics", seedBodyMetrics));
+  const [loyaltyPoints, setLoyaltyPoints] = useState(() => loadData("loyaltyPoints", seedLoyaltyPoints));
+  const [challenges, setChallenges] = useState(() => loadData("challenges", seedChallenges));
+  const [shifts, setShifts] = useState(() => loadData("shifts", seedShifts));
+  const [equipment, setEquipment] = useState(() => loadData("equipment", seedEquipment));
+  const [expenses, setExpenses] = useState(() => loadData("expenses", seedExpenses));
+  const [videos, setVideos] = useState(() => loadData("videos", seedVideos));
 
-  // ----------------- UI state -----------------
+  // ─── UI state ──────────────────────────────────────────────────────────────
   const [view, setView] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [selectedMember, setSelectedMember] = useState(null);
 
-  // ----------------- Persistence effects -----------------
+  // ─── Persistence effects ───────────────────────────────────────────────────
   useEffect(() => { saveData("members", members); }, [members]);
   useEffect(() => { saveData("trainers", trainers); }, [trainers]);
   useEffect(() => { saveData("classes", classes); }, [classes]);
@@ -63,19 +76,118 @@ export default function App() {
   useEffect(() => { saveData("memberStocks", memberStocks); }, [memberStocks]);
   useEffect(() => { saveData("directMessages", directMessages); }, [directMessages]);
   useEffect(() => { saveData("notifications", notifications); }, [notifications]);
+  useEffect(() => { saveData("workoutLogs", workoutLogs); }, [workoutLogs]);
+  useEffect(() => { saveData("bodyMetrics", bodyMetrics); }, [bodyMetrics]);
+  useEffect(() => { saveData("loyaltyPoints", loyaltyPoints); }, [loyaltyPoints]);
+  useEffect(() => { saveData("challenges", challenges); }, [challenges]);
+  useEffect(() => { saveData("shifts", shifts); }, [shifts]);
+  useEffect(() => { saveData("equipment", equipment); }, [equipment]);
+  useEffect(() => { saveData("expenses", expenses); }, [expenses]);
+  useEffect(() => { saveData("videos", videos); }, [videos]);
 
-  // ----------------- Set default view when user logs in -----------------
+  // ─── Default view on login ─────────────────────────────────────────────────
   useEffect(() => {
-    if (user && !view) {
-      setView(NAV_BY_ROLE[user.role][0]);
-    }
+    if (user && !view) setView(NAV_BY_ROLE[user.role][0]);
   }, [user, view]);
 
-  // ----------------- Auth handlers -----------------
+  // ─── Smart login notifications ─────────────────────────────────────────────
+  const generateLoginNotifications = (account) => {
+    const todayStr = new Date().toISOString().slice(0, 10);
+    const newNotifs = [];
+
+    // Admin/receptionist: expiring memberships
+    if (account.role === "admin" || account.role === "receptionist") {
+      const expiring = members.filter((m) => {
+        if (m.status !== "active") return false;
+        const days = (new Date(m.expiryDate) - new Date()) / (1000 * 60 * 60 * 24);
+        return days >= 0 && days <= 7;
+      });
+      if (expiring.length > 0) {
+        newNotifs.push({
+          id: `notif-exp-${Date.now()}`,
+          userId: account.username,
+          type: "payment",
+          title: `${expiring.length} membership${expiring.length > 1 ? "s" : ""} expiring within 7 days`,
+          body: expiring.map((m) => `${m.name} (${Math.ceil((new Date(m.expiryDate) - new Date()) / (1000 * 60 * 60 * 24))}d left)`).join(", "),
+          timestamp: new Date().toISOString(),
+          read: false,
+        });
+      }
+
+      // Low stock alert for POS products
+      const lowStock = products.filter((p) => p.lowStock > 0 && p.stock <= p.lowStock);
+      if (lowStock.length > 0) {
+        newNotifs.push({
+          id: `notif-stock-${Date.now()}`,
+          userId: account.username,
+          type: "order",
+          title: `${lowStock.length} product${lowStock.length > 1 ? "s" : ""} low on stock`,
+          body: lowStock.slice(0, 3).map((p) => `${p.name}: ${p.stock} left`).join(" · "),
+          timestamp: new Date().toISOString(),
+          read: false,
+        });
+      }
+
+      // Equipment needing attention
+      const brokenEq = equipment.filter((e) => e.status !== "operational");
+      if (brokenEq.length > 0) {
+        newNotifs.push({
+          id: `notif-eq-${Date.now()}`,
+          userId: account.username,
+          type: "order",
+          title: `${brokenEq.length} equipment item${brokenEq.length > 1 ? "s" : ""} need attention`,
+          body: brokenEq.map((e) => e.name).join(", "),
+          timestamp: new Date().toISOString(),
+          read: false,
+        });
+      }
+    }
+
+    // Trainer: today's classes
+    if (account.role === "trainer") {
+      const todayDay = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][new Date().getDay()];
+      const todayClasses = classes.filter((c) => c.trainerId === account.trainerId && c.day === todayDay);
+      if (todayClasses.length > 0) {
+        newNotifs.push({
+          id: `notif-trainer-${Date.now()}`,
+          userId: account.username,
+          type: "class",
+          title: `You have ${todayClasses.length} class${todayClasses.length > 1 ? "es" : ""} today`,
+          body: todayClasses.map((c) => `${c.name} at ${c.time} (${c.booked}/${c.capacity} booked)`).join(" · "),
+          timestamp: new Date().toISOString(),
+          read: false,
+        });
+      }
+    }
+
+    // Member: today's booked classes
+    if (account.role === "member" && account.memberId) {
+      const todayDay = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][new Date().getDay()];
+      const myTodayClasses = classes.filter((c) => (c.bookedMemberIds || []).includes(account.memberId) && c.day === todayDay);
+      if (myTodayClasses.length > 0) {
+        newNotifs.push({
+          id: `notif-member-${Date.now()}`,
+          userId: account.username,
+          type: "class",
+          title: `${myTodayClasses.length} class${myTodayClasses.length > 1 ? "es" : ""} today`,
+          body: myTodayClasses.map((c) => `${c.name} at ${c.time}`).join(" · "),
+          timestamp: new Date().toISOString(),
+          read: false,
+        });
+      }
+    }
+
+    if (newNotifs.length > 0) {
+      setNotifications((ns) => [...newNotifs, ...ns]);
+    }
+  };
+
+  // ─── Auth handlers ─────────────────────────────────────────────────────────
   const handleLogin = (account) => {
     saveData("session", account);
     setUser(account);
     setView(NAV_BY_ROLE[account.role][0]);
+    generateLoginNotifications(account);
   };
 
   const handleLogout = () => {
@@ -85,18 +197,14 @@ export default function App() {
     setSelectedMember(null);
   };
 
-  // ----------------- Derived stats for dashboard -----------------
+  // ─── Dashboard stats ───────────────────────────────────────────────────────
   const stats = useMemo(() => {
     const active = members.filter((m) => m.status === "active").length;
-    const today = new Date().toISOString().slice(0, 10);
-    const currentMonth = today.slice(0, 7);
-    const revenue = payments
-      .filter((p) => p.status === "paid" && p.date.slice(0, 7) === currentMonth)
-      .reduce((s, p) => s + p.amount, 0);
-    const todayCheckIns = checkIns.filter((c) => c.date === today).length;
-    const classUtil = classes.length > 0
-      ? classes.reduce((s, c) => s + c.booked / c.capacity, 0) / classes.length
-      : 0;
+    const todayStr = new Date().toISOString().slice(0, 10);
+    const currentMonth = todayStr.slice(0, 7);
+    const revenue = payments.filter((p) => p.status === "paid" && p.date.slice(0, 7) === currentMonth).reduce((s, p) => s + p.amount, 0);
+    const todayCheckIns = checkIns.filter((c) => c.date === todayStr).length;
+    const classUtil = classes.length > 0 ? classes.reduce((s, c) => s + c.booked / c.capacity, 0) / classes.length : 0;
     const overdueCount = payments.filter((p) => p.status === "overdue").length;
     const expiringSoon = members.filter((m) => {
       if (m.status !== "active") return false;
@@ -106,10 +214,10 @@ export default function App() {
     return { active, revenue, todayCheckIns, classUtil, overdueCount, expiringSoon };
   }, [members, payments, checkIns, classes]);
 
-  // ----------------- Not logged in -----------------
+  // ─── Not logged in ─────────────────────────────────────────────────────────
   if (!user) return <LoginScreen onLogin={handleLogin} />;
 
-  // ----------------- Logged in -----------------
+  // ─── Logged in ─────────────────────────────────────────────────────────────
   return (
     <div className="min-h-screen bg-stone-50 flex">
       <Sidebar
@@ -121,10 +229,8 @@ export default function App() {
         onLogout={handleLogout}
       />
 
-      {/* Mobile sidebar backdrop */}
       {sidebarOpen && (
-        <div className="fixed inset-0 bg-stone-900/40 backdrop-blur-sm z-40 lg:hidden"
-          onClick={() => setSidebarOpen(false)} />
+        <div className="fixed inset-0 bg-stone-900/40 backdrop-blur-sm z-40 lg:hidden" onClick={() => setSidebarOpen(false)} />
       )}
 
       <div className="flex-1 flex flex-col min-w-0">
@@ -137,172 +243,115 @@ export default function App() {
         />
 
         <main className="flex-1 px-4 sm:px-6 lg:px-8 py-6 lg:py-8 max-w-7xl w-full">
-          {/* ---------- ADMIN & RECEPTIONIST VIEWS ---------- */}
+
+          {/* ── ADMIN & RECEPTIONIST ───────────────────────────────────────── */}
           {view === "dashboard" && (
-            <Dashboard
-              stats={stats}
-              members={members}
-              classes={classes}
-              payments={payments}
-              onMemberClick={setSelectedMember}
-              onNavigate={setView}
-              user={user}
-            />
+            <Dashboard stats={stats} members={members} classes={classes} payments={payments} onMemberClick={setSelectedMember} onNavigate={setView} user={user} />
           )}
-
           {view === "members" && (
-            <MembersView
-              members={members}
-              setMembers={setMembers}
-              onMemberClick={setSelectedMember}
-              user={user}
-            />
+            <MembersView members={members} setMembers={setMembers} onMemberClick={setSelectedMember} user={user} />
           )}
-
           {view === "classes" && (
-            <ClassesView
-              classes={classes}
-              setClasses={setClasses}
-              trainers={trainers}
-              user={user}
-            />
+            <ClassesView classes={classes} setClasses={setClasses} trainers={trainers} user={user} />
           )}
-
           {view === "trainers" && <TrainersView trainers={trainers} />}
-
-          {view === "checkins" && (
-            <CheckInsView checkIns={checkIns} />
-          )}
-
-          {view === "payments" && (
-            <PaymentsView payments={payments} setPayments={setPayments} user={user} />
-          )}
-
+          {view === "checkins" && <CheckInsView checkIns={checkIns} />}
+          {view === "payments" && <PaymentsView payments={payments} setPayments={setPayments} user={user} />}
           {view === "pos" && (
-            <POSView
-              products={products}
-              setProducts={setProducts}
-              sales={sales}
-              setSales={setSales}
-              members={members}
-              user={user}
-            />
+            <POSView products={products} setProducts={setProducts} sales={sales} setSales={setSales} members={members} user={user} />
           )}
-
           {view === "leads" && (
-            <LeadsView
-              leads={leads}
-              setLeads={setLeads}
-              members={members}
-              setMembers={setMembers}
-            />
+            <LeadsView leads={leads} setLeads={setLeads} members={members} setMembers={setMembers} />
           )}
-
           {view === "access" && (
-            <AccessControlView
-              accessLogs={accessLogs}
-              setAccessLogs={setAccessLogs}
-              members={members}
-            />
+            <AccessControlView accessLogs={accessLogs} setAccessLogs={setAccessLogs} members={members} />
           )}
-
           {view === "messages" && (
-            <MessagesView
-              messages={messages}
-              setMessages={setMessages}
-              templates={templates}
-              setTemplates={setTemplates}
-              members={members}
-            />
+            <MessagesView messages={messages} setMessages={setMessages} templates={templates} setTemplates={setTemplates} members={members} />
           )}
-
           {view === "analytics" && (
             <AnalyticsView members={members} payments={payments} classes={classes} />
           )}
-
           {view === "member-stocks" && (
             <MemberStocksView members={members} memberStocks={memberStocks} />
           )}
-
           {view === "chat" && (
-            <ChatView
-              user={user}
-              directMessages={directMessages}
-              setDirectMessages={setDirectMessages}
-              setNotifications={setNotifications}
-            />
+            <ChatView user={user} directMessages={directMessages} setDirectMessages={setDirectMessages} setNotifications={setNotifications} />
           )}
 
-          {/* ---------- TRAINER VIEWS ---------- */}
+          {/* ── OPERATIONS (admin / receptionist) ─────────────────────────── */}
+          {view === "shifts" && (
+            <StaffShiftsView user={user} shifts={shifts} setShifts={setShifts} />
+          )}
+          {view === "equipment" && (
+            <EquipmentView user={user} equipment={equipment} setEquipment={setEquipment} />
+          )}
+          {view === "expenses" && (
+            <ExpensesView user={user} expenses={expenses} setExpenses={setExpenses} payments={payments} />
+          )}
+          {view === "challenges" && (
+            <ChallengesView user={user} challenges={challenges} setChallenges={setChallenges} members={members} checkIns={checkIns} classes={classes} />
+          )}
+
+          {/* ── TRAINER VIEWS ──────────────────────────────────────────────── */}
           {view === "trainer-home" && (
             <TrainerHome user={user} classes={classes} members={members} />
           )}
-
           {view === "my-classes" && (
             <TrainerClasses user={user} classes={classes} members={members} />
           )}
-
           {view === "my-clients" && (
             <TrainerClients user={user} members={members} onMemberClick={setSelectedMember} />
           )}
-
-          {/* ---------- MEMBER VIEWS ---------- */}
-          {view === "member-home" && (
-            <MemberHome
-              user={user}
-              members={members}
-              classes={classes}
-              payments={payments}
-              checkIns={checkIns}
-              onNavigate={setView}
-            />
+          {view === "video-library" && (
+            <VideoLibraryView user={user} videos={videos} setVideos={setVideos} />
           )}
 
+          {/* ── MEMBER VIEWS ───────────────────────────────────────────────── */}
+          {view === "member-home" && (
+            <MemberHome user={user} members={members} classes={classes} payments={payments} checkIns={checkIns} onNavigate={setView} />
+          )}
           {view === "my-qr" && (
             <MemberQRView
-              user={user}
-              members={members}
-              setMembers={setMembers}
-              checkIns={checkIns}
-              setCheckIns={setCheckIns}
-              onNavigate={setView}
+              user={user} members={members} setMembers={setMembers}
+              checkIns={checkIns} setCheckIns={setCheckIns} onNavigate={setView}
+              loyaltyPoints={loyaltyPoints} setLoyaltyPoints={setLoyaltyPoints}
             />
           )}
-
           {view === "book-classes" && (
-            <MemberBookClasses user={user} classes={classes} setClasses={setClasses} />
+            <MemberBookClasses
+              user={user} classes={classes} setClasses={setClasses}
+              loyaltyPoints={loyaltyPoints} setLoyaltyPoints={setLoyaltyPoints}
+              setNotifications={setNotifications}
+            />
           )}
-
           {view === "my-history" && (
             <MemberHistory user={user} checkIns={checkIns} classes={classes} />
           )}
-
           {view === "my-payments" && (
             <MemberPayments user={user} payments={payments} members={members} />
           )}
-
           {view === "my-shop" && (
-            <MemberShop
-              user={user}
-              shopOrders={shopOrders}
-              setShopOrders={setShopOrders}
-              memberStocks={memberStocks}
-              setMemberStocks={setMemberStocks}
-            />
+            <MemberShop user={user} shopOrders={shopOrders} setShopOrders={setShopOrders} memberStocks={memberStocks} setMemberStocks={setMemberStocks} />
           )}
-
           {view === "my-stock" && (
-            <MemberStock
-              user={user}
-              memberStocks={memberStocks}
-              setMemberStocks={setMemberStocks}
-              onNavigate={setView}
-            />
+            <MemberStock user={user} memberStocks={memberStocks} setMemberStocks={setMemberStocks} onNavigate={setView} />
+          )}
+          {view === "my-workouts" && (
+            <WorkoutLogView user={user} workoutLogs={workoutLogs} setWorkoutLogs={setWorkoutLogs} loyaltyPoints={loyaltyPoints} setLoyaltyPoints={setLoyaltyPoints} />
+          )}
+          {view === "my-metrics" && (
+            <BodyMetricsView user={user} bodyMetrics={bodyMetrics} setBodyMetrics={setBodyMetrics} />
+          )}
+          {view === "my-rewards" && (
+            <LoyaltyRewardsView user={user} loyaltyPoints={loyaltyPoints} />
+          )}
+          {view === "my-referrals" && (
+            <ReferralView user={user} members={members} />
           )}
         </main>
       </div>
 
-      {/* Member detail drawer */}
       {selectedMember && (
         <MemberDetail
           member={selectedMember}

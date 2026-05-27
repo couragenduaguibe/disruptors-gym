@@ -8,21 +8,21 @@ export const DEMO_ACCOUNTS = [
 ];
 
 export const NAV_BY_ROLE = {
-  admin: ["dashboard", "members", "classes", "trainers", "checkins", "payments", "pos", "leads", "access", "messages", "member-stocks", "chat", "analytics"],
-  receptionist: ["dashboard", "members", "classes", "checkins", "payments", "pos", "leads", "messages", "member-stocks", "chat"],
-  trainer: ["trainer-home", "my-classes", "my-clients", "chat"],
-  member: ["member-home", "my-qr", "book-classes", "my-history", "my-payments", "my-shop", "my-stock", "chat"],
+  admin: ["dashboard","members","classes","trainers","checkins","payments","pos","leads","access","messages","member-stocks","chat","analytics","shifts","equipment","expenses","challenges"],
+  receptionist: ["dashboard","members","classes","checkins","payments","pos","leads","messages","member-stocks","chat","equipment","challenges"],
+  trainer: ["trainer-home","my-classes","my-clients","chat","video-library","challenges"],
+  member: ["member-home","my-qr","book-classes","my-history","my-payments","my-shop","my-stock","chat","my-workouts","my-metrics","my-rewards","my-referrals","challenges"],
 };
 
 export const seedMembers = [
-  { id: "m1", name: "Amara Okafor", email: "amara@example.com", phone: "+234 801 234 5678", plan: "Premium", joinDate: "2025-08-14", expiryDate: "2026-06-14", status: "active", checkIns: 42, lastVisit: "2026-04-21", trainerId: "t1", photo: null },
-  { id: "m2", name: "David Chen", email: "d.chen@example.com", phone: "+234 802 555 1212", plan: "Standard", joinDate: "2025-11-03", expiryDate: "2026-06-03", status: "active", checkIns: 28, lastVisit: "2026-04-20", trainerId: "t1" },
-  { id: "m3", name: "Fatima Al-Hassan", email: "fatima.h@example.com", phone: "+234 803 777 8899", plan: "Premium", joinDate: "2024-06-21", expiryDate: "2026-06-21", status: "active", checkIns: 112, lastVisit: "2026-04-22", trainerId: "t2" },
-  { id: "m4", name: "Marcus Thompson", email: "m.thompson@example.com", phone: "+234 805 999 1111", plan: "Basic", joinDate: "2026-01-15", expiryDate: "2026-04-15", status: "expired", checkIns: 9, lastVisit: "2026-03-30", trainerId: "t3" },
-  { id: "m5", name: "Priya Kapoor", email: "priya.k@example.com", phone: "+234 807 222 3344", plan: "Standard", joinDate: "2025-09-28", expiryDate: "2026-05-28", status: "active", checkIns: 56, lastVisit: "2026-04-19", trainerId: "t2" },
-  { id: "m6", name: "Olumide Bakare", email: "olu.b@example.com", phone: "+234 808 444 7777", plan: "Premium", joinDate: "2025-12-12", expiryDate: "2026-06-12", status: "active", checkIns: 38, lastVisit: "2026-04-22", trainerId: "t1" },
-  { id: "m7", name: "Sarah Mwangi", email: "s.mwangi@example.com", phone: "+234 809 333 2222", plan: "Standard", joinDate: "2026-02-08", expiryDate: "2026-05-30", status: "active", checkIns: 18, lastVisit: "2026-04-18", trainerId: "t3" },
-  { id: "m8", name: "Tunde Adeyemi", email: "tunde.a@example.com", phone: "+234 810 555 9999", plan: "Basic", joinDate: "2025-10-22", expiryDate: "2026-05-22", status: "active", checkIns: 31, lastVisit: "2026-04-17", trainerId: "t1" },
+  { id: "m1", name: "Amara Okafor", email: "amara@example.com", phone: "+234 801 234 5678", plan: "Premium", joinDate: "2025-08-14", expiryDate: "2026-06-14", status: "active", checkIns: 42, lastVisit: "2026-04-21", trainerId: "t1", photo: null, referralCode: "DIS-AMR001", referredBy: null },
+  { id: "m2", name: "David Chen", email: "d.chen@example.com", phone: "+234 802 555 1212", plan: "Standard", joinDate: "2025-11-03", expiryDate: "2026-06-03", status: "active", checkIns: 28, lastVisit: "2026-04-20", trainerId: "t1", referralCode: "DIS-DVC002", referredBy: "m1" },
+  { id: "m3", name: "Fatima Al-Hassan", email: "fatima.h@example.com", phone: "+234 803 777 8899", plan: "Premium", joinDate: "2024-06-21", expiryDate: "2026-06-21", status: "active", checkIns: 112, lastVisit: "2026-04-22", trainerId: "t2", referralCode: "DIS-FTM003", referredBy: null },
+  { id: "m4", name: "Marcus Thompson", email: "m.thompson@example.com", phone: "+234 805 999 1111", plan: "Basic", joinDate: "2026-01-15", expiryDate: "2026-04-15", status: "expired", checkIns: 9, lastVisit: "2026-03-30", trainerId: "t3", referralCode: "DIS-MRC004", referredBy: null },
+  { id: "m5", name: "Priya Kapoor", email: "priya.k@example.com", phone: "+234 807 222 3344", plan: "Standard", joinDate: "2025-09-28", expiryDate: "2026-05-28", status: "active", checkIns: 56, lastVisit: "2026-04-19", trainerId: "t2", referralCode: "DIS-PRY005", referredBy: null },
+  { id: "m6", name: "Olumide Bakare", email: "olu.b@example.com", phone: "+234 808 444 7777", plan: "Premium", joinDate: "2025-12-12", expiryDate: "2026-06-12", status: "active", checkIns: 38, lastVisit: "2026-04-22", trainerId: "t1", referralCode: "DIS-OLU006", referredBy: "m1" },
+  { id: "m7", name: "Sarah Mwangi", email: "s.mwangi@example.com", phone: "+234 809 333 2222", plan: "Standard", joinDate: "2026-02-08", expiryDate: "2026-05-30", status: "active", checkIns: 18, lastVisit: "2026-04-18", trainerId: "t3", referralCode: "DIS-SRH007", referredBy: null },
+  { id: "m8", name: "Tunde Adeyemi", email: "tunde.a@example.com", phone: "+234 810 555 9999", plan: "Basic", joinDate: "2025-10-22", expiryDate: "2026-05-22", status: "active", checkIns: 31, lastVisit: "2026-04-17", trainerId: "t1", referralCode: "DIS-TND008", referredBy: null },
 ];
 
 export const seedTrainers = [
@@ -32,15 +32,15 @@ export const seedTrainers = [
 ];
 
 export const seedClasses = [
-  { id: "c1", name: "Morning HIIT", trainer: "Tomás Vega", trainerId: "t3", time: "06:30", day: "Mon", capacity: 20, booked: 14, bookedMemberIds: ["m1", "m2"] },
-  { id: "c2", name: "Power Yoga", trainer: "Kemi Adebayo", trainerId: "t2", time: "08:00", day: "Mon", capacity: 15, booked: 15, bookedMemberIds: ["m3", "m5"] },
-  { id: "c3", name: "Heavy Lifting", trainer: "Jordan Rivera", trainerId: "t1", time: "18:00", day: "Mon", capacity: 10, booked: 7, bookedMemberIds: ["m1", "m6"] },
-  { id: "c4", name: "Spin Class", trainer: "Tomás Vega", trainerId: "t3", time: "07:00", day: "Tue", capacity: 25, booked: 19, bookedMemberIds: ["m2", "m7"] },
-  { id: "c5", name: "Mobility Flow", trainer: "Kemi Adebayo", trainerId: "t2", time: "17:30", day: "Tue", capacity: 15, booked: 8, bookedMemberIds: ["m3"] },
-  { id: "c6", name: "Strength Circuit", trainer: "Jordan Rivera", trainerId: "t1", time: "19:00", day: "Wed", capacity: 12, booked: 10, bookedMemberIds: ["m1", "m6", "m8"] },
-  { id: "c7", name: "Vinyasa Flow", trainer: "Kemi Adebayo", trainerId: "t2", time: "07:30", day: "Thu", capacity: 15, booked: 12, bookedMemberIds: ["m5"] },
-  { id: "c8", name: "Boxing Cardio", trainer: "Tomás Vega", trainerId: "t3", time: "18:30", day: "Fri", capacity: 18, booked: 16, bookedMemberIds: ["m7"] },
-  { id: "c9", name: "Weekend Warriors", trainer: "Jordan Rivera", trainerId: "t1", time: "09:00", day: "Sat", capacity: 15, booked: 11, bookedMemberIds: ["m1", "m2", "m6"] },
+  { id: "c1", name: "Morning HIIT", trainer: "Tomás Vega", trainerId: "t3", time: "06:30", day: "Mon", capacity: 20, booked: 14, bookedMemberIds: ["m1", "m2"], waitlist: [] },
+  { id: "c2", name: "Power Yoga", trainer: "Kemi Adebayo", trainerId: "t2", time: "08:00", day: "Mon", capacity: 15, booked: 15, bookedMemberIds: ["m3", "m5"], waitlist: [{ memberId: "m8", memberName: "Tunde Adeyemi" }] },
+  { id: "c3", name: "Heavy Lifting", trainer: "Jordan Rivera", trainerId: "t1", time: "18:00", day: "Mon", capacity: 10, booked: 7, bookedMemberIds: ["m1", "m6"], waitlist: [] },
+  { id: "c4", name: "Spin Class", trainer: "Tomás Vega", trainerId: "t3", time: "07:00", day: "Tue", capacity: 25, booked: 19, bookedMemberIds: ["m2", "m7"], waitlist: [] },
+  { id: "c5", name: "Mobility Flow", trainer: "Kemi Adebayo", trainerId: "t2", time: "17:30", day: "Tue", capacity: 15, booked: 8, bookedMemberIds: ["m3"], waitlist: [] },
+  { id: "c6", name: "Strength Circuit", trainer: "Jordan Rivera", trainerId: "t1", time: "19:00", day: "Wed", capacity: 12, booked: 10, bookedMemberIds: ["m1", "m6", "m8"], waitlist: [] },
+  { id: "c7", name: "Vinyasa Flow", trainer: "Kemi Adebayo", trainerId: "t2", time: "07:30", day: "Thu", capacity: 15, booked: 12, bookedMemberIds: ["m5"], waitlist: [] },
+  { id: "c8", name: "Boxing Cardio", trainer: "Tomás Vega", trainerId: "t3", time: "18:30", day: "Fri", capacity: 18, booked: 16, bookedMemberIds: ["m7"], waitlist: [] },
+  { id: "c9", name: "Weekend Warriors", trainer: "Jordan Rivera", trainerId: "t1", time: "09:00", day: "Sat", capacity: 15, booked: 11, bookedMemberIds: ["m1", "m2", "m6"], waitlist: [] },
 ];
 
 export const seedPayments = [
@@ -79,7 +79,6 @@ export const seedSales = [
 ];
 
 export const seedShopProducts = [
-  // Fitness Accessories
   { id: "sp1", name: "Resistance Band Set", category: "Fitness Accessories", price: 9000, stock: 11, description: "5-level resistance set" },
   { id: "sp2", name: "Gym Gloves", category: "Fitness Accessories", price: 6500, stock: 20, description: "Anti-slip, padded palm" },
   { id: "sp3", name: "Jump Rope", category: "Fitness Accessories", price: 3500, stock: 15, description: "Speed rope, adjustable length" },
@@ -88,7 +87,6 @@ export const seedShopProducts = [
   { id: "sp6", name: "Shaker Cup", category: "Fitness Accessories", price: 2500, stock: 30, description: "700ml BPA-free" },
   { id: "sp7", name: "Lifting Straps", category: "Fitness Accessories", price: 5500, stock: 15, description: "Heavy-duty cotton" },
   { id: "sp8", name: "Water Bottle 1L", category: "Fitness Accessories", price: 3500, stock: 24, description: "Stainless steel, insulated" },
-  // Daily Essentials
   { id: "sp9", name: "Water (500ml)", category: "Daily Essentials", price: 300, stock: 120, description: "Chilled still water" },
   { id: "sp10", name: "Water (1.5L)", category: "Daily Essentials", price: 600, stock: 60, description: "Chilled still water" },
   { id: "sp11", name: "Orange Juice", category: "Daily Essentials", price: 800, stock: 40, description: "100% natural, 500ml" },
@@ -158,4 +156,128 @@ export const seedTemplates = [
   { id: "tpl3", name: "Overdue Payment", trigger: "Payment overdue 3 days", channel: "Email", active: true, body: "{{name}}, your {{month}} payment of ₦{{amount}} is overdue. Please contact us." },
   { id: "tpl4", name: "Class Reminder", trigger: "1 hour before class", channel: "SMS", active: true, body: "Reminder: {{class}} at {{time}} today. See you there!" },
   { id: "tpl5", name: "Birthday", trigger: "On member birthday", channel: "SMS", active: false, body: "Happy birthday, {{name}}! Enjoy a free smoothie on us today." },
+];
+
+// ── NEW FEATURE SEED DATA ──────────────────────────────────────────────────
+
+export const seedWorkoutLogs = [
+  {
+    id: "wl1", memberId: "m1", date: "2026-05-25",
+    exercises: [
+      { name: "Bench Press", sets: [{ reps: 10, weight: 60 }, { reps: 8, weight: 65 }, { reps: 6, weight: 70 }] },
+      { name: "Squat", sets: [{ reps: 10, weight: 80 }, { reps: 8, weight: 85 }] },
+      { name: "Deadlift", sets: [{ reps: 8, weight: 100 }, { reps: 6, weight: 110 }] },
+    ],
+    notes: "Good session — new PR on deadlift!",
+  },
+  {
+    id: "wl2", memberId: "m1", date: "2026-05-22",
+    exercises: [
+      { name: "Pull-ups", sets: [{ reps: 8, weight: 0 }, { reps: 7, weight: 0 }] },
+      { name: "Bent-over Row", sets: [{ reps: 10, weight: 60 }, { reps: 10, weight: 65 }] },
+      { name: "Bicep Curl", sets: [{ reps: 12, weight: 20 }, { reps: 10, weight: 22 }] },
+    ],
+    notes: "",
+  },
+  {
+    id: "wl3", memberId: "m1", date: "2026-05-19",
+    exercises: [
+      { name: "Overhead Press", sets: [{ reps: 10, weight: 40 }, { reps: 8, weight: 45 }] },
+      { name: "Lateral Raise", sets: [{ reps: 15, weight: 10 }, { reps: 12, weight: 10 }] },
+      { name: "Tricep Extension", sets: [{ reps: 12, weight: 25 }, { reps: 10, weight: 27 }] },
+    ],
+    notes: "Shoulders day",
+  },
+];
+
+export const seedBodyMetrics = [
+  { id: "bm1", memberId: "m1", date: "2026-05-01", weight: 85, bodyFat: 22, chest: 100, waist: 88, arms: 36, notes: "Starting baseline" },
+  { id: "bm2", memberId: "m1", date: "2026-05-15", weight: 84, bodyFat: 21.5, chest: 101, waist: 87, arms: 36.5, notes: "" },
+  { id: "bm3", memberId: "m1", date: "2026-05-27", weight: 83.5, bodyFat: 21, chest: 101.5, waist: 86.5, arms: 37, notes: "Steady progress!" },
+];
+
+export const seedLoyaltyPoints = [
+  {
+    memberId: "m1",
+    points: 340,
+    history: [
+      { id: "lph1", date: "2026-05-25", points: 10, reason: "Class attended: Strength Circuit" },
+      { id: "lph2", date: "2026-05-22", points: 5, reason: "Gym check-in" },
+      { id: "lph3", date: "2026-05-20", points: 10, reason: "Class attended: Morning HIIT" },
+      { id: "lph4", date: "2026-05-18", points: 5, reason: "Gym check-in" },
+      { id: "lph5", date: "2026-05-15", points: 15, reason: "Shop purchase" },
+      { id: "lph6", date: "2026-05-12", points: 50, reason: "Referral: David Chen joined" },
+      { id: "lph7", date: "2026-05-10", points: 10, reason: "Class attended: Heavy Lifting" },
+      { id: "lph8", date: "2026-05-08", points: 5, reason: "Gym check-in" },
+      { id: "lph9", date: "2026-05-05", points: 2, reason: "Workout logged" },
+      { id: "lph10", date: "2026-05-01", points: 50, reason: "Referral: Olumide Bakare joined" },
+    ],
+  },
+];
+
+export const seedChallenges = [
+  {
+    id: "ch1",
+    name: "May Check-in Champion",
+    description: "The member with the most gym check-ins in May wins a free month of Premium membership!",
+    type: "checkins",
+    period: "2026-05",
+    active: true,
+    prize: "1 month free Premium membership",
+    createdBy: "admin",
+  },
+  {
+    id: "ch2",
+    name: "Class Streak Challenge",
+    description: "Attend the most classes this month and earn 100 bonus loyalty points plus a Disruptors gear pack!",
+    type: "classes",
+    period: "2026-05",
+    active: true,
+    prize: "100 bonus points + gear pack",
+    createdBy: "admin",
+  },
+];
+
+export const seedShifts = [
+  { id: "sh1", staffId: "trainer", staffName: "Jordan Rivera", role: "trainer", date: "2026-05-27", startTime: "06:00", endTime: "14:00", location: "Main Floor", notes: "" },
+  { id: "sh2", staffId: "reception", staffName: "Chioma Eze", role: "receptionist", date: "2026-05-27", startTime: "07:00", endTime: "15:00", location: "Reception", notes: "" },
+  { id: "sh3", staffId: "trainer", staffName: "Jordan Rivera", role: "trainer", date: "2026-05-28", startTime: "06:00", endTime: "14:00", location: "Main Floor", notes: "" },
+  { id: "sh4", staffId: "reception", staffName: "Chioma Eze", role: "receptionist", date: "2026-05-28", startTime: "08:00", endTime: "16:00", location: "Reception", notes: "" },
+  { id: "sh5", staffId: "trainer", staffName: "Jordan Rivera", role: "trainer", date: "2026-05-29", startTime: "07:00", endTime: "15:00", location: "Weight Room", notes: "" },
+  { id: "sh6", staffId: "reception", staffName: "Chioma Eze", role: "receptionist", date: "2026-05-29", startTime: "07:00", endTime: "15:00", location: "Reception", notes: "" },
+];
+
+export const seedEquipment = [
+  { id: "eq1", name: "Treadmill #1", category: "Cardio", status: "operational", purchaseDate: "2023-01-15", lastService: "2026-03-01", nextService: "2026-09-01", notes: "" },
+  { id: "eq2", name: "Treadmill #2", category: "Cardio", status: "operational", purchaseDate: "2023-01-15", lastService: "2026-03-01", nextService: "2026-09-01", notes: "" },
+  { id: "eq3", name: "Treadmill #3", category: "Cardio", status: "maintenance", purchaseDate: "2023-01-15", lastService: "2026-05-10", nextService: "2026-05-30", notes: "Belt needs replacing — ordered" },
+  { id: "eq4", name: "Bench Press Station #1", category: "Free Weights", status: "operational", purchaseDate: "2022-06-01", lastService: "2026-02-15", nextService: "2026-08-15", notes: "" },
+  { id: "eq5", name: "Bench Press Station #2", category: "Free Weights", status: "operational", purchaseDate: "2022-06-01", lastService: "2026-02-15", nextService: "2026-08-15", notes: "" },
+  { id: "eq6", name: "Cable Machine #1", category: "Machines", status: "operational", purchaseDate: "2023-03-20", lastService: "2026-04-01", nextService: "2026-10-01", notes: "" },
+  { id: "eq7", name: "Cable Machine #2", category: "Machines", status: "out-of-service", purchaseDate: "2023-03-20", lastService: "2026-05-10", nextService: "2026-06-15", notes: "Cable snapped — awaiting parts" },
+  { id: "eq8", name: "Rowing Machine #1", category: "Cardio", status: "operational", purchaseDate: "2024-01-10", lastService: "2026-01-10", nextService: "2026-07-10", notes: "" },
+  { id: "eq9", name: "Squat Rack #1", category: "Free Weights", status: "operational", purchaseDate: "2022-06-01", lastService: "2026-03-01", nextService: "2026-09-01", notes: "" },
+  { id: "eq10", name: "Squat Rack #2", category: "Free Weights", status: "operational", purchaseDate: "2022-06-01", lastService: "2026-03-01", nextService: "2026-09-01", notes: "" },
+];
+
+export const seedExpenses = [
+  { id: "ex1", category: "Rent", amount: 450000, date: "2026-05-01", description: "Monthly facility rent — May", recurring: true },
+  { id: "ex2", category: "Utilities", amount: 85000, date: "2026-05-05", description: "Electricity and water — May", recurring: false },
+  { id: "ex3", category: "Staff Wages", amount: 380000, date: "2026-05-25", description: "May staff payroll", recurring: true },
+  { id: "ex4", category: "Equipment", amount: 45000, date: "2026-05-15", description: "Cable machine repair + parts", recurring: false },
+  { id: "ex5", category: "Marketing", amount: 30000, date: "2026-05-10", description: "Instagram ads — May campaign", recurring: false },
+  { id: "ex6", category: "Supplies", amount: 22000, date: "2026-05-08", description: "Cleaning supplies & toiletries", recurring: false },
+  { id: "ex7", category: "Rent", amount: 450000, date: "2026-04-01", description: "Monthly facility rent — April", recurring: true },
+  { id: "ex8", category: "Staff Wages", amount: 380000, date: "2026-04-25", description: "April staff payroll", recurring: true },
+  { id: "ex9", category: "Utilities", amount: 92000, date: "2026-04-05", description: "Electricity and water — April", recurring: false },
+  { id: "ex10", category: "Marketing", amount: 25000, date: "2026-04-12", description: "Flyer printing + distribution", recurring: false },
+];
+
+export const seedVideos = [
+  { id: "vid1", title: "Proper Squat Form", trainerId: "t1", trainerName: "Jordan Rivera", category: "Technique", duration: "8:32", emoji: "🏋️", uploadDate: "2026-05-10", description: "Master the fundamental squat pattern — foot placement, depth, breathing, and common mistakes to avoid." },
+  { id: "vid2", title: "Core Strength Fundamentals", trainerId: "t2", trainerName: "Kemi Adebayo", category: "Workout", duration: "15:20", emoji: "💪", uploadDate: "2026-05-12", description: "A 15-minute guided core circuit covering planks, dead bugs, pallof press, and hollow holds." },
+  { id: "vid3", title: "Mobility for Lifters", trainerId: "t2", trainerName: "Kemi Adebayo", category: "Recovery", duration: "12:05", emoji: "🧘", uploadDate: "2026-05-15", description: "Hip flexor release, thoracic rotation drills, and ankle mobility — essential prep for heavy lifts." },
+  { id: "vid4", title: "HIIT Cardio Blast", trainerId: "t3", trainerName: "Tomás Vega", category: "Workout", duration: "20:00", emoji: "🔥", uploadDate: "2026-05-18", description: "20-minute no-equipment HIIT. 40s on, 20s off. All levels welcome." },
+  { id: "vid5", title: "How to Deadlift", trainerId: "t1", trainerName: "Jordan Rivera", category: "Technique", duration: "10:15", emoji: "🎯", uploadDate: "2026-05-20", description: "Conventional deadlift from setup to lockout. Includes warm-up sets and full cue breakdown." },
+  { id: "vid6", title: "Post-Workout Recovery Routine", trainerId: "t2", trainerName: "Kemi Adebayo", category: "Recovery", duration: "10:00", emoji: "⚡", uploadDate: "2026-05-22", description: "Cool-down stretches and foam rolling routine for faster muscle recovery." },
 ];
