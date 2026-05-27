@@ -219,7 +219,7 @@ export default function App() {
 
   // ─── Logged in ─────────────────────────────────────────────────────────────
   return (
-    <div className="min-h-screen bg-stone-50 flex">
+    <div className="min-h-screen bg-stone-950 flex">
       <Sidebar
         view={view}
         setView={(v) => { setView(v); setSidebarOpen(false); }}
@@ -242,7 +242,7 @@ export default function App() {
           setNotifications={setNotifications}
         />
 
-        <main className="flex-1 px-4 sm:px-6 lg:px-8 py-6 lg:py-8 max-w-7xl w-full">
+        <main className="flex-1 px-4 sm:px-6 lg:px-8 py-5 lg:py-8 max-w-7xl w-full mx-auto">
 
           {/* ── ADMIN & RECEPTIONIST ───────────────────────────────────────── */}
           {view === "dashboard" && (

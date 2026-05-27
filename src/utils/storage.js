@@ -26,10 +26,10 @@ export const clearData = (key) => {
 
 // ---------- Tailwind helpers ----------
 export const planBadge = (plan) => ({
-  Basic: "bg-stone-100 text-stone-700",
-  Standard: "bg-sky-100 text-sky-800",
-  Premium: "bg-amber-100 text-amber-800",
-}[plan] || "bg-stone-100 text-stone-700");
+  Basic:    "bg-stone-700 text-stone-200",
+  Standard: "bg-sky-900/60 text-sky-300",
+  Premium:  "bg-amber-900/50 text-amber-300",
+}[plan] || "bg-stone-700 text-stone-200");
 
 // ---------- Date helpers ----------
 export const today = () => new Date().toISOString().slice(0, 10);

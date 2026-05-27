@@ -7,15 +7,14 @@ import { today } from "../utils/storage";
 // LOYALTY & REWARDS
 // ======================================================================
 const TIERS = [
-  { name: "Bronze", min: 0, max: 499, gradient: "from-amber-700 to-amber-500", text: "text-amber-800", bg: "bg-amber-50 border-amber-200" },
-  { name: "Silver", min: 500, max: 999, gradient: "from-stone-500 to-stone-300", text: "text-stone-600", bg: "bg-stone-100 border-stone-300" },
-  { name: "Gold", min: 1000, max: Infinity, gradient: "from-yellow-600 to-yellow-400", text: "text-yellow-800", bg: "bg-yellow-50 border-yellow-200" },
+  { name: "Bronze", min: 0, max: 499, gradient: "from-amber-700 to-amber-500", text: "text-amber-300", bg: "bg-amber-950/30 border-amber-700" },
+  { name: "Silver", min: 500, max: 999, gradient: "from-stone-600 to-stone-400", text: "text-stone-300", bg: "bg-stone-800 border-stone-600" },
+  { name: "Gold", min: 1000, max: Infinity, gradient: "from-yellow-700 to-yellow-500", text: "text-yellow-300", bg: "bg-yellow-950/30 border-yellow-700" },
 ];
 
 const HOW_TO_EARN = [
   { action: "Gym check-in", points: 5, icon: "🏋️" },
   { action: "Attend a class", points: 10, icon: "📅" },
-  { action: "Shop purchase (per ₦5,000 spent)", points: 5, icon: "🛒" },
   { action: "Refer a friend who joins", points: 50, icon: "👥" },
   { action: "Log a workout session", points: 2, icon: "💪" },
 ];
@@ -32,7 +31,7 @@ export function LoyaltyRewardsView({ user, loyaltyPoints }) {
       {/* Hero card */}
       <div className={`relative overflow-hidden rounded-2xl bg-gradient-to-br ${tier.gradient} text-white p-6 sm:p-8`}>
         <div className="absolute -right-12 -top-12 w-52 h-52 rounded-full bg-white/10 blur-2xl pointer-events-none" />
-        <div className="absolute -left-8 -bottom-8 w-40 h-40 rounded-full bg-black/10 blur-2xl pointer-events-none" />
+        <div className="absolute -left-8 -bottom-8 w-40 h-40 rounded-full bg-black/20 blur-2xl pointer-events-none" />
         <div className="relative z-10">
           <div className="text-xs font-mono tracking-widest uppercase opacity-80 mb-2">{tier.name} Tier · Disruptors Rewards</div>
           <div className="font-display text-5xl sm:text-6xl font-semibold mb-1">{pts.toLocaleString()}</div>
@@ -53,43 +52,43 @@ export function LoyaltyRewardsView({ user, loyaltyPoints }) {
       {/* Tier overview */}
       <div className="grid grid-cols-3 gap-3">
         {TIERS.map((t) => (
-          <div key={t.name} className={`rounded-xl border p-3 text-center transition ${t.name === tier.name ? t.bg : "bg-white border-stone-200 opacity-50"}`}>
-            <div className={`text-sm font-semibold ${t.name === tier.name ? t.text : "text-stone-600"}`}>{t.name}</div>
+          <div key={t.name} className={`rounded-xl border p-3 text-center transition ${t.name === tier.name ? t.bg : "bg-stone-900 border-stone-700 opacity-50"}`}>
+            <div className={`text-sm font-semibold ${t.name === tier.name ? t.text : "text-stone-400"}`}>{t.name}</div>
             <div className="text-xs text-stone-500 mt-0.5">{t.min === 0 ? "0" : t.min.toLocaleString()}{t.max === Infinity ? "+" : `–${t.max.toLocaleString()}`} pts</div>
           </div>
         ))}
       </div>
 
       {/* How to earn */}
-      <div className="bg-white rounded-xl border border-stone-200 p-5">
-        <h3 className="font-display text-lg font-semibold mb-4">How to earn points</h3>
+      <div className="bg-stone-900 rounded-xl border border-stone-700 p-5">
+        <h3 className="font-display text-lg font-semibold mb-4 text-white">How to earn points</h3>
         <div className="space-y-3">
           {HOW_TO_EARN.map((h) => (
             <div key={h.action} className="flex items-center justify-between py-1">
               <div className="flex items-center gap-3">
                 <span className="text-xl w-7 text-center">{h.icon}</span>
-                <span className="text-sm text-stone-700">{h.action}</span>
+                <span className="text-sm text-stone-300">{h.action}</span>
               </div>
-              <span className="text-sm font-semibold font-mono text-red-600">+{h.points} pts</span>
+              <span className="text-sm font-semibold font-mono text-red-400">+{h.points} pts</span>
             </div>
           ))}
         </div>
       </div>
 
       {/* History */}
-      <div className="bg-white rounded-xl border border-stone-200 p-5">
-        <h3 className="font-display text-lg font-semibold mb-4">Points history</h3>
+      <div className="bg-stone-900 rounded-xl border border-stone-700 p-5">
+        <h3 className="font-display text-lg font-semibold mb-4 text-white">Points history</h3>
         {myLoyalty.history.length === 0 ? (
-          <EmptyState icon={Gift} title="No points yet" subtitle="Check in, attend classes, and shop to start earning!" />
+          <EmptyState icon={Gift} title="No points yet" subtitle="Check in and attend classes to start earning!" />
         ) : (
           <div className="space-y-1">
             {myLoyalty.history.map((h) => (
-              <div key={h.id} className="flex items-center justify-between py-2.5 border-b border-stone-100 last:border-0">
+              <div key={h.id} className="flex items-center justify-between py-2.5 border-b border-stone-800 last:border-0">
                 <div>
-                  <div className="text-sm font-medium">{h.reason}</div>
-                  <div className="text-xs font-mono text-stone-400">{new Date(h.date + "T12:00:00").toLocaleDateString("en-US", { month: "short", day: "numeric" })}</div>
+                  <div className="text-sm font-medium text-stone-200">{h.reason}</div>
+                  <div className="text-xs font-mono text-stone-500">{new Date(h.date + "T12:00:00").toLocaleDateString("en-US", { month: "short", day: "numeric" })}</div>
                 </div>
-                <span className="text-sm font-semibold font-mono text-red-600">+{h.points}</span>
+                <span className="text-sm font-semibold font-mono text-red-400">+{h.points}</span>
               </div>
             ))}
           </div>
@@ -118,7 +117,7 @@ export function ReferralView({ user, members }) {
   return (
     <div className="space-y-6">
       {/* Hero */}
-      <div className="bg-stone-900 text-white rounded-2xl p-6 sm:p-8 relative overflow-hidden">
+      <div className="bg-stone-900 text-white rounded-2xl p-6 sm:p-8 relative overflow-hidden border border-stone-700">
         <div className="absolute -right-16 -top-16 w-56 h-56 rounded-full bg-red-500/20 blur-3xl pointer-events-none" />
         <div className="relative z-10">
           <div className="text-xs font-mono tracking-widest text-red-400 uppercase mb-3">Your referral code</div>
@@ -137,33 +136,33 @@ export function ReferralView({ user, members }) {
 
       {/* Stats */}
       <div className="grid grid-cols-2 gap-3">
-        <div className="bg-white rounded-xl border border-stone-200 p-5">
+        <div className="bg-stone-900 rounded-xl border border-stone-700 p-5">
           <div className="text-xs font-mono text-stone-500 tracking-wider uppercase">Friends referred</div>
-          <div className="font-display text-4xl font-semibold mt-1">{referredMembers.length}</div>
+          <div className="font-display text-4xl font-semibold mt-1 text-white">{referredMembers.length}</div>
         </div>
-        <div className="bg-white rounded-xl border border-stone-200 p-5">
+        <div className="bg-stone-900 rounded-xl border border-stone-700 p-5">
           <div className="text-xs font-mono text-stone-500 tracking-wider uppercase">Points earned</div>
-          <div className="font-display text-4xl font-semibold mt-1 text-red-600">{pointsEarned}</div>
+          <div className="font-display text-4xl font-semibold mt-1 text-red-400">{pointsEarned}</div>
         </div>
       </div>
 
       {/* Referred list */}
-      <div className="bg-white rounded-xl border border-stone-200 p-5">
-        <h3 className="font-display text-lg font-semibold mb-4">Friends you've referred</h3>
+      <div className="bg-stone-900 rounded-xl border border-stone-700 p-5">
+        <h3 className="font-display text-lg font-semibold mb-4 text-white">Friends you've referred</h3>
         {referredMembers.length === 0 ? (
           <EmptyState icon={Users} title="No referrals yet" subtitle="Share your code and earn 50 points for every new member who joins!" />
         ) : (
           <div className="space-y-3">
             {referredMembers.map((m) => (
               <div key={m.id} className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-full bg-gradient-to-br from-red-500 to-amber-400 flex items-center justify-center font-semibold text-white text-sm shrink-0">
+                <div className="w-9 h-9 rounded-full bg-gradient-to-br from-red-600 to-amber-500 flex items-center justify-center font-semibold text-white text-sm shrink-0">
                   {m.name[0]}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="text-sm font-medium">{m.name}</div>
+                  <div className="text-sm font-medium text-stone-200">{m.name}</div>
                   <div className="text-xs text-stone-500">Joined {new Date(m.joinDate + "T12:00:00").toLocaleDateString("en-US", { month: "short", year: "numeric" })} · {m.plan}</div>
                 </div>
-                <span className="text-xs font-mono text-red-600 font-semibold shrink-0">+50 pts</span>
+                <span className="text-xs font-mono text-red-400 font-semibold shrink-0">+50 pts</span>
               </div>
             ))}
           </div>
@@ -171,12 +170,12 @@ export function ReferralView({ user, members }) {
       </div>
 
       {/* How it works */}
-      <div className="bg-stone-50 border border-stone-200 rounded-xl p-5">
-        <h3 className="text-sm font-semibold mb-3">How it works</h3>
-        <ol className="space-y-2 text-sm text-stone-600">
-          <li className="flex gap-3"><span className="font-mono font-bold text-stone-900 shrink-0">1.</span>Share your code with a friend who isn't yet a member.</li>
-          <li className="flex gap-3"><span className="font-mono font-bold text-stone-900 shrink-0">2.</span>They give your code to staff when they sign up at the gym.</li>
-          <li className="flex gap-3"><span className="font-mono font-bold text-stone-900 shrink-0">3.</span>You both receive <strong>50 loyalty points</strong> instantly!</li>
+      <div className="bg-stone-800 border border-stone-700 rounded-xl p-5">
+        <h3 className="text-sm font-semibold mb-3 text-stone-200">How it works</h3>
+        <ol className="space-y-2 text-sm text-stone-400">
+          <li className="flex gap-3"><span className="font-mono font-bold text-stone-300 shrink-0">1.</span>Share your code with a friend who isn't yet a member.</li>
+          <li className="flex gap-3"><span className="font-mono font-bold text-stone-300 shrink-0">2.</span>They give your code to staff when they sign up at the gym.</li>
+          <li className="flex gap-3"><span className="font-mono font-bold text-stone-300 shrink-0">3.</span>You both receive <strong className="text-stone-200">50 loyalty points</strong> instantly!</li>
         </ol>
       </div>
     </div>
@@ -212,10 +211,10 @@ export function ChallengesView({ user, challenges, setChallenges, members, check
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <p className="text-sm text-stone-500">Compete, earn prizes, and push each other.</p>
+        <p className="text-sm text-stone-400">Compete, earn prizes, and push each other.</p>
         {canCreate && (
           <button onClick={() => setShowForm(true)}
-            className="flex items-center gap-2 px-4 py-2.5 bg-red-500 text-white rounded-lg text-sm font-semibold hover:bg-red-600 transition">
+            className="flex items-center gap-2 px-4 py-2.5 bg-red-600 text-white rounded-lg text-sm font-semibold hover:bg-red-700 transition">
             <Plus className="w-4 h-4" /> New challenge
           </button>
         )}
@@ -229,8 +228,8 @@ export function ChallengesView({ user, challenges, setChallenges, members, check
             const leaderboard = getLeaderboard(challenge);
             const myRank = leaderboard.findIndex((m) => m.id === myId);
             return (
-              <div key={challenge.id} className="bg-white rounded-2xl border border-stone-200 overflow-hidden">
-                <div className="bg-gradient-to-r from-stone-900 to-stone-800 text-white p-5 sm:p-6">
+              <div key={challenge.id} className="bg-stone-900 rounded-2xl border border-stone-700 overflow-hidden">
+                <div className="bg-gradient-to-r from-stone-950 to-stone-900 text-white p-5 sm:p-6 border-b border-stone-700">
                   <div className="flex items-start gap-4">
                     <Trophy className="w-7 h-7 text-amber-400 shrink-0 mt-0.5" />
                     <div className="flex-1 min-w-0">
@@ -241,7 +240,7 @@ export function ChallengesView({ user, challenges, setChallenges, members, check
                           <Gift className="w-3.5 h-3.5 text-amber-400" />
                           <span className="text-xs text-amber-300 font-medium">{challenge.prize}</span>
                         </div>
-                        <div className="text-xs text-stone-400 font-mono">{challenge.period}</div>
+                        <div className="text-xs text-stone-500 font-mono">{challenge.period}</div>
                       </div>
                     </div>
                   </div>
@@ -256,23 +255,23 @@ export function ChallengesView({ user, challenges, setChallenges, members, check
                 <div className="p-5">
                   <div className="text-xs font-mono tracking-widest text-stone-500 uppercase mb-3">Leaderboard</div>
                   {leaderboard.length === 0 ? (
-                    <p className="text-sm text-stone-400 text-center py-6">No entries yet — be the first!</p>
+                    <p className="text-sm text-stone-500 text-center py-6">No entries yet — be the first!</p>
                   ) : (
                     <div className="space-y-2">
                       {leaderboard.map((m, i) => {
                         const isMe = m.id === myId;
                         return (
-                          <div key={m.id} className={`flex items-center gap-3 p-2.5 rounded-lg ${isMe ? "bg-red-50 border border-red-200" : i === 0 ? "bg-amber-50 border border-amber-100" : "bg-stone-50"}`}>
+                          <div key={m.id} className={`flex items-center gap-3 p-2.5 rounded-lg ${isMe ? "bg-red-950/30 border border-red-800" : i === 0 ? "bg-amber-950/20 border border-amber-800/50" : "bg-stone-800"}`}>
                             <div className={`w-7 h-7 rounded-full flex items-center justify-center font-bold text-sm shrink-0 ${
-                              i === 0 ? "bg-amber-400 text-amber-900" :
-                              i === 1 ? "bg-stone-300 text-stone-700" :
-                              i === 2 ? "bg-amber-700/30 text-amber-900" :
-                              "bg-stone-200 text-stone-500"
+                              i === 0 ? "bg-amber-500 text-amber-950" :
+                              i === 1 ? "bg-stone-500 text-stone-100" :
+                              i === 2 ? "bg-amber-800/60 text-amber-300" :
+                              "bg-stone-700 text-stone-400"
                             }`}>{i + 1}</div>
-                            <div className="flex-1 text-sm font-medium">{m.name}{isMe && <span className="ml-1.5 text-[10px] font-mono text-red-600 uppercase tracking-wider">You</span>}</div>
-                            <div className="text-sm font-mono font-semibold shrink-0">{m.score}</div>
-                            <div className="text-xs text-stone-400 shrink-0">{challenge.type === "checkins" ? "check-ins" : "classes"}</div>
-                            {i === 0 && <Trophy className="w-4 h-4 text-amber-500 shrink-0" />}
+                            <div className="flex-1 text-sm font-medium text-stone-200">{m.name}{isMe && <span className="ml-1.5 text-[10px] font-mono text-red-400 uppercase tracking-wider">You</span>}</div>
+                            <div className="text-sm font-mono font-semibold text-stone-200 shrink-0">{m.score}</div>
+                            <div className="text-xs text-stone-500 shrink-0">{challenge.type === "checkins" ? "check-ins" : "classes"}</div>
+                            {i === 0 && <Trophy className="w-4 h-4 text-amber-400 shrink-0" />}
                           </div>
                         );
                       })}
@@ -303,38 +302,38 @@ function ChallengeForm({ onSave, onClose }) {
     <Modal title="New Challenge" onClose={onClose}>
       <div className="space-y-4">
         <div>
-          <label className="text-xs font-mono tracking-wider text-stone-500 uppercase mb-1.5 block">Challenge name</label>
+          <label className="text-xs font-mono tracking-wider text-stone-400 uppercase mb-1.5 block">Challenge name</label>
           <input type="text" value={form.name} onChange={(e) => set("name", e.target.value)} placeholder="e.g. June Check-in King"
-            className="w-full px-3 py-2.5 bg-stone-50 border border-stone-200 rounded-lg text-sm focus:outline-none focus:border-stone-900" />
+            className="w-full px-3 py-2.5 bg-stone-800 border border-stone-700 rounded-lg text-sm text-white placeholder:text-stone-500 focus:outline-none focus:border-red-500" />
         </div>
         <div>
-          <label className="text-xs font-mono tracking-wider text-stone-500 uppercase mb-1.5 block">Description</label>
+          <label className="text-xs font-mono tracking-wider text-stone-400 uppercase mb-1.5 block">Description</label>
           <textarea value={form.description} onChange={(e) => set("description", e.target.value)} placeholder="Describe what members need to do..."
-            className="w-full px-3 py-2.5 bg-stone-50 border border-stone-200 rounded-lg text-sm focus:outline-none focus:border-stone-900 resize-none" rows={2} />
+            className="w-full px-3 py-2.5 bg-stone-800 border border-stone-700 rounded-lg text-sm text-white placeholder:text-stone-500 focus:outline-none focus:border-red-500 resize-none" rows={2} />
         </div>
         <div>
-          <label className="text-xs font-mono tracking-wider text-stone-500 uppercase mb-1.5 block">Prize</label>
+          <label className="text-xs font-mono tracking-wider text-stone-400 uppercase mb-1.5 block">Prize</label>
           <input type="text" value={form.prize} onChange={(e) => set("prize", e.target.value)} placeholder="e.g. 1 month free membership"
-            className="w-full px-3 py-2.5 bg-stone-50 border border-stone-200 rounded-lg text-sm focus:outline-none focus:border-stone-900" />
+            className="w-full px-3 py-2.5 bg-stone-800 border border-stone-700 rounded-lg text-sm text-white placeholder:text-stone-500 focus:outline-none focus:border-red-500" />
         </div>
         <div>
-          <label className="text-xs font-mono tracking-wider text-stone-500 uppercase mb-1.5 block">Metric</label>
+          <label className="text-xs font-mono tracking-wider text-stone-400 uppercase mb-1.5 block">Metric</label>
           <div className="grid grid-cols-2 gap-2">
             {[{ id: "checkins", label: "Most check-ins" }, { id: "classes", label: "Most classes attended" }].map((t) => (
               <button key={t.id} onClick={() => set("type", t.id)}
-                className={`py-2.5 rounded-lg border text-sm font-medium transition ${form.type === t.id ? "bg-stone-900 text-white border-stone-900" : "bg-white border-stone-200 hover:border-stone-400"}`}>
+                className={`py-2.5 rounded-lg border text-sm font-medium transition ${form.type === t.id ? "bg-red-600 text-white border-red-600" : "bg-stone-800 border-stone-700 text-stone-300 hover:border-stone-500"}`}>
                 {t.label}
               </button>
             ))}
           </div>
         </div>
         <div>
-          <label className="text-xs font-mono tracking-wider text-stone-500 uppercase mb-1.5 block">Month</label>
+          <label className="text-xs font-mono tracking-wider text-stone-400 uppercase mb-1.5 block">Month</label>
           <input type="month" value={form.period} onChange={(e) => set("period", e.target.value)}
-            className="w-full px-3 py-2.5 bg-stone-50 border border-stone-200 rounded-lg text-sm focus:outline-none focus:border-stone-900" />
+            className="w-full px-3 py-2.5 bg-stone-800 border border-stone-700 rounded-lg text-sm text-white focus:outline-none focus:border-red-500" />
         </div>
         <button onClick={() => { if (!form.name || !form.prize) return; onSave({ id: `ch${Date.now()}`, ...form, active: true, createdBy: "admin" }); }}
-          className="w-full py-3 bg-red-500 text-white rounded-lg text-sm font-semibold hover:bg-red-600 transition">
+          className="w-full py-3 bg-red-600 text-white rounded-lg text-sm font-semibold hover:bg-red-700 transition">
           Create challenge
         </button>
       </div>

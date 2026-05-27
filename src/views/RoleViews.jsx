@@ -24,26 +24,26 @@ export function TrainerHome({ user, classes, members }) {
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-        <StatCard className="fade-up stagger-1" label="Active clients" value={myClients.length} icon={Users} accent="bg-red-100 text-red-900" />
-        <StatCard className="fade-up stagger-2" label="Weekly classes" value={myClasses.length} icon={CalendarDays} accent="bg-sky-100 text-sky-900" />
-        <StatCard className="fade-up stagger-3" label="Total bookings" value={totalBooked} icon={Activity} accent="bg-amber-100 text-amber-900" />
-        <StatCard className="fade-up stagger-4" label="Capacity used" value={`${Math.round((totalBooked / Math.max(1, totalCapacity)) * 100)}%`} icon={Flame} accent="bg-rose-100 text-rose-900" />
+        <StatCard className="fade-up stagger-1" label="Active clients" value={myClients.length} icon={Users} accent="bg-red-500/20 text-red-400" />
+        <StatCard className="fade-up stagger-2" label="Weekly classes" value={myClasses.length} icon={CalendarDays} accent="bg-sky-500/20 text-sky-400" />
+        <StatCard className="fade-up stagger-3" label="Total bookings" value={totalBooked} icon={Activity} accent="bg-amber-500/20 text-amber-400" />
+        <StatCard className="fade-up stagger-4" label="Capacity used" value={`${Math.round((totalBooked / Math.max(1, totalCapacity)) * 100)}%`} icon={Flame} accent="bg-rose-500/20 text-rose-400" />
       </div>
 
       {todaysClasses.length > 0 && (
-        <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
+        <div className="bg-amber-950/30 border border-amber-800 rounded-xl p-4">
           <div className="flex items-center gap-2 mb-3">
-            <Bell className="w-4 h-4 text-amber-700" />
-            <div className="text-sm font-semibold text-amber-900">Today's classes — {todaysClasses.length} session{todaysClasses.length > 1 ? "s" : ""}</div>
+            <Bell className="w-4 h-4 text-amber-400" />
+            <div className="text-sm font-semibold text-amber-300">Today's classes — {todaysClasses.length} session{todaysClasses.length > 1 ? "s" : ""}</div>
           </div>
           <div className="space-y-2">
             {todaysClasses.map((c) => (
-              <div key={c.id} className="flex items-center justify-between bg-white rounded-lg px-3 py-2 border border-amber-100">
+              <div key={c.id} className="flex items-center justify-between bg-stone-800 rounded-lg px-3 py-2 border border-amber-900/50">
                 <div>
-                  <div className="text-sm font-medium">{c.name}</div>
-                  <div className="text-xs text-stone-500">{c.booked}/{c.capacity} members booked</div>
+                  <div className="text-sm font-medium text-stone-200">{c.name}</div>
+                  <div className="text-xs text-stone-400">{c.booked}/{c.capacity} members booked</div>
                 </div>
-                <div className="text-sm font-mono font-semibold text-amber-800">{c.time}</div>
+                <div className="text-sm font-mono font-semibold text-amber-400">{c.time}</div>
               </div>
             ))}
           </div>
@@ -64,8 +64,8 @@ export function TrainerHome({ user, classes, members }) {
         </div>
       </div>
 
-      <div className="bg-white rounded-xl border border-stone-200 p-5 sm:p-6">
-        <h3 className="font-display text-xl font-semibold mb-5">This week's schedule</h3>
+      <div className="bg-stone-900 rounded-xl border border-stone-700 p-5 sm:p-6">
+        <h3 className="font-display text-xl font-semibold mb-5 text-white">This week's schedule</h3>
         {myClasses.length === 0 ? <EmptyState icon={CalendarDays} title="No classes scheduled" /> : (
           <div className="space-y-3">
             {myClasses.sort((a, b) => {
@@ -75,16 +75,16 @@ export function TrainerHome({ user, classes, members }) {
               const pct = Math.round((c.booked / c.capacity) * 100);
               return (
                 <div key={c.id} className="flex items-center gap-3 sm:gap-4">
-                  <div className="w-12 h-12 rounded-lg bg-stone-100 flex flex-col items-center justify-center shrink-0">
+                  <div className="w-12 h-12 rounded-lg bg-stone-800 flex flex-col items-center justify-center shrink-0">
                     <div className="text-[10px] font-mono text-stone-500">{c.day.toUpperCase()}</div>
-                    <div className="text-xs font-semibold">{c.time}</div>
+                    <div className="text-xs font-semibold text-stone-200">{c.time}</div>
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-baseline justify-between gap-2 mb-1">
-                      <div className="font-medium truncate">{c.name}</div>
+                      <div className="font-medium text-stone-200 truncate">{c.name}</div>
                       <div className="text-xs text-stone-500 shrink-0">{c.booked}/{c.capacity}</div>
                     </div>
-                    <div className="h-1.5 bg-stone-100 rounded-full overflow-hidden">
+                    <div className="h-1.5 bg-stone-700 rounded-full overflow-hidden">
                       <div className={`h-full rounded-full ${pct >= 90 ? "bg-rose-500" : "bg-red-500"}`} style={{ width: `${pct}%` }} />
                     </div>
                   </div>
@@ -108,35 +108,35 @@ export function TrainerClasses({ user, classes, members }) {
         const dayClasses = myClasses.filter((c) => c.day === day).sort((a, b) => a.time.localeCompare(b.time));
         if (dayClasses.length === 0) return null;
         return (
-          <div key={day} className="bg-white rounded-xl border border-stone-200 p-5">
+          <div key={day} className="bg-stone-900 rounded-xl border border-stone-700 p-5">
             <div className="text-xs font-mono tracking-widest text-stone-500 uppercase mb-4">
-              {day} · <span className="text-stone-400">{dayClasses.length} class{dayClasses.length !== 1 ? "es" : ""}</span>
+              {day} · <span className="text-stone-500">{dayClasses.length} class{dayClasses.length !== 1 ? "es" : ""}</span>
             </div>
             <div className="space-y-4">
               {dayClasses.map((c) => {
                 const attendees = (c.bookedMemberIds || []).map((id) => members.find((m) => m.id === id)).filter(Boolean);
                 const pct = Math.round((c.booked / c.capacity) * 100);
                 return (
-                  <div key={c.id} className="border border-stone-200 rounded-lg p-4">
+                  <div key={c.id} className="border border-stone-700 rounded-lg p-4">
                     <div className="flex items-start justify-between mb-3 gap-3">
                       <div className="min-w-0">
-                        <div className="font-semibold">{c.name}</div>
+                        <div className="font-semibold text-stone-100">{c.name}</div>
                         <div className="text-xs text-stone-500 font-mono mt-0.5">{c.time}</div>
                       </div>
                       <div className="text-right shrink-0">
                         <div className="text-xs font-mono text-stone-500">{c.booked}/{c.capacity}</div>
-                        <div className="w-20 h-1 bg-stone-100 rounded-full mt-1 overflow-hidden">
+                        <div className="w-20 h-1 bg-stone-700 rounded-full mt-1 overflow-hidden">
                           <div className={`h-full rounded-full ${pct >= 90 ? "bg-rose-500" : "bg-red-500"}`} style={{ width: `${pct}%` }} />
                         </div>
                       </div>
                     </div>
                     {attendees.length > 0 && (
-                      <div className="pt-3 border-t border-stone-100">
+                      <div className="pt-3 border-t border-stone-700">
                         <div className="text-[10px] font-mono tracking-wider text-stone-500 uppercase mb-2">Booked attendees</div>
                         <div className="flex flex-wrap gap-1.5">
                           {attendees.map((a) => (
-                            <span key={a.id} className="inline-flex items-center gap-1.5 text-xs bg-stone-50 px-2 py-1 rounded-full">
-                              <span className="w-5 h-5 rounded-full bg-stone-200 flex items-center justify-center text-[10px] font-semibold">{a.name[0]}</span>
+                            <span key={a.id} className="inline-flex items-center gap-1.5 text-xs bg-stone-800 text-stone-300 px-2 py-1 rounded-full">
+                              <span className="w-5 h-5 rounded-full bg-stone-700 flex items-center justify-center text-[10px] font-semibold text-stone-200">{a.name[0]}</span>
                               {a.name}
                             </span>
                           ))}
@@ -162,22 +162,22 @@ export function TrainerClients({ user, members, onMemberClick }) {
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
       {myClients.map((m, i) => (
         <button key={m.id} onClick={() => onMemberClick(m)}
-          className={`bg-white rounded-xl border border-stone-200 p-5 text-left hover:border-stone-900 transition fade-up stagger-${(i % 4) + 1}`}>
+          className={`bg-stone-900 rounded-xl border border-stone-700 p-5 text-left hover:border-red-600 transition fade-up stagger-${(i % 4) + 1}`}>
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-stone-200 to-stone-300 flex items-center justify-center font-semibold text-stone-700">{m.name[0]}</div>
+            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-stone-700 to-stone-600 flex items-center justify-center font-semibold text-stone-200">{m.name[0]}</div>
             <div className="flex-1 min-w-0">
-              <div className="font-medium truncate">{m.name}</div>
+              <div className="font-medium text-stone-100 truncate">{m.name}</div>
               <span className={`text-[10px] font-mono tracking-wider px-2 py-0.5 rounded-full ${planBadge(m.plan)}`}>{m.plan.toUpperCase()}</span>
             </div>
           </div>
           <div className="grid grid-cols-2 gap-3 text-xs">
             <div>
               <div className="font-mono text-stone-500 tracking-wider uppercase">Visits</div>
-              <div className="font-semibold text-base mt-0.5">{m.checkIns}</div>
+              <div className="font-semibold text-base mt-0.5 text-stone-200">{m.checkIns}</div>
             </div>
             <div>
               <div className="font-mono text-stone-500 tracking-wider uppercase">Status</div>
-              <div className={`font-semibold text-base mt-0.5 ${m.status === "active" ? "text-red-700" : "text-rose-700"}`}>
+              <div className={`font-semibold text-base mt-0.5 ${m.status === "active" ? "text-red-400" : "text-rose-400"}`}>
                 {m.status === "active" ? "Active" : "Expired"}
               </div>
             </div>
@@ -204,39 +204,37 @@ export function MemberHome({ user, members, classes, payments, checkIns, onNavig
   const daysToExpiry = Math.ceil((new Date(me.expiryDate) - new Date()) / (1000 * 60 * 60 * 24));
   const overdue = myPayments.find((p) => p.status === "overdue");
 
-  // Today's classes
   const todayDay = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][new Date().getDay()];
   const todaysClasses = myClasses.filter((c) => c.day === todayDay).sort((a, b) => a.time.localeCompare(b.time));
 
   return (
     <div className="space-y-6">
       {overdue && (
-        <div className="flex items-center gap-3 p-4 bg-rose-50 border border-rose-200 rounded-xl">
-          <div className="w-10 h-10 rounded-lg bg-rose-100 flex items-center justify-center shrink-0">
-            <AlertTriangle className="w-5 h-5 text-rose-700" />
+        <div className="flex items-center gap-3 p-4 bg-rose-950/40 border border-rose-800 rounded-xl">
+          <div className="w-10 h-10 rounded-lg bg-rose-900/50 flex items-center justify-center shrink-0">
+            <AlertTriangle className="w-5 h-5 text-rose-400" />
           </div>
           <div className="flex-1 min-w-0">
-            <div className="text-sm font-semibold">Overdue payment</div>
-            <div className="text-xs text-rose-700">₦{overdue.amount.toLocaleString()} — please contact the front desk</div>
+            <div className="text-sm font-semibold text-rose-300">Overdue payment</div>
+            <div className="text-xs text-rose-400">₦{overdue.amount.toLocaleString()} — please contact the front desk</div>
           </div>
         </div>
       )}
 
-      {/* Today's class reminders */}
       {todaysClasses.length > 0 && (
-        <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
+        <div className="bg-amber-950/30 border border-amber-800 rounded-xl p-4">
           <div className="flex items-center gap-2 mb-3">
-            <Bell className="w-4 h-4 text-amber-700" />
-            <div className="text-sm font-semibold text-amber-900">You have {todaysClasses.length} class{todaysClasses.length > 1 ? "es" : ""} today</div>
+            <Bell className="w-4 h-4 text-amber-400" />
+            <div className="text-sm font-semibold text-amber-300">You have {todaysClasses.length} class{todaysClasses.length > 1 ? "es" : ""} today</div>
           </div>
           <div className="space-y-2">
             {todaysClasses.map((c) => (
-              <div key={c.id} className="flex items-center justify-between bg-white rounded-lg px-3 py-2 border border-amber-100">
+              <div key={c.id} className="flex items-center justify-between bg-stone-800 rounded-lg px-3 py-2 border border-amber-900/50">
                 <div>
-                  <div className="text-sm font-medium">{c.name}</div>
-                  <div className="text-xs text-stone-500">with {c.trainer}</div>
+                  <div className="text-sm font-medium text-stone-200">{c.name}</div>
+                  <div className="text-xs text-stone-400">with {c.trainer}</div>
                 </div>
-                <div className="text-sm font-mono font-semibold text-amber-800">{c.time}</div>
+                <div className="text-sm font-mono font-semibold text-amber-400">{c.time}</div>
               </div>
             ))}
           </div>
@@ -245,13 +243,13 @@ export function MemberHome({ user, members, classes, payments, checkIns, onNavig
 
       {/* Big check-in CTA */}
       <button onClick={() => onNavigate("my-qr")}
-        className="w-full bg-red-500 text-white rounded-2xl p-6 sm:p-8 flex items-center gap-5 hover:bg-red-600 transition group">
+        className="w-full bg-red-600 text-white rounded-2xl p-6 sm:p-8 flex items-center gap-5 hover:bg-red-700 transition group">
         <div className="w-16 h-16 sm:w-20 sm:h-20 bg-stone-900 rounded-2xl flex items-center justify-center shrink-0">
           <QrCode className="w-8 h-8 sm:w-10 sm:h-10 text-red-400" />
         </div>
         <div className="flex-1 text-left min-w-0">
           <div className="font-display text-2xl sm:text-3xl font-semibold leading-tight">Check in</div>
-          <div className="text-sm sm:text-base text-stone-800/80 mt-1">Tap to scan the QR at the front desk</div>
+          <div className="text-sm sm:text-base text-red-200 mt-1">Tap to scan the QR at the front desk</div>
         </div>
       </button>
 
@@ -270,28 +268,28 @@ export function MemberHome({ user, members, classes, payments, checkIns, onNavig
       </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-        <StatCard className="fade-up stagger-1" label="Total visits" value={me.checkIns} icon={Activity} accent="bg-red-100 text-red-900" />
-        <StatCard className="fade-up stagger-2" label="Classes booked" value={myClasses.length} icon={CalendarDays} accent="bg-sky-100 text-sky-900" />
-        <StatCard className="fade-up stagger-3" label="Plan" value={me.plan} icon={Award} accent="bg-amber-100 text-amber-900" />
-        <StatCard className="fade-up stagger-4" label="Days left" value={daysToExpiry >= 0 ? daysToExpiry : 0} icon={Calendar} accent={daysToExpiry < 14 ? "bg-rose-100 text-rose-900" : "bg-stone-100 text-stone-700"} />
+        <StatCard className="fade-up stagger-1" label="Total visits" value={me.checkIns} icon={Activity} accent="bg-red-500/20 text-red-400" />
+        <StatCard className="fade-up stagger-2" label="Classes booked" value={myClasses.length} icon={CalendarDays} accent="bg-sky-500/20 text-sky-400" />
+        <StatCard className="fade-up stagger-3" label="Plan" value={me.plan} icon={Award} accent="bg-amber-500/20 text-amber-400" />
+        <StatCard className="fade-up stagger-4" label="Days left" value={daysToExpiry >= 0 ? daysToExpiry : 0} icon={Calendar} accent={daysToExpiry < 14 ? "bg-rose-500/20 text-rose-400" : "bg-stone-700 text-stone-400"} />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
-        <div className="bg-white rounded-xl border border-stone-200 p-5 sm:p-6">
+        <div className="bg-stone-900 rounded-xl border border-stone-700 p-5 sm:p-6">
           <div className="flex items-center justify-between mb-5">
-            <h3 className="font-display text-xl font-semibold">My upcoming classes</h3>
-            <button onClick={() => onNavigate("book-classes")} className="text-xs font-medium text-stone-900 hover:underline">Book more</button>
+            <h3 className="font-display text-xl font-semibold text-white">My upcoming classes</h3>
+            <button onClick={() => onNavigate("book-classes")} className="text-xs font-medium text-red-400 hover:text-red-300 transition">Book more</button>
           </div>
           {myClasses.length === 0 ? <EmptyState icon={CalendarDays} title="No classes booked yet" /> : (
             <div className="space-y-3">
               {myClasses.slice(0, 4).map((c) => (
                 <div key={c.id} className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-lg bg-stone-100 flex flex-col items-center justify-center shrink-0">
+                  <div className="w-12 h-12 rounded-lg bg-stone-800 flex flex-col items-center justify-center shrink-0">
                     <div className="text-[10px] font-mono text-stone-500">{c.day.toUpperCase()}</div>
-                    <div className="text-xs font-semibold">{c.time}</div>
+                    <div className="text-xs font-semibold text-stone-200">{c.time}</div>
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="font-medium text-sm truncate">{c.name}</div>
+                    <div className="font-medium text-sm text-stone-200 truncate">{c.name}</div>
                     <div className="text-xs text-stone-500 truncate">with {c.trainer}</div>
                   </div>
                 </div>
@@ -300,14 +298,14 @@ export function MemberHome({ user, members, classes, payments, checkIns, onNavig
           )}
         </div>
 
-        <div className="bg-white rounded-xl border border-stone-200 p-5 sm:p-6">
-          <h3 className="font-display text-xl font-semibold mb-5">Recent visits</h3>
+        <div className="bg-stone-900 rounded-xl border border-stone-700 p-5 sm:p-6">
+          <h3 className="font-display text-xl font-semibold text-white mb-5">Recent visits</h3>
           {myCheckIns.length === 0 ? <EmptyState icon={UserCheck} title="No visits logged yet" /> : (
             <div className="space-y-1">
               {myCheckIns.slice(0, 5).map((ci) => (
                 <div key={ci.id} className="flex items-center gap-3 py-2">
-                  <div className="w-7 h-7 rounded-full bg-red-100 flex items-center justify-center"><CheckCircle2 className="w-3.5 h-3.5 text-red-700" /></div>
-                  <div className="flex-1 text-sm">{new Date(ci.date).toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" })}</div>
+                  <div className="w-7 h-7 rounded-full bg-red-900/40 flex items-center justify-center"><CheckCircle2 className="w-3.5 h-3.5 text-red-400" /></div>
+                  <div className="flex-1 text-sm text-stone-300">{new Date(ci.date).toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" })}</div>
                   <div className="text-sm font-mono text-stone-500">{ci.time}</div>
                 </div>
               ))}
@@ -334,7 +332,6 @@ export function MemberQRView({ user, members, setMembers, checkIns, setCheckIns,
       return;
     }
 
-    // Prevent double check-in within the same minute
     const recentCheckIn = checkIns.find((c) => c.memberId === me.id && c.date === today() && Math.abs(parseInt(c.time.replace(":", "")) - parseInt(nowTime().replace(":", ""))) < 5);
     if (recentCheckIn) {
       setFeedback({ type: "info", message: "You're already checked in! Get to work." });
@@ -345,7 +342,6 @@ export function MemberQRView({ user, members, setMembers, checkIns, setCheckIns,
     setMembers(members.map((m) => m.id === me.id ? { ...m, checkIns: m.checkIns + 1, lastVisit: today() } : m));
     setCheckIns([{ id: `ci${Date.now()}`, memberId: me.id, memberName: me.name, date: today(), time: nowTime(), method: "QR" }, ...checkIns]);
 
-    // Award 5 loyalty points for check-in
     if (setLoyaltyPoints) {
       setLoyaltyPoints((lps) => {
         const entry = { id: `lph${Date.now()}`, date: today(), points: 5, reason: "Gym check-in" };
@@ -367,9 +363,9 @@ export function MemberQRView({ user, members, setMembers, checkIns, setCheckIns,
     <div className="space-y-6 max-w-xl">
       {feedback && (
         <div className={`p-4 rounded-xl border ${
-          feedback.type === "success" ? "bg-red-50 border-red-200 text-red-900" :
-          feedback.type === "error" ? "bg-rose-50 border-rose-200 text-rose-900" :
-          "bg-sky-50 border-sky-200 text-sky-900"
+          feedback.type === "success" ? "bg-red-950/40 border-red-800 text-red-300" :
+          feedback.type === "error" ? "bg-rose-950/40 border-rose-800 text-rose-300" :
+          "bg-sky-950/40 border-sky-800 text-sky-300"
         }`}>
           <div className="flex items-center gap-3">
             {feedback.type === "success" ? <CheckCircle2 className="w-5 h-5 shrink-0" /> : <AlertTriangle className="w-5 h-5 shrink-0" />}
@@ -378,36 +374,36 @@ export function MemberQRView({ user, members, setMembers, checkIns, setCheckIns,
         </div>
       )}
 
-      <div className="bg-white rounded-2xl border border-stone-200 p-8 text-center">
-        <div className="w-20 h-20 mx-auto mb-6 bg-stone-900 rounded-2xl flex items-center justify-center">
+      <div className="bg-stone-900 rounded-2xl border border-stone-700 p-8 text-center">
+        <div className="w-20 h-20 mx-auto mb-6 bg-stone-800 rounded-2xl flex items-center justify-center">
           <QrCode className="w-10 h-10 text-red-400" />
         </div>
-        <h2 className="font-display text-2xl font-semibold mb-2">Check in to the gym</h2>
-        <p className="text-sm text-stone-600 mb-6 max-w-sm mx-auto">
+        <h2 className="font-display text-2xl font-semibold mb-2 text-white">Check in to the gym</h2>
+        <p className="text-sm text-stone-400 mb-6 max-w-sm mx-auto">
           When you arrive at the gym, tap the button below and point your camera at the QR code displayed at the front desk.
         </p>
         <button onClick={() => setShowScanner(true)}
-          className="inline-flex items-center gap-2 px-6 py-3 bg-red-500 text-white rounded-lg text-sm font-semibold hover:bg-red-600 transition">
+          className="inline-flex items-center gap-2 px-6 py-3 bg-red-600 text-white rounded-lg text-sm font-semibold hover:bg-red-700 transition">
           <Camera className="w-4 h-4" /> Open camera
         </button>
 
-        <div className="mt-8 pt-6 border-t border-stone-200 text-left">
+        <div className="mt-8 pt-6 border-t border-stone-700 text-left">
           <div className="text-xs font-mono tracking-widest text-stone-500 uppercase mb-3">How it works</div>
-          <ol className="space-y-2 text-sm text-stone-600">
+          <ol className="space-y-2 text-sm text-stone-400">
             <li className="flex gap-3">
-              <span className="font-mono font-semibold text-stone-900 shrink-0">1.</span>
+              <span className="font-mono font-semibold text-stone-300 shrink-0">1.</span>
               <span>Open this app when you arrive at the gym.</span>
             </li>
             <li className="flex gap-3">
-              <span className="font-mono font-semibold text-stone-900 shrink-0">2.</span>
+              <span className="font-mono font-semibold text-stone-300 shrink-0">2.</span>
               <span>Tap "Open camera" above to launch the scanner.</span>
             </li>
             <li className="flex gap-3">
-              <span className="font-mono font-semibold text-stone-900 shrink-0">3.</span>
+              <span className="font-mono font-semibold text-stone-300 shrink-0">3.</span>
               <span>Point your camera at the QR poster at reception.</span>
             </li>
             <li className="flex gap-3">
-              <span className="font-mono font-semibold text-stone-900 shrink-0">4.</span>
+              <span className="font-mono font-semibold text-stone-300 shrink-0">4.</span>
               <span>You're checked in! Get to work.</span>
             </li>
           </ol>
@@ -439,11 +435,9 @@ export function MemberBookClasses({ user, classes, setClasses, loyaltyPoints, se
     setClasses(classes.map((c) => {
       if (c.id !== cls.id) return c;
       if (isBooked) {
-        // Cancel: if waitlist exists, auto-move first person in
         const waitlist = c.waitlist || [];
         if (waitlist.length > 0) {
           const [next, ...rest] = waitlist;
-          // Notify next person via notification
           if (setNotifications) {
             setNotifications((ns) => [{
               id: `notif-wl-${Date.now()}`,
@@ -463,12 +457,10 @@ export function MemberBookClasses({ user, classes, setClasses, loyaltyPoints, se
         return { ...c, waitlist: (c.waitlist || []).filter((w) => w.memberId !== user.memberId) };
       }
       if (c.booked >= c.capacity) {
-        // Join waitlist
         setBookedFeedback({ id: c.id, type: "waitlist" });
         setTimeout(() => setBookedFeedback(null), 3000);
         return { ...c, waitlist: [...(c.waitlist || []), { memberId: user.memberId, memberName: user.name }] };
       }
-      // Book class + award loyalty points
       awardPoints(`Class booked: ${c.name}`);
       setBookedFeedback({ id: c.id, type: "booked" });
       setTimeout(() => setBookedFeedback(null), 3000);
@@ -478,8 +470,8 @@ export function MemberBookClasses({ user, classes, setClasses, loyaltyPoints, se
 
   return (
     <div className="space-y-6">
-      <div className="bg-stone-100 border border-stone-200 rounded-xl p-4">
-        <p className="text-sm text-stone-700">Tap a class to book or cancel. Full classes have a waitlist — join to be auto-booked when a spot opens. Booking earns <strong>10 loyalty points</strong>.</p>
+      <div className="bg-stone-800 border border-stone-700 rounded-xl p-4">
+        <p className="text-sm text-stone-300">Tap a class to book or cancel. Full classes have a waitlist — join to be auto-booked when a spot opens. Booking earns <strong className="text-white">10 loyalty points</strong>.</p>
       </div>
 
       {days.map((day) => {
@@ -497,40 +489,40 @@ export function MemberBookClasses({ user, classes, setClasses, loyaltyPoints, se
                 const feedback = bookedFeedback?.id === c.id ? bookedFeedback.type : null;
                 const waitlistCount = (c.waitlist || []).length;
                 return (
-                  <div key={c.id} className={`bg-white border rounded-xl p-4 transition ${
-                    isBooked ? "border-red-500 bg-red-50" :
-                    onWaitlist ? "border-amber-400 bg-amber-50" :
-                    "border-stone-200"
+                  <div key={c.id} className={`rounded-xl border p-4 transition ${
+                    isBooked ? "border-red-600 bg-red-950/20" :
+                    onWaitlist ? "border-amber-600 bg-amber-950/20" :
+                    "border-stone-700 bg-stone-900"
                   }`}>
                     {feedback && (
-                      <div className={`text-xs font-semibold mb-2 px-2 py-1 rounded-lg text-center ${feedback === "waitlist" ? "bg-amber-100 text-amber-800" : "bg-red-100 text-red-800"}`}>
+                      <div className={`text-xs font-semibold mb-2 px-2 py-1 rounded-lg text-center ${feedback === "waitlist" ? "bg-amber-900/40 text-amber-300" : "bg-red-900/40 text-red-300"}`}>
                         {feedback === "waitlist" ? "Added to waitlist!" : "Booked! +10 pts"}
                       </div>
                     )}
                     <div className="flex items-start justify-between mb-2">
                       <div className="min-w-0">
-                        <div className="font-semibold truncate">{c.name}</div>
-                        <div className="text-xs text-stone-500">{c.trainer}</div>
+                        <div className="font-semibold text-stone-100 truncate">{c.name}</div>
+                        <div className="text-xs text-stone-400">{c.trainer}</div>
                       </div>
                       <div className="text-right shrink-0 ml-2">
-                        <div className="text-xs font-mono font-semibold">{c.time}</div>
+                        <div className="text-xs font-mono font-semibold text-stone-300">{c.time}</div>
                       </div>
                     </div>
                     <div className="flex items-center gap-2 mb-3">
-                      <div className="flex-1 h-1 bg-stone-200 rounded-full overflow-hidden">
+                      <div className="flex-1 h-1 bg-stone-700 rounded-full overflow-hidden">
                         <div className={`h-full rounded-full ${pct >= 100 ? "bg-rose-500" : pct >= 90 ? "bg-orange-500" : "bg-red-500"}`} style={{ width: `${Math.min(pct, 100)}%` }} />
                       </div>
                       <span className="text-[10px] font-mono text-stone-500">{c.booked}/{c.capacity}</span>
                     </div>
                     {waitlistCount > 0 && !isBooked && (
-                      <div className="text-[10px] text-amber-700 font-mono mb-2">{waitlistCount} on waitlist</div>
+                      <div className="text-[10px] text-amber-500 font-mono mb-2">{waitlistCount} on waitlist</div>
                     )}
                     <button onClick={() => toggleBooking(c)}
                       className={`w-full py-2 text-xs font-semibold rounded-lg transition ${
-                        isBooked ? "bg-stone-900 text-white hover:bg-stone-800" :
-                        onWaitlist ? "bg-amber-500 text-white hover:bg-amber-600" :
-                        full ? "bg-stone-800 text-white hover:bg-stone-700" :
-                        "bg-red-500 text-white hover:bg-red-600"
+                        isBooked ? "bg-stone-700 text-white hover:bg-stone-600" :
+                        onWaitlist ? "bg-amber-600 text-white hover:bg-amber-700" :
+                        full ? "bg-stone-700 text-stone-300 hover:bg-stone-600" :
+                        "bg-red-600 text-white hover:bg-red-700"
                       }`}>
                       {isBooked ? "Cancel booking" : onWaitlist ? "Leave waitlist" : full ? "Join waitlist" : "Book spot"}
                     </button>
@@ -553,18 +545,18 @@ export function MemberHistory({ user, checkIns, classes }) {
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-2 gap-3">
-        <div className="bg-white rounded-xl border border-stone-200 p-5">
+        <div className="bg-stone-900 rounded-xl border border-stone-700 p-5">
           <div className="text-xs font-mono text-stone-500 tracking-wider uppercase">Gym visits</div>
-          <div className="font-display text-3xl font-semibold mt-1">{myCheckIns.length}</div>
+          <div className="font-display text-3xl font-semibold mt-1 text-white">{myCheckIns.length}</div>
         </div>
-        <div className="bg-white rounded-xl border border-stone-200 p-5">
+        <div className="bg-stone-900 rounded-xl border border-stone-700 p-5">
           <div className="text-xs font-mono text-stone-500 tracking-wider uppercase">Classes booked</div>
-          <div className="font-display text-3xl font-semibold mt-1">{myClasses.length}</div>
+          <div className="font-display text-3xl font-semibold mt-1 text-white">{myClasses.length}</div>
         </div>
       </div>
 
-      <div className="bg-white rounded-xl border border-stone-200 p-5 sm:p-6">
-        <h3 className="font-display text-xl font-semibold mb-5">Visit log</h3>
+      <div className="bg-stone-900 rounded-xl border border-stone-700 p-5 sm:p-6">
+        <h3 className="font-display text-xl font-semibold mb-5 text-white">Visit log</h3>
         {Object.keys(grouped).length === 0 ? (
           <EmptyState icon={UserCheck} title="No visits yet" subtitle="Scan the front-desk QR next time you're at the gym." />
         ) : (
@@ -576,8 +568,8 @@ export function MemberHistory({ user, checkIns, classes }) {
                 </div>
                 {entries.map((ci) => (
                   <div key={ci.id} className="flex items-center gap-3 py-2">
-                    <div className="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center"><CheckCircle2 className="w-4 h-4 text-red-700" /></div>
-                    <div className="flex-1 text-sm">Checked in {ci.method && <span className="text-xs text-stone-500 font-mono ml-1">via {ci.method}</span>}</div>
+                    <div className="w-8 h-8 rounded-full bg-red-900/40 flex items-center justify-center"><CheckCircle2 className="w-4 h-4 text-red-400" /></div>
+                    <div className="flex-1 text-sm text-stone-300">Checked in {ci.method && <span className="text-xs text-stone-500 font-mono ml-1">via {ci.method}</span>}</div>
                     <div className="text-sm font-mono text-stone-500">{ci.time}</div>
                   </div>
                 ))}
@@ -636,7 +628,6 @@ export function MemberShop({ user, shopOrders, setShopOrders, memberStocks, setM
     };
     setShopOrders([order, ...shopOrders]);
 
-    // Add daily essentials to member personal stock
     if (hasEssentials) {
       const essentials = cartItems.filter((i) => i.category === "Daily Essentials");
       setMemberStocks((stocks) => {
@@ -671,11 +662,11 @@ export function MemberShop({ user, shopOrders, setShopOrders, memberStocks, setM
   return (
     <div className="space-y-6">
       {ordered && (
-        <div className="flex items-center gap-3 p-4 bg-red-50 border border-red-200 rounded-xl">
-          <PackageCheck className="w-5 h-5 text-red-600 shrink-0" />
+        <div className="flex items-center gap-3 p-4 bg-red-950/40 border border-red-800 rounded-xl">
+          <PackageCheck className="w-5 h-5 text-red-400 shrink-0" />
           <div>
-            <div className="text-sm font-semibold">Order placed!</div>
-            <div className="text-xs text-stone-600">Collect and pay at the front desk.</div>
+            <div className="text-sm font-semibold text-red-300">Order placed!</div>
+            <div className="text-xs text-stone-400">Collect and pay at the front desk.</div>
           </div>
         </div>
       )}
@@ -685,7 +676,7 @@ export function MemberShop({ user, shopOrders, setShopOrders, memberStocks, setM
         {SHOP_CATEGORIES.map((cat) => (
           <button key={cat} onClick={() => setCategory(cat)}
             className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
-              category === cat ? "bg-red-500 text-white" : "bg-white border border-stone-200 text-stone-700 hover:border-stone-400"
+              category === cat ? "bg-red-600 text-white" : "bg-stone-800 border border-stone-700 text-stone-300 hover:border-stone-500"
             }`}>
             {cat}
           </button>
@@ -698,27 +689,27 @@ export function MemberShop({ user, shopOrders, setShopOrders, memberStocks, setM
           {products.map((p) => {
             const qty = cart[p.id] || 0;
             return (
-              <div key={p.id} className="bg-white rounded-xl border border-stone-200 p-4 flex flex-col gap-3">
-                <div className="w-10 h-10 bg-stone-100 rounded-lg flex items-center justify-center">
-                  <ShoppingBag className="w-5 h-5 text-stone-500" />
+              <div key={p.id} className="bg-stone-900 rounded-xl border border-stone-700 p-4 flex flex-col gap-3">
+                <div className="w-10 h-10 bg-stone-800 rounded-lg flex items-center justify-center">
+                  <ShoppingBag className="w-5 h-5 text-stone-400" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="font-medium text-sm leading-tight">{p.name}</div>
+                  <div className="font-medium text-sm leading-tight text-stone-100">{p.name}</div>
                   <div className="text-xs text-stone-500 mt-0.5">{p.description}</div>
-                  <div className="font-semibold text-sm mt-2">₦{p.price.toLocaleString()}</div>
+                  <div className="font-semibold text-sm mt-2 text-white">₦{p.price.toLocaleString()}</div>
                 </div>
                 {qty === 0 ? (
                   <button onClick={() => addToCart(p.id)}
-                    className="w-full py-1.5 bg-red-500 text-white text-xs font-semibold rounded-lg hover:bg-red-600 transition">
+                    className="w-full py-1.5 bg-red-600 text-white text-xs font-semibold rounded-lg hover:bg-red-700 transition">
                     Add
                   </button>
                 ) : (
                   <div className="flex items-center justify-between gap-2">
-                    <button onClick={() => removeFromCart(p.id)} className="w-8 h-8 bg-stone-100 rounded-lg flex items-center justify-center hover:bg-stone-200 transition">
+                    <button onClick={() => removeFromCart(p.id)} className="w-8 h-8 bg-stone-700 text-stone-200 rounded-lg flex items-center justify-center hover:bg-stone-600 transition">
                       <Minus className="w-3.5 h-3.5" />
                     </button>
-                    <span className="font-mono font-semibold text-sm">{qty}</span>
-                    <button onClick={() => addToCart(p.id)} className="w-8 h-8 bg-red-500 text-white rounded-lg flex items-center justify-center hover:bg-red-600 transition">
+                    <span className="font-mono font-semibold text-sm text-white">{qty}</span>
+                    <button onClick={() => addToCart(p.id)} className="w-8 h-8 bg-red-600 text-white rounded-lg flex items-center justify-center hover:bg-red-700 transition">
                       <Plus className="w-3.5 h-3.5" />
                     </button>
                   </div>
@@ -729,17 +720,17 @@ export function MemberShop({ user, shopOrders, setShopOrders, memberStocks, setM
         </div>
 
         {/* Cart */}
-        <div className="bg-white rounded-xl border border-stone-200 p-5 h-fit sticky top-24">
+        <div className="bg-stone-900 rounded-xl border border-stone-700 p-5 h-fit sticky top-24">
           <div className="flex items-center gap-2 mb-4">
-            <ShoppingCart className="w-5 h-5 text-stone-500" />
-            <h3 className="font-display text-lg font-semibold">Cart</h3>
+            <ShoppingCart className="w-5 h-5 text-stone-400" />
+            <h3 className="font-display text-lg font-semibold text-white">Cart</h3>
             {cartCount > 0 && (
-              <span className="ml-auto text-xs bg-red-500 text-white rounded-full px-2 py-0.5 font-mono">{cartCount}</span>
+              <span className="ml-auto text-xs bg-red-600 text-white rounded-full px-2 py-0.5 font-mono">{cartCount}</span>
             )}
           </div>
 
           {cartItems.length === 0 ? (
-            <div className="text-center py-8 text-stone-400">
+            <div className="text-center py-8 text-stone-500">
               <ShoppingCart className="w-8 h-8 mx-auto mb-2 opacity-40" />
               <p className="text-sm">Your cart is empty</p>
             </div>
@@ -748,26 +739,26 @@ export function MemberShop({ user, shopOrders, setShopOrders, memberStocks, setM
               {cartItems.map((item) => (
                 <div key={item.id} className="flex items-center gap-3">
                   <div className="flex-1 min-w-0">
-                    <div className="text-sm font-medium truncate">{item.name}</div>
+                    <div className="text-sm font-medium text-stone-200 truncate">{item.name}</div>
                     <div className="text-xs text-stone-500">₦{item.price.toLocaleString()} × {item.qty}</div>
                   </div>
-                  <div className="text-sm font-mono font-semibold shrink-0">₦{(item.price * item.qty).toLocaleString()}</div>
-                  <button onClick={() => removeFromCart(item.id)} className="text-stone-400 hover:text-rose-600 transition">
+                  <div className="text-sm font-mono font-semibold text-stone-200 shrink-0">₦{(item.price * item.qty).toLocaleString()}</div>
+                  <button onClick={() => removeFromCart(item.id)} className="text-stone-500 hover:text-rose-400 transition">
                     <Trash2 className="w-3.5 h-3.5" />
                   </button>
                 </div>
               ))}
 
-              <div className="pt-3 border-t border-stone-200">
+              <div className="pt-3 border-t border-stone-700">
                 <div className="flex items-center justify-between mb-4">
-                  <span className="font-semibold">Total</span>
-                  <span className="font-display text-xl font-semibold">₦{cartTotal.toLocaleString()}</span>
+                  <span className="font-semibold text-stone-200">Total</span>
+                  <span className="font-display text-xl font-semibold text-white">₦{cartTotal.toLocaleString()}</span>
                 </div>
                 <button onClick={() => setShowCheckout(true)}
-                  className="w-full py-3 bg-red-500 text-white rounded-lg text-sm font-semibold hover:bg-red-600 transition">
+                  className="w-full py-3 bg-red-600 text-white rounded-lg text-sm font-semibold hover:bg-red-700 transition">
                   Checkout
                 </button>
-                {hasEssentials && <p className="text-[10px] text-stone-400 text-center mt-2">Daily essentials go to your personal stock</p>}
+                {hasEssentials && <p className="text-[10px] text-stone-500 text-center mt-2">Daily essentials go to your personal stock</p>}
               </div>
             </div>
           )}
@@ -795,14 +786,14 @@ function ShopCheckoutModal({ cartItems, cartTotal, hasAccessories, hasEssentials
     <Modal title="Checkout" subtitle={`${cartItems.length} item${cartItems.length !== 1 ? "s" : ""} · ₦${cartTotal.toLocaleString()}`} onClose={onClose}>
       <div className="space-y-5">
         {/* Order summary */}
-        <div className="bg-stone-50 rounded-lg p-3 space-y-1.5">
+        <div className="bg-stone-800 rounded-lg p-3 space-y-1.5">
           {cartItems.map((item) => (
             <div key={item.id} className="flex justify-between text-sm">
-              <span className="text-stone-700">{item.qty}× {item.name}</span>
-              <span className="font-mono font-medium">₦{(item.price * item.qty).toLocaleString()}</span>
+              <span className="text-stone-300">{item.qty}× {item.name}</span>
+              <span className="font-mono font-medium text-stone-200">₦{(item.price * item.qty).toLocaleString()}</span>
             </div>
           ))}
-          <div className="border-t border-stone-200 pt-2 flex justify-between font-semibold text-sm">
+          <div className="border-t border-stone-700 pt-2 flex justify-between font-semibold text-sm text-stone-100">
             <span>Total</span>
             <span>₦{cartTotal.toLocaleString()}</span>
           </div>
@@ -810,7 +801,7 @@ function ShopCheckoutModal({ cartItems, cartTotal, hasAccessories, hasEssentials
 
         {/* Payment method */}
         <div>
-          <label className="text-xs font-mono tracking-wider text-stone-500 uppercase mb-2 block">Payment method</label>
+          <label className="text-xs font-mono tracking-wider text-stone-400 uppercase mb-2 block">Payment method</label>
           <div className="grid grid-cols-3 gap-2">
             {[
               { id: "Cash", label: "Cash", icon: DollarSign },
@@ -818,7 +809,7 @@ function ShopCheckoutModal({ cartItems, cartTotal, hasAccessories, hasEssentials
               { id: "Transfer", label: "Transfer", icon: CreditCard },
             ].map(({ id, label, icon: Icon }) => (
               <button key={id} onClick={() => setPaymentMethod(id)}
-                className={`flex flex-col items-center gap-1.5 py-3 rounded-lg border text-xs font-medium transition ${paymentMethod === id ? "bg-stone-900 text-white border-stone-900" : "bg-white border-stone-200 hover:border-stone-400"}`}>
+                className={`flex flex-col items-center gap-1.5 py-3 rounded-lg border text-xs font-medium transition ${paymentMethod === id ? "bg-red-600 text-white border-red-600" : "bg-stone-800 border-stone-700 text-stone-300 hover:border-stone-500"}`}>
                 <Icon className="w-4 h-4" />
                 {label}
               </button>
@@ -829,14 +820,14 @@ function ShopCheckoutModal({ cartItems, cartTotal, hasAccessories, hasEssentials
         {/* Delivery option — only for fitness accessories */}
         {hasAccessories && (
           <div>
-            <label className="text-xs font-mono tracking-wider text-stone-500 uppercase mb-2 block">Delivery option</label>
+            <label className="text-xs font-mono tracking-wider text-stone-400 uppercase mb-2 block">Delivery option</label>
             <div className="grid grid-cols-2 gap-2">
               {[
                 { id: "Pickup", label: "Pickup at desk", icon: Store },
                 { id: "Delivery", label: "Home delivery", icon: Truck },
               ].map(({ id, label, icon: Icon }) => (
                 <button key={id} onClick={() => setDeliveryOption(id)}
-                  className={`flex items-center gap-2 px-4 py-3 rounded-lg border text-sm font-medium transition ${deliveryOption === id ? "bg-stone-900 text-white border-stone-900" : "bg-white border-stone-200 hover:border-stone-400"}`}>
+                  className={`flex items-center gap-2 px-4 py-3 rounded-lg border text-sm font-medium transition ${deliveryOption === id ? "bg-red-600 text-white border-red-600" : "bg-stone-800 border-stone-700 text-stone-300 hover:border-stone-500"}`}>
                   <Icon className="w-4 h-4" />{label}
                 </button>
               ))}
@@ -846,17 +837,17 @@ function ShopCheckoutModal({ cartItems, cartTotal, hasAccessories, hasEssentials
 
         {/* Stock note */}
         {hasEssentials && (
-          <div className="flex items-start gap-2 p-3 bg-sky-50 border border-sky-200 rounded-lg text-xs text-sky-800">
+          <div className="flex items-start gap-2 p-3 bg-sky-950/40 border border-sky-800 rounded-lg text-xs text-sky-300">
             <Layers className="w-4 h-4 shrink-0 mt-0.5" />
             <span>Daily essentials will be added to your personal stock. View and manage them in <strong>My Stock</strong>.</span>
           </div>
         )}
 
         <button onClick={() => onConfirm({ paymentMethod, deliveryOption })}
-          className="w-full py-3 bg-red-500 text-white rounded-lg text-sm font-semibold hover:bg-red-600 transition">
+          className="w-full py-3 bg-red-600 text-white rounded-lg text-sm font-semibold hover:bg-red-700 transition">
           Confirm order · ₦{cartTotal.toLocaleString()}
         </button>
-        <p className="text-[10px] text-stone-400 text-center -mt-3">
+        <p className="text-[10px] text-stone-500 text-center -mt-3">
           {deliveryOption === "Delivery" ? "Pay on delivery" : "Pay at the front desk"}
         </p>
       </div>
@@ -887,18 +878,18 @@ export function MemberStock({ user, memberStocks, setMemberStocks, onNavigate })
 
   return (
     <div className="space-y-6">
-      <div className="bg-stone-100 border border-stone-200 rounded-xl p-4 text-sm text-stone-700">
-        Your personal stock of daily essentials. Tap <strong>Use 1</strong> when you take an item at the gym.
-        Running low? Head to the <button onClick={() => onNavigate("my-shop")} className="text-red-600 font-semibold underline">Shop</button> to reorder.
+      <div className="bg-stone-800 border border-stone-700 rounded-xl p-4 text-sm text-stone-300">
+        Your personal stock of daily essentials. Tap <strong className="text-white">Use 1</strong> when you take an item at the gym.
+        Running low? Head to the <button onClick={() => onNavigate("my-shop")} className="text-red-400 font-semibold underline">Shop</button> to reorder.
       </div>
 
       {items.length === 0 ? (
-        <div className="bg-white rounded-xl border border-stone-200 p-12 text-center">
-          <Layers className="w-10 h-10 mx-auto mb-3 text-stone-300" />
-          <p className="font-medium text-stone-600">No stock yet</p>
+        <div className="bg-stone-900 rounded-xl border border-stone-700 p-12 text-center">
+          <Layers className="w-10 h-10 mx-auto mb-3 text-stone-600" />
+          <p className="font-medium text-stone-400">No stock yet</p>
           <p className="text-sm text-stone-500 mt-1 mb-4">Order daily essentials from the shop to build your stock.</p>
           <button onClick={() => onNavigate("my-shop")}
-            className="px-5 py-2.5 bg-red-500 text-white text-sm font-semibold rounded-lg hover:bg-red-600 transition">
+            className="px-5 py-2.5 bg-red-600 text-white text-sm font-semibold rounded-lg hover:bg-red-700 transition">
             Go to Shop
           </button>
         </div>
@@ -907,21 +898,21 @@ export function MemberStock({ user, memberStocks, setMemberStocks, onNavigate })
           {items.map((item) => {
             const low = item.qty <= 2;
             return (
-              <div key={item.productId} className={`bg-white rounded-xl border p-5 ${low ? "border-amber-300 bg-amber-50" : "border-stone-200"}`}>
+              <div key={item.productId} className={`rounded-xl border p-5 ${low ? "border-amber-700 bg-amber-950/20" : "border-stone-700 bg-stone-900"}`}>
                 <div className="flex items-start justify-between mb-3">
-                  <div className="font-medium text-sm">{item.name}</div>
-                  {low && <span className="text-[10px] font-mono bg-amber-200 text-amber-900 px-2 py-0.5 rounded-full shrink-0">Low</span>}
+                  <div className="font-medium text-sm text-stone-100">{item.name}</div>
+                  {low && <span className="text-[10px] font-mono bg-amber-900/50 text-amber-300 px-2 py-0.5 rounded-full shrink-0">Low</span>}
                 </div>
-                <div className="font-display text-4xl font-semibold mb-1">{item.qty}</div>
+                <div className="font-display text-4xl font-semibold mb-1 text-white">{item.qty}</div>
                 <div className="text-xs text-stone-500 mb-4">units remaining</div>
                 <div className="flex gap-2">
                   <button onClick={() => useItem(item.productId)}
-                    className="flex-1 py-2 bg-stone-900 text-white text-xs font-semibold rounded-lg hover:bg-stone-800 transition">
+                    className="flex-1 py-2 bg-stone-700 text-white text-xs font-semibold rounded-lg hover:bg-stone-600 transition">
                     Use 1
                   </button>
                   <button onClick={() => onNavigate("my-shop")}
-                    className="p-2 border border-stone-200 rounded-lg hover:border-stone-900 transition" title="Reorder">
-                    <RefreshCw className="w-4 h-4 text-stone-500" />
+                    className="p-2 border border-stone-700 rounded-lg hover:border-stone-500 transition" title="Reorder">
+                    <RefreshCw className="w-4 h-4 text-stone-400" />
                   </button>
                 </div>
               </div>
@@ -942,37 +933,37 @@ export function MemberPayments({ user, payments, members }) {
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-        <div className="bg-white rounded-xl border border-stone-200 p-5">
+        <div className="bg-stone-900 rounded-xl border border-stone-700 p-5">
           <div className="text-xs font-mono text-stone-500 tracking-wider uppercase">Current plan</div>
-          <div className="font-display text-2xl font-semibold mt-1">{me?.plan || "—"}</div>
+          <div className="font-display text-2xl font-semibold mt-1 text-white">{me?.plan || "—"}</div>
           <div className="text-xs text-stone-500 mt-1 font-mono">₦{PLAN_PRICES[me?.plan]?.toLocaleString() || "—"}/mo</div>
         </div>
-        <div className="bg-white rounded-xl border border-stone-200 p-5">
+        <div className="bg-stone-900 rounded-xl border border-stone-700 p-5">
           <div className="text-xs font-mono text-stone-500 tracking-wider uppercase">Total paid</div>
-          <div className="font-display text-2xl font-semibold mt-1">₦{(totalPaid / 1000).toFixed(0)}K</div>
+          <div className="font-display text-2xl font-semibold mt-1 text-white">₦{(totalPaid / 1000).toFixed(0)}K</div>
           <div className="text-xs text-stone-500 mt-1">Lifetime</div>
         </div>
-        <div className={`bg-white rounded-xl border p-5 ${outstanding > 0 ? "border-rose-200 bg-rose-50" : "border-stone-200"}`}>
+        <div className={`rounded-xl border p-5 ${outstanding > 0 ? "border-rose-800 bg-rose-950/30" : "border-stone-700 bg-stone-900"}`}>
           <div className="text-xs font-mono text-stone-500 tracking-wider uppercase">Outstanding</div>
-          <div className={`font-display text-2xl font-semibold mt-1 ${outstanding > 0 ? "text-rose-700" : ""}`}>₦{(outstanding / 1000).toFixed(0)}K</div>
+          <div className={`font-display text-2xl font-semibold mt-1 ${outstanding > 0 ? "text-rose-400" : "text-white"}`}>₦{(outstanding / 1000).toFixed(0)}K</div>
           <div className="text-xs text-stone-500 mt-1">{outstanding > 0 ? "Pay at front desk" : "All clear"}</div>
         </div>
       </div>
 
-      <div className="bg-white rounded-xl border border-stone-200 p-5 sm:p-6">
-        <h3 className="font-display text-xl font-semibold mb-5">Payment history</h3>
+      <div className="bg-stone-900 rounded-xl border border-stone-700 p-5 sm:p-6">
+        <h3 className="font-display text-xl font-semibold mb-5 text-white">Payment history</h3>
         {myPayments.length === 0 ? <EmptyState title="No payments yet" /> : (
           <div className="space-y-2">
             {myPayments.map((p) => (
-              <div key={p.id} className="flex items-center gap-3 p-3 bg-stone-50 rounded-lg">
-                <div className={`w-9 h-9 rounded-full flex items-center justify-center ${p.status === "paid" ? "bg-red-100" : p.status === "overdue" ? "bg-rose-100" : "bg-amber-100"}`}>
-                  <CheckCircle2 className={`w-4 h-4 ${p.status === "paid" ? "text-red-700" : p.status === "overdue" ? "text-rose-700" : "text-amber-700"}`} />
+              <div key={p.id} className="flex items-center gap-3 p-3 bg-stone-800 rounded-lg">
+                <div className={`w-9 h-9 rounded-full flex items-center justify-center ${p.status === "paid" ? "bg-red-900/40" : p.status === "overdue" ? "bg-rose-900/40" : "bg-amber-900/40"}`}>
+                  <CheckCircle2 className={`w-4 h-4 ${p.status === "paid" ? "text-red-400" : p.status === "overdue" ? "text-rose-400" : "text-amber-400"}`} />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="text-sm font-semibold">₦{p.amount.toLocaleString()}</div>
+                  <div className="text-sm font-semibold text-stone-100">₦{p.amount.toLocaleString()}</div>
                   <div className="text-xs text-stone-500">{new Date(p.date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })} · {p.method}</div>
                 </div>
-                <span className={`text-[10px] font-mono tracking-wider uppercase px-2 py-1 rounded-full ${p.status === "paid" ? "bg-red-100 text-red-800" : p.status === "overdue" ? "bg-rose-100 text-rose-800" : "bg-amber-100 text-amber-800"}`}>{p.status}</span>
+                <span className={`text-[10px] font-mono tracking-wider uppercase px-2 py-1 rounded-full ${p.status === "paid" ? "bg-red-900/40 text-red-300" : p.status === "overdue" ? "bg-rose-900/40 text-rose-300" : "bg-amber-900/40 text-amber-300"}`}>{p.status}</span>
               </div>
             ))}
           </div>

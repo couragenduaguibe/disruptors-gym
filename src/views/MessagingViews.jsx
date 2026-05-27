@@ -51,7 +51,6 @@ export function ChatView({ user, directMessages, setDirectMessages, setNotificat
       read: false,
     };
     setDirectMessages((msgs) => [...msgs, msg]);
-    // Generate notification for recipient
     setNotifications((notifs) => [
       {
         id: `notif-msg-${Date.now()}`,
@@ -69,13 +68,13 @@ export function ChatView({ user, directMessages, setDirectMessages, setNotificat
   const totalUnread = contacts.reduce((s, c) => s + getUnread(c.username), 0);
 
   return (
-    <div className="bg-white rounded-xl border border-stone-200 overflow-hidden flex" style={{ height: "calc(100vh - 220px)", minHeight: 500 }}>
+    <div className="bg-stone-900 rounded-xl border border-stone-700 overflow-hidden flex" style={{ height: "calc(100vh - 220px)", minHeight: 500 }}>
       {/* Contact list */}
-      <div className={`w-full lg:w-80 border-r border-stone-200 flex flex-col shrink-0 ${selectedContact ? "hidden lg:flex" : "flex"}`}>
-        <div className="p-4 border-b border-stone-200 flex items-center justify-between">
-          <h3 className="font-display text-lg font-semibold">Messages</h3>
+      <div className={`w-full lg:w-80 border-r border-stone-800 flex flex-col shrink-0 ${selectedContact ? "hidden lg:flex" : "flex"}`}>
+        <div className="p-4 border-b border-stone-800 flex items-center justify-between">
+          <h3 className="font-display text-lg font-semibold text-white">Messages</h3>
           {totalUnread > 0 && (
-            <span className="text-xs bg-red-500 text-white rounded-full px-2 py-0.5 font-mono">{totalUnread} new</span>
+            <span className="text-xs bg-red-600 text-white rounded-full px-2 py-0.5 font-mono">{totalUnread} new</span>
           )}
         </div>
         <div className="flex-1 overflow-y-auto">
@@ -85,26 +84,26 @@ export function ChatView({ user, directMessages, setDirectMessages, setNotificat
             const isSelected = selectedContact?.username === contact.username;
             return (
               <button key={contact.username} onClick={() => selectContact(contact)}
-                className={`w-full p-4 flex items-center gap-3 hover:bg-stone-50 transition text-left border-b border-stone-100 ${isSelected ? "bg-red-50 border-l-2 border-l-red-500" : ""}`}>
+                className={`w-full p-4 flex items-center gap-3 hover:bg-stone-800 transition text-left border-b border-stone-800 ${isSelected ? "bg-red-950/30 border-l-2 border-l-red-500" : ""}`}>
                 <div className="relative shrink-0">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-stone-200 to-stone-300 flex items-center justify-center font-semibold text-stone-700">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-stone-700 to-stone-600 flex items-center justify-center font-semibold text-stone-200">
                     {contact.name[0]}
                   </div>
                   {unread > 0 && (
-                    <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-red-500 text-white text-[9px] rounded-full flex items-center justify-center font-bold">{unread}</span>
+                    <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-red-600 text-white text-[9px] rounded-full flex items-center justify-center font-bold">{unread}</span>
                   )}
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-baseline justify-between gap-1">
-                    <div className={`text-sm truncate ${unread > 0 ? "font-semibold" : "font-medium"}`}>{contact.name}</div>
+                    <div className={`text-sm truncate ${unread > 0 ? "font-semibold text-white" : "font-medium text-stone-200"}`}>{contact.name}</div>
                     {lastMsg && (
-                      <div className="text-[10px] font-mono text-stone-400 shrink-0">
+                      <div className="text-[10px] font-mono text-stone-500 shrink-0">
                         {new Date(lastMsg.timestamp).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" })}
                       </div>
                     )}
                   </div>
-                  <div className={`text-xs truncate ${unread > 0 ? "text-stone-800 font-medium" : "text-stone-500"}`}>
-                    {lastMsg ? (lastMsg.fromId === myId ? "You: " : "") + lastMsg.content : <span className="italic capitalize text-stone-400">{contact.role}</span>}
+                  <div className={`text-xs truncate ${unread > 0 ? "text-stone-200 font-medium" : "text-stone-500"}`}>
+                    {lastMsg ? (lastMsg.fromId === myId ? "You: " : "") + lastMsg.content : <span className="italic capitalize text-stone-600">{contact.role}</span>}
                   </div>
                 </div>
               </button>
@@ -123,11 +122,11 @@ export function ChatView({ user, directMessages, setDirectMessages, setNotificat
           onBack={() => setSelectedContact(null)}
         />
       ) : (
-        <div className="hidden lg:flex flex-1 items-center justify-center text-stone-400">
+        <div className="hidden lg:flex flex-1 items-center justify-center text-stone-500">
           <div className="text-center">
             <MessageSquare className="w-12 h-12 mx-auto mb-3 opacity-25" />
-            <p className="text-sm font-medium text-stone-500">Select a conversation</p>
-            <p className="text-xs text-stone-400 mt-1">Choose someone from the list to start chatting</p>
+            <p className="text-sm font-medium text-stone-400">Select a conversation</p>
+            <p className="text-xs text-stone-500 mt-1">Choose someone from the list to start chatting</p>
           </div>
         </div>
       )}
@@ -165,7 +164,6 @@ function ChatThread({ contact, messages, currentUser, onSend, onBack }) {
     return new Date(ts).toLocaleDateString("en-US", { month: "short", day: "numeric" });
   };
 
-  // Group messages by date
   const grouped = messages.reduce((acc, msg) => {
     const d = new Date(msg.timestamp).toISOString().slice(0, 10);
     (acc[d] = acc[d] || []).push(msg);
@@ -174,22 +172,22 @@ function ChatThread({ contact, messages, currentUser, onSend, onBack }) {
 
   return (
     <div className="flex-1 flex flex-col min-w-0">
-      <div className="p-4 border-b border-stone-200 flex items-center gap-3">
-        <button onClick={onBack} className="lg:hidden p-1.5 hover:bg-stone-100 rounded-lg">
-          <ChevronLeft className="w-5 h-5" />
+      <div className="p-4 border-b border-stone-800 flex items-center gap-3">
+        <button onClick={onBack} className="lg:hidden p-1.5 hover:bg-stone-800 rounded-lg">
+          <ChevronLeft className="w-5 h-5 text-stone-400" />
         </button>
-        <div className="w-9 h-9 rounded-full bg-gradient-to-br from-stone-200 to-stone-300 flex items-center justify-center font-semibold text-stone-700 shrink-0">
+        <div className="w-9 h-9 rounded-full bg-gradient-to-br from-stone-700 to-stone-600 flex items-center justify-center font-semibold text-stone-200 shrink-0">
           {contact.name[0]}
         </div>
         <div>
-          <div className="font-semibold text-sm">{contact.name}</div>
+          <div className="font-semibold text-sm text-stone-100">{contact.name}</div>
           <div className="text-xs text-stone-500 capitalize">{contact.role}</div>
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+      <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-stone-950">
         {messages.length === 0 && (
-          <div className="text-center py-16 text-stone-400">
+          <div className="text-center py-16 text-stone-500">
             <MessageSquare className="w-8 h-8 mx-auto mb-2 opacity-25" />
             <p className="text-sm">No messages yet. Say hello!</p>
           </div>
@@ -197,9 +195,9 @@ function ChatThread({ contact, messages, currentUser, onSend, onBack }) {
         {Object.entries(grouped).map(([date, msgs]) => (
           <div key={date}>
             <div className="flex items-center gap-3 my-3">
-              <div className="flex-1 h-px bg-stone-200" />
-              <span className="text-[10px] font-mono text-stone-400 uppercase tracking-wider">{formatDate(msgs[0].timestamp)}</span>
-              <div className="flex-1 h-px bg-stone-200" />
+              <div className="flex-1 h-px bg-stone-800" />
+              <span className="text-[10px] font-mono text-stone-600 uppercase tracking-wider">{formatDate(msgs[0].timestamp)}</span>
+              <div className="flex-1 h-px bg-stone-800" />
             </div>
             <div className="space-y-2">
               {msgs.map((msg) => {
@@ -207,13 +205,13 @@ function ChatThread({ contact, messages, currentUser, onSend, onBack }) {
                 return (
                   <div key={msg.id} className={`flex ${isMe ? "justify-end" : "justify-start"}`}>
                     {!isMe && (
-                      <div className="w-7 h-7 rounded-full bg-stone-200 flex items-center justify-center font-semibold text-xs text-stone-700 mr-2 mt-1 shrink-0">
+                      <div className="w-7 h-7 rounded-full bg-stone-800 flex items-center justify-center font-semibold text-xs text-stone-300 mr-2 mt-1 shrink-0">
                         {msg.fromName[0]}
                       </div>
                     )}
-                    <div className={`max-w-[75%] px-4 py-2.5 rounded-2xl text-sm ${isMe ? "bg-stone-900 text-white rounded-br-md" : "bg-stone-100 text-stone-900 rounded-bl-md"}`}>
+                    <div className={`max-w-[75%] px-4 py-2.5 rounded-2xl text-sm ${isMe ? "bg-red-700 text-white rounded-br-md" : "bg-stone-800 text-stone-100 rounded-bl-md"}`}>
                       <p className="leading-relaxed">{msg.content}</p>
-                      <div className={`flex items-center gap-1 mt-1 justify-end ${isMe ? "text-stone-400" : "text-stone-400"}`}>
+                      <div className="flex items-center gap-1 mt-1 justify-end text-white/50">
                         <span className="text-[10px] font-mono">{formatTime(msg.timestamp)}</span>
                         {isMe && <CheckCheck className="w-3 h-3" />}
                       </div>
@@ -227,21 +225,21 @@ function ChatThread({ contact, messages, currentUser, onSend, onBack }) {
         <div ref={bottomRef} />
       </div>
 
-      <div className="p-4 border-t border-stone-200">
+      <div className="p-4 border-t border-stone-800 bg-stone-900">
         <div className="flex gap-2">
           <input
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKey}
             placeholder={`Message ${contact.name.split(" ")[0]}...`}
-            className="flex-1 px-4 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-sm focus:outline-none focus:border-stone-900 focus:bg-white"
+            className="flex-1 px-4 py-2.5 bg-stone-800 border border-stone-700 rounded-xl text-sm text-white placeholder:text-stone-500 focus:outline-none focus:border-red-500"
           />
           <button onClick={handleSend} disabled={!input.trim()}
-            className="w-10 h-10 bg-red-500 text-white rounded-xl flex items-center justify-center hover:bg-red-600 transition disabled:opacity-40 shrink-0">
+            className="w-10 h-10 bg-red-600 text-white rounded-xl flex items-center justify-center hover:bg-red-700 transition disabled:opacity-40 shrink-0">
             <Send className="w-4 h-4" />
           </button>
         </div>
-        <p className="text-[10px] text-stone-400 text-center mt-2 font-mono">Enter to send</p>
+        <p className="text-[10px] text-stone-600 text-center mt-2 font-mono">Enter to send</p>
       </div>
     </div>
   );

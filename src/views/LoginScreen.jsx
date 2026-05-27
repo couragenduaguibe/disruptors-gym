@@ -22,21 +22,21 @@ export function LoginScreen({ onLogin }) {
   const quickLogin = (acc) => { setUsername(acc.username); setPassword(acc.password); onLogin(acc); };
 
   return (
-    <div className="min-h-screen bg-stone-50 flex items-center justify-center p-4">
-      <div className="w-full max-w-5xl grid lg:grid-cols-2 gap-0 bg-white rounded-2xl border border-stone-200 overflow-hidden shadow-sm">
-        <div className="relative bg-stone-900 text-white p-8 lg:p-12 flex flex-col justify-between min-h-[280px] lg:min-h-[600px]">
+    <div className="min-h-screen bg-stone-950 flex items-center justify-center p-4">
+      <div className="w-full max-w-5xl grid lg:grid-cols-2 gap-0 bg-stone-900 rounded-2xl border border-stone-800 overflow-hidden">
+        <div className="relative bg-stone-950 text-white p-8 lg:p-12 flex flex-col justify-between min-h-[280px] lg:min-h-[600px] border-r border-stone-800">
           <div className="absolute inset-0 noise-bg opacity-20 pointer-events-none" />
           <div className="absolute -right-24 -top-24 w-80 h-80 rounded-full bg-red-500/20 blur-3xl" />
           <div className="absolute -left-12 bottom-0 w-60 h-60 rounded-full bg-amber-400/10 blur-3xl" />
 
           <div className="relative z-10">
             <div className="flex items-center gap-3 mb-12">
-              <div className="w-11 h-11 bg-red-500 rounded-lg flex items-center justify-center">
+              <div className="w-11 h-11 bg-red-600 rounded-lg flex items-center justify-center">
                 <Dumbbell className="w-6 h-6 text-white" strokeWidth={2.5} />
               </div>
               <div>
                 <div className="font-display text-2xl font-semibold">Disruptors</div>
-                <div className="text-xs text-stone-400 font-mono tracking-widest">GYM OS</div>
+                <div className="text-xs text-stone-500 font-mono tracking-widest">GYM OS</div>
               </div>
             </div>
 
@@ -49,50 +49,50 @@ export function LoginScreen({ onLogin }) {
             </p>
           </div>
 
-          <div className="relative z-10 text-xs text-stone-500 font-mono tracking-wider mt-8">
+          <div className="relative z-10 text-xs text-stone-600 font-mono tracking-wider mt-8">
             © 2026 DISRUPTORS GYM SYSTEMS
           </div>
         </div>
 
         <div className="p-8 lg:p-12 flex flex-col justify-center">
           <div className="max-w-sm w-full mx-auto">
-            <h2 className="font-display text-3xl font-semibold mb-2">Sign in</h2>
-            <p className="text-sm text-stone-500 mb-8">Enter your credentials to continue.</p>
+            <h2 className="font-display text-3xl font-semibold mb-2 text-white">Sign in</h2>
+            <p className="text-sm text-stone-400 mb-8">Enter your credentials to continue.</p>
 
             <div className="space-y-4">
               <div>
-                <label className="text-xs font-mono tracking-wider text-stone-500 uppercase mb-1.5 block">Username</label>
+                <label className="text-xs font-mono tracking-wider text-stone-400 uppercase mb-1.5 block">Username</label>
                 <div className="relative">
-                  <User className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-stone-400" />
+                  <User className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-stone-500" />
                   <input value={username} onChange={(e) => setUsername(e.target.value)} onKeyDown={handleKey} placeholder="admin"
-                    className="w-full pl-10 pr-3 py-2.5 bg-stone-50 border border-stone-200 rounded-lg text-sm focus:outline-none focus:border-stone-900 focus:bg-white" />
+                    className="w-full pl-10 pr-3 py-2.5 bg-stone-800 border border-stone-700 rounded-lg text-sm text-white placeholder:text-stone-500 focus:outline-none focus:border-red-500" />
                 </div>
               </div>
 
               <div>
-                <label className="text-xs font-mono tracking-wider text-stone-500 uppercase mb-1.5 block">Password</label>
+                <label className="text-xs font-mono tracking-wider text-stone-400 uppercase mb-1.5 block">Password</label>
                 <div className="relative">
-                  <Lock className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-stone-400" />
+                  <Lock className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-stone-500" />
                   <input type={showPassword ? "text" : "password"} value={password} onChange={(e) => setPassword(e.target.value)} onKeyDown={handleKey} placeholder="••••••••"
-                    className="w-full pl-10 pr-10 py-2.5 bg-stone-50 border border-stone-200 rounded-lg text-sm focus:outline-none focus:border-stone-900 focus:bg-white" />
-                  <button onClick={() => setShowPassword((v) => !v)} className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-700">
+                    className="w-full pl-10 pr-10 py-2.5 bg-stone-800 border border-stone-700 rounded-lg text-sm text-white placeholder:text-stone-500 focus:outline-none focus:border-red-500" />
+                  <button onClick={() => setShowPassword((v) => !v)} className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-500 hover:text-stone-300">
                     {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
                 </div>
               </div>
 
               {error && (
-                <div className="flex items-center gap-2 text-xs text-rose-700 bg-rose-50 border border-rose-200 px-3 py-2 rounded-lg">
+                <div className="flex items-center gap-2 text-xs text-rose-300 bg-rose-950/40 border border-rose-800 px-3 py-2 rounded-lg">
                   <AlertCircle className="w-4 h-4 shrink-0" />{error}
                 </div>
               )}
 
-              <button onClick={handleSubmit} className="w-full py-3 bg-stone-900 text-white rounded-lg text-sm font-medium hover:bg-stone-800 transition">
+              <button onClick={handleSubmit} className="w-full py-3 bg-red-600 text-white rounded-lg text-sm font-medium hover:bg-red-700 transition">
                 Sign in
               </button>
             </div>
 
-            <div className="mt-8 pt-6 border-t border-stone-200">
+            <div className="mt-8 pt-6 border-t border-stone-800">
               <div className="text-xs font-mono tracking-wider text-stone-500 uppercase mb-3">
                 Demo accounts — click to sign in
               </div>
@@ -102,12 +102,12 @@ export function LoginScreen({ onLogin }) {
                   const Icon = role.icon;
                   return (
                     <button key={acc.username} onClick={() => quickLogin(acc)}
-                      className="flex items-center gap-2 p-2.5 border border-stone-200 rounded-lg hover:border-stone-900 hover:bg-stone-50 transition text-left">
+                      className="flex items-center gap-2 p-2.5 border border-stone-700 rounded-lg hover:border-red-600 hover:bg-stone-800 transition text-left">
                       <div className={`w-8 h-8 rounded-md flex items-center justify-center ${role.color}`}>
                         <Icon className="w-4 h-4" />
                       </div>
                       <div className="min-w-0 flex-1">
-                        <div className="text-xs font-semibold truncate">{role.label}</div>
+                        <div className="text-xs font-semibold text-stone-200 truncate">{role.label}</div>
                         <div className="text-[10px] text-stone-500 font-mono truncate">{acc.username}</div>
                       </div>
                     </button>
