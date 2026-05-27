@@ -3,7 +3,7 @@ import { Html5Qrcode } from "html5-qrcode";
 import { Camera, X, AlertCircle, CheckCircle2 } from "lucide-react";
 
 // Member opens this to scan the gym's check-in QR code.
-// Validates the payload format (IRONSIDE:CHECKIN:<locationId>) before triggering check-in.
+// Validates the payload format (DISRUPTORS:CHECKIN:<locationId>) before triggering check-in.
 export function MemberQRScanner({ onCheckIn, onClose }) {
   const [error, setError] = useState(null);
   const [scanned, setScanned] = useState(false);
@@ -45,8 +45,8 @@ export function MemberQRScanner({ onCheckIn, onClose }) {
   const handleDecoded = (text) => {
     if (scanned) return;
 
-    // Expected format: IRONSIDE:CHECKIN:<locationId>
-    const match = /^IRONSIDE:CHECKIN:(.+)$/.exec(text?.trim() || "");
+    // Expected format: DISRUPTORS:CHECKIN:<locationId>
+    const match = /^DISRUPTORS:CHECKIN:(.+)$/.exec(text?.trim() || "");
     if (!match) {
       // Wrong QR — let user try again, don't error permanently
       return;
@@ -87,11 +87,11 @@ export function MemberQRScanner({ onCheckIn, onClose }) {
           )}
 
           {scanned && (
-            <div className="absolute inset-0 flex flex-col items-center justify-center bg-lime-400 text-stone-900 fade-up">
+            <div className="absolute inset-0 flex flex-col items-center justify-center bg-red-500 text-white fade-up">
               <div className="relative mb-4">
-                <div className="absolute inset-0 bg-lime-300 rounded-full pulse-ring" />
+                <div className="absolute inset-0 bg-red-400 rounded-full pulse-ring" />
                 <div className="relative w-20 h-20 rounded-full bg-stone-900 flex items-center justify-center">
-                  <CheckCircle2 className="w-10 h-10 text-lime-400" strokeWidth={2.5} />
+                  <CheckCircle2 className="w-10 h-10 text-red-400" strokeWidth={2.5} />
                 </div>
               </div>
               <p className="font-display text-2xl font-semibold">Checked in!</p>
@@ -102,10 +102,10 @@ export function MemberQRScanner({ onCheckIn, onClose }) {
           {!error && !scanned && (
             <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
               <div className="w-64 h-64 relative">
-                <div className="absolute -top-1 -left-1 w-8 h-8 border-t-4 border-l-4 border-lime-400 rounded-tl-2xl" />
-                <div className="absolute -top-1 -right-1 w-8 h-8 border-t-4 border-r-4 border-lime-400 rounded-tr-2xl" />
-                <div className="absolute -bottom-1 -left-1 w-8 h-8 border-b-4 border-l-4 border-lime-400 rounded-bl-2xl" />
-                <div className="absolute -bottom-1 -right-1 w-8 h-8 border-b-4 border-r-4 border-lime-400 rounded-br-2xl" />
+                <div className="absolute -top-1 -left-1 w-8 h-8 border-t-4 border-l-4 border-red-400 rounded-tl-2xl" />
+                <div className="absolute -top-1 -right-1 w-8 h-8 border-t-4 border-r-4 border-red-400 rounded-tr-2xl" />
+                <div className="absolute -bottom-1 -left-1 w-8 h-8 border-b-4 border-l-4 border-red-400 rounded-bl-2xl" />
+                <div className="absolute -bottom-1 -right-1 w-8 h-8 border-b-4 border-r-4 border-red-400 rounded-br-2xl" />
               </div>
             </div>
           )}

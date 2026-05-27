@@ -10,7 +10,7 @@ export function CheckInPoster({ locationId = "main", locationName = "Main Entran
 
   // In a real deployment this would be a URL like https://yourgym.app/checkin/main
   // For the demo, we encode a payload the app can recognize.
-  const payload = `IRONSIDE:CHECKIN:${locationId}`;
+  const payload = `DISRUPTORS:CHECKIN:${locationId}`;
 
   useEffect(() => {
     if (!canvasRef.current) return;
@@ -27,7 +27,7 @@ export function CheckInPoster({ locationId = "main", locationName = "Main Entran
   const handleDownload = () => {
     if (!canvasRef.current) return;
     const link = document.createElement("a");
-    link.download = `ironside-checkin-${locationId}.png`;
+    link.download = `disruptors-checkin-${locationId}.png`;
     link.href = canvasRef.current.toDataURL("image/png");
     link.click();
   };
@@ -39,11 +39,11 @@ export function CheckInPoster({ locationId = "main", locationName = "Main Entran
       {/* Printable poster area */}
       <div className="p-8 print:p-12">
         <div className="flex items-center justify-center gap-3 mb-6">
-          <div className="w-12 h-12 bg-lime-400 rounded-lg flex items-center justify-center">
-            <Dumbbell className="w-7 h-7 text-stone-900" strokeWidth={2.5} />
+          <div className="w-12 h-12 bg-red-500 rounded-lg flex items-center justify-center">
+            <Dumbbell className="w-7 h-7 text-white" strokeWidth={2.5} />
           </div>
           <div className="text-left">
-            <div className="font-display text-3xl font-semibold leading-none">Ironside</div>
+            <div className="font-display text-3xl font-semibold leading-none">Disruptors</div>
             <div className="text-xs text-stone-500 font-mono tracking-widest">GYM OS</div>
           </div>
         </div>
@@ -72,7 +72,7 @@ export function CheckInPoster({ locationId = "main", locationName = "Main Entran
           </li>
           <li className="flex gap-2">
             <span className="font-mono font-semibold text-stone-900">3.</span>
-            Confirm in the Ironside app
+            Confirm in the Disruptors app
           </li>
         </ol>
 
