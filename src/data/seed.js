@@ -1,0 +1,123 @@
+export const PLAN_PRICES = { Basic: 15000, Standard: 25000, Premium: 40000 };
+
+export const DEMO_ACCOUNTS = [
+  { username: "admin", password: "admin", role: "admin", name: "Aisha Bello", trainerId: null, memberId: null },
+  { username: "reception", password: "reception", role: "receptionist", name: "Chioma Eze", trainerId: null, memberId: null },
+  { username: "trainer", password: "trainer", role: "trainer", name: "Jordan Rivera", trainerId: "t1", memberId: null },
+  { username: "member", password: "member", role: "member", name: "Amara Okafor", trainerId: null, memberId: "m1" },
+];
+
+export const NAV_BY_ROLE = {
+  admin: ["dashboard", "members", "classes", "trainers", "checkins", "payments", "pos", "leads", "access", "messages", "analytics"],
+  receptionist: ["dashboard", "members", "classes", "checkins", "payments", "pos", "leads", "messages"],
+  trainer: ["trainer-home", "my-classes", "my-clients"],
+  member: ["member-home", "my-qr", "book-classes", "my-history", "my-payments"],
+};
+
+export const seedMembers = [
+  { id: "m1", name: "Amara Okafor", email: "amara@example.com", phone: "+234 801 234 5678", plan: "Premium", joinDate: "2025-08-14", expiryDate: "2026-06-14", status: "active", checkIns: 42, lastVisit: "2026-04-21", trainerId: "t1", photo: null },
+  { id: "m2", name: "David Chen", email: "d.chen@example.com", phone: "+234 802 555 1212", plan: "Standard", joinDate: "2025-11-03", expiryDate: "2026-06-03", status: "active", checkIns: 28, lastVisit: "2026-04-20", trainerId: "t1" },
+  { id: "m3", name: "Fatima Al-Hassan", email: "fatima.h@example.com", phone: "+234 803 777 8899", plan: "Premium", joinDate: "2024-06-21", expiryDate: "2026-06-21", status: "active", checkIns: 112, lastVisit: "2026-04-22", trainerId: "t2" },
+  { id: "m4", name: "Marcus Thompson", email: "m.thompson@example.com", phone: "+234 805 999 1111", plan: "Basic", joinDate: "2026-01-15", expiryDate: "2026-04-15", status: "expired", checkIns: 9, lastVisit: "2026-03-30", trainerId: "t3" },
+  { id: "m5", name: "Priya Kapoor", email: "priya.k@example.com", phone: "+234 807 222 3344", plan: "Standard", joinDate: "2025-09-28", expiryDate: "2026-05-28", status: "active", checkIns: 56, lastVisit: "2026-04-19", trainerId: "t2" },
+  { id: "m6", name: "Olumide Bakare", email: "olu.b@example.com", phone: "+234 808 444 7777", plan: "Premium", joinDate: "2025-12-12", expiryDate: "2026-06-12", status: "active", checkIns: 38, lastVisit: "2026-04-22", trainerId: "t1" },
+  { id: "m7", name: "Sarah Mwangi", email: "s.mwangi@example.com", phone: "+234 809 333 2222", plan: "Standard", joinDate: "2026-02-08", expiryDate: "2026-05-30", status: "active", checkIns: 18, lastVisit: "2026-04-18", trainerId: "t3" },
+  { id: "m8", name: "Tunde Adeyemi", email: "tunde.a@example.com", phone: "+234 810 555 9999", plan: "Basic", joinDate: "2025-10-22", expiryDate: "2026-05-22", status: "active", checkIns: 31, lastVisit: "2026-04-17", trainerId: "t1" },
+];
+
+export const seedTrainers = [
+  { id: "t1", name: "Jordan Rivera", specialty: "Strength & Conditioning", clients: 12, rating: 4.9 },
+  { id: "t2", name: "Kemi Adebayo", specialty: "Yoga & Mobility", clients: 18, rating: 4.8 },
+  { id: "t3", name: "Tomás Vega", specialty: "HIIT & Cardio", clients: 15, rating: 4.7 },
+];
+
+export const seedClasses = [
+  { id: "c1", name: "Morning HIIT", trainer: "Tomás Vega", trainerId: "t3", time: "06:30", day: "Mon", capacity: 20, booked: 14, bookedMemberIds: ["m1", "m2"] },
+  { id: "c2", name: "Power Yoga", trainer: "Kemi Adebayo", trainerId: "t2", time: "08:00", day: "Mon", capacity: 15, booked: 15, bookedMemberIds: ["m3", "m5"] },
+  { id: "c3", name: "Heavy Lifting", trainer: "Jordan Rivera", trainerId: "t1", time: "18:00", day: "Mon", capacity: 10, booked: 7, bookedMemberIds: ["m1", "m6"] },
+  { id: "c4", name: "Spin Class", trainer: "Tomás Vega", trainerId: "t3", time: "07:00", day: "Tue", capacity: 25, booked: 19, bookedMemberIds: ["m2", "m7"] },
+  { id: "c5", name: "Mobility Flow", trainer: "Kemi Adebayo", trainerId: "t2", time: "17:30", day: "Tue", capacity: 15, booked: 8, bookedMemberIds: ["m3"] },
+  { id: "c6", name: "Strength Circuit", trainer: "Jordan Rivera", trainerId: "t1", time: "19:00", day: "Wed", capacity: 12, booked: 10, bookedMemberIds: ["m1", "m6", "m8"] },
+  { id: "c7", name: "Vinyasa Flow", trainer: "Kemi Adebayo", trainerId: "t2", time: "07:30", day: "Thu", capacity: 15, booked: 12, bookedMemberIds: ["m5"] },
+  { id: "c8", name: "Boxing Cardio", trainer: "Tomás Vega", trainerId: "t3", time: "18:30", day: "Fri", capacity: 18, booked: 16, bookedMemberIds: ["m7"] },
+  { id: "c9", name: "Weekend Warriors", trainer: "Jordan Rivera", trainerId: "t1", time: "09:00", day: "Sat", capacity: 15, booked: 11, bookedMemberIds: ["m1", "m2", "m6"] },
+];
+
+export const seedPayments = [
+  { id: "p1", memberId: "m1", memberName: "Amara Okafor", amount: 40000, date: "2026-04-14", status: "paid", method: "Card" },
+  { id: "p2", memberId: "m2", memberName: "David Chen", amount: 25000, date: "2026-04-03", status: "paid", method: "Transfer" },
+  { id: "p3", memberId: "m3", memberName: "Fatima Al-Hassan", amount: 40000, date: "2026-04-21", status: "paid", method: "Card" },
+  { id: "p4", memberId: "m4", memberName: "Marcus Thompson", amount: 15000, date: "2026-04-15", status: "overdue", method: "—" },
+  { id: "p5", memberId: "m5", memberName: "Priya Kapoor", amount: 25000, date: "2026-03-28", status: "paid", method: "Cash" },
+  { id: "p6", memberId: "m6", memberName: "Olumide Bakare", amount: 40000, date: "2026-04-12", status: "paid", method: "Card" },
+  { id: "p7", memberId: "m7", memberName: "Sarah Mwangi", amount: 25000, date: "2026-04-30", status: "pending", method: "—" },
+  { id: "p8", memberId: "m8", memberName: "Tunde Adeyemi", amount: 15000, date: "2026-04-22", status: "paid", method: "Transfer" },
+  { id: "p9", memberId: "m1", memberName: "Amara Okafor", amount: 40000, date: "2026-03-14", status: "paid", method: "Card" },
+  { id: "p10", memberId: "m3", memberName: "Fatima Al-Hassan", amount: 40000, date: "2026-03-21", status: "paid", method: "Card" },
+  { id: "p11", memberId: "m6", memberName: "Olumide Bakare", amount: 40000, date: "2026-03-12", status: "paid", method: "Card" },
+  { id: "p12", memberId: "m2", memberName: "David Chen", amount: 25000, date: "2026-03-03", status: "paid", method: "Transfer" },
+];
+
+export const seedProducts = [
+  { id: "prod1", name: "Whey Protein 2kg", category: "Supplements", price: 18000, stock: 24, lowStock: 5, sku: "SUP-WP-2K" },
+  { id: "prod2", name: "Pre-Workout (30 servings)", category: "Supplements", price: 12000, stock: 18, lowStock: 5, sku: "SUP-PW-30" },
+  { id: "prod3", name: "Ironside Tee (Black)", category: "Apparel", price: 8500, stock: 32, lowStock: 10, sku: "AP-TEE-BLK" },
+  { id: "prod4", name: "Ironside Tee (Lime)", category: "Apparel", price: 8500, stock: 3, lowStock: 10, sku: "AP-TEE-LIM" },
+  { id: "prod5", name: "Lifting Straps", category: "Gear", price: 5500, stock: 15, lowStock: 5, sku: "GR-STR-01" },
+  { id: "prod6", name: "Resistance Band Set", category: "Gear", price: 9000, stock: 11, lowStock: 5, sku: "GR-BND-SET" },
+  { id: "prod7", name: "Water Bottle (1L)", category: "Accessories", price: 3500, stock: 48, lowStock: 15, sku: "AC-BTL-1L" },
+  { id: "prod8", name: "Sports Towel", category: "Accessories", price: 2500, stock: 7, lowStock: 10, sku: "AC-TWL-01" },
+  { id: "prod9", name: "Day Pass", category: "Services", price: 3000, stock: 999, lowStock: 0, sku: "SVC-DAY" },
+  { id: "prod10", name: "Personal Training Session", category: "Services", price: 15000, stock: 999, lowStock: 0, sku: "SVC-PT" },
+];
+
+export const seedSales = [
+  { id: "s1", date: "2026-04-22", time: "10:14", memberId: "m1", memberName: "Amara Okafor", items: [{ productId: "prod1", name: "Whey Protein 2kg", qty: 1, price: 18000 }], total: 18000, method: "Card", staffName: "Chioma Eze" },
+  { id: "s2", date: "2026-04-22", time: "11:32", memberId: null, memberName: "Walk-in", items: [{ productId: "prod9", name: "Day Pass", qty: 1, price: 3000 }, { productId: "prod7", name: "Water Bottle (1L)", qty: 1, price: 3500 }], total: 6500, method: "Cash", staffName: "Chioma Eze" },
+  { id: "s3", date: "2026-04-21", time: "16:45", memberId: "m3", memberName: "Fatima Al-Hassan", items: [{ productId: "prod3", name: "Ironside Tee (Black)", qty: 2, price: 8500 }], total: 17000, method: "Account", staffName: "Aisha Bello" },
+  { id: "s4", date: "2026-04-20", time: "09:22", memberId: "m6", memberName: "Olumide Bakare", items: [{ productId: "prod2", name: "Pre-Workout (30 servings)", qty: 1, price: 12000 }, { productId: "prod5", name: "Lifting Straps", qty: 1, price: 5500 }], total: 17500, method: "Card", staffName: "Chioma Eze" },
+];
+
+export const seedLeads = [
+  { id: "l1", name: "Bisi Adeleke", email: "bisi.a@example.com", phone: "+234 811 222 3333", source: "Walk-in", stage: "tour-booked", interest: "Premium", notes: "Toured on Apr 19, mentioned wanting to start in May", createdAt: "2026-04-19", assignedTo: "Chioma Eze", lastContact: "2026-04-19" },
+  { id: "l2", name: "Kingsley Obi", email: "k.obi@example.com", phone: "+234 812 444 5555", source: "Instagram", stage: "new", interest: "Standard", notes: "DM'd asking about pricing", createdAt: "2026-04-21", assignedTo: "Chioma Eze", lastContact: "2026-04-21" },
+  { id: "l3", name: "Adaeze Nwosu", email: "ada.n@example.com", phone: "+234 813 666 7777", source: "Referral", stage: "trial", interest: "Premium", notes: "Friend of Fatima Al-Hassan, completed free week", createdAt: "2026-04-15", assignedTo: "Aisha Bello", lastContact: "2026-04-22" },
+  { id: "l4", name: "Yusuf Garba", email: "yusuf.g@example.com", phone: "+234 814 888 9999", source: "Website", stage: "contacted", interest: "Basic", notes: "Wants to compare with competitor first", createdAt: "2026-04-17", assignedTo: "Chioma Eze", lastContact: "2026-04-20" },
+  { id: "l5", name: "Ngozi Okonkwo", email: "n.okonkwo@example.com", phone: "+234 815 111 2222", source: "Walk-in", stage: "won", interest: "Standard", notes: "Signed up Apr 22", createdAt: "2026-04-10", assignedTo: "Aisha Bello", lastContact: "2026-04-22" },
+  { id: "l6", name: "Emeka Eze", email: "emeka.e@example.com", phone: "+234 816 333 4444", source: "Google Ads", stage: "lost", interest: "Basic", notes: "Found a cheaper gym nearby", createdAt: "2026-04-08", assignedTo: "Chioma Eze", lastContact: "2026-04-14" },
+  { id: "l7", name: "Hadiza Mohammed", email: "hadiza.m@example.com", phone: "+234 817 555 6666", source: "Referral", stage: "tour-booked", interest: "Premium", notes: "Tour scheduled for Apr 25 at 4pm", createdAt: "2026-04-22", assignedTo: "Aisha Bello", lastContact: "2026-04-22" },
+];
+
+export const LEAD_STAGES = [
+  { id: "new", label: "New", color: "bg-stone-100 text-stone-700 border-stone-300" },
+  { id: "contacted", label: "Contacted", color: "bg-sky-100 text-sky-800 border-sky-300" },
+  { id: "tour-booked", label: "Tour Booked", color: "bg-amber-100 text-amber-800 border-amber-300" },
+  { id: "trial", label: "Free Trial", color: "bg-violet-100 text-violet-800 border-violet-300" },
+  { id: "won", label: "Won", color: "bg-lime-100 text-lime-800 border-lime-300" },
+  { id: "lost", label: "Lost", color: "bg-rose-100 text-rose-800 border-rose-300" },
+];
+
+export const seedAccessLogs = [
+  { id: "a1", memberId: "m1", memberName: "Amara Okafor", date: "2026-04-22", time: "06:14", door: "Main Entrance", granted: true },
+  { id: "a2", memberId: "m3", memberName: "Fatima Al-Hassan", date: "2026-04-22", time: "07:32", door: "Main Entrance", granted: true },
+  { id: "a3", memberId: "m6", memberName: "Olumide Bakare", date: "2026-04-22", time: "08:01", door: "Main Entrance", granted: true },
+  { id: "a4", memberId: "m4", memberName: "Marcus Thompson", date: "2026-04-22", time: "09:18", door: "Main Entrance", granted: false, reason: "Membership expired" },
+  { id: "a5", memberId: "m2", memberName: "David Chen", date: "2026-04-22", time: "10:45", door: "Main Entrance", granted: true },
+  { id: "a6", memberId: null, memberName: "Unknown", date: "2026-04-22", time: "11:02", door: "Side Door", granted: false, reason: "Invalid QR code" },
+];
+
+export const seedMessages = [
+  { id: "msg1", type: "auto", template: "Expiry Reminder", recipient: "Sarah Mwangi", channel: "SMS", status: "sent", date: "2026-04-22", time: "09:00", content: "Hi Sarah, your Ironside membership expires on May 30. Renew anytime at the front desk." },
+  { id: "msg2", type: "auto", template: "Overdue Payment", recipient: "Marcus Thompson", channel: "Email", status: "sent", date: "2026-04-22", time: "08:00", content: "Marcus, your April payment of ₦15,000 is overdue. Please contact us." },
+  { id: "msg3", type: "manual", template: null, recipient: "All Premium Members", channel: "Email", status: "sent", date: "2026-04-21", time: "14:30", content: "Premium members: exclusive yoga retreat on May 15. RSVP via app." },
+  { id: "msg4", type: "auto", template: "Welcome", recipient: "Sarah Mwangi", channel: "SMS", status: "sent", date: "2026-02-08", time: "10:00", content: "Welcome to Ironside, Sarah! Your membership is now active." },
+  { id: "msg5", type: "auto", template: "Class Reminder", recipient: "Amara Okafor", channel: "SMS", status: "scheduled", date: "2026-04-23", time: "05:30", content: "Reminder: Morning HIIT at 6:30am today. See you there!" },
+];
+
+export const seedTemplates = [
+  { id: "tpl1", name: "Welcome", trigger: "Member signs up", channel: "SMS + Email", active: true, body: "Welcome to Ironside, {{name}}! Your {{plan}} membership is now active. See you at the gym." },
+  { id: "tpl2", name: "Expiry Reminder", trigger: "14 days before expiry", channel: "SMS", active: true, body: "Hi {{name}}, your Ironside membership expires on {{expiry}}. Renew anytime at the front desk." },
+  { id: "tpl3", name: "Overdue Payment", trigger: "Payment overdue 3 days", channel: "Email", active: true, body: "{{name}}, your {{month}} payment of ₦{{amount}} is overdue. Please contact us." },
+  { id: "tpl4", name: "Class Reminder", trigger: "1 hour before class", channel: "SMS", active: true, body: "Reminder: {{class}} at {{time}} today. See you there!" },
+  { id: "tpl5", name: "Birthday", trigger: "On member birthday", channel: "SMS", active: false, body: "Happy birthday, {{name}}! Enjoy a free smoothie on us today." },
+];
