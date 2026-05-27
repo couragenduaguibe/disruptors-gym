@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import {
   Users, CalendarDays, Activity, Flame, CheckCircle2, AlertTriangle,
-  Calendar, Award, UserCheck, QrCode, Camera,
+  Calendar, Award, UserCheck, QrCode, Camera, ShoppingBag, ShoppingCart,
+  Plus, Minus, Trash2, PackageCheck,
 } from "lucide-react";
 import { StatCard, EmptyState } from "../components/ui";
 import { planBadge, today, nowTime } from "../utils/storage";
-import { PLAN_PRICES } from "../data/seed";
+import { PLAN_PRICES, seedShopProducts } from "../data/seed";
 import { MemberQRScanner } from "../components/QRScanner";
 
 // ========================================================================
@@ -20,7 +21,7 @@ export function TrainerHome({ user, classes, members }) {
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-        <StatCard className="fade-up stagger-1" label="Active clients" value={myClients.length} icon={Users} accent="bg-lime-100 text-lime-900" />
+        <StatCard className="fade-up stagger-1" label="Active clients" value={myClients.length} icon={Users} accent="bg-red-100 text-red-900" />
         <StatCard className="fade-up stagger-2" label="Weekly classes" value={myClasses.length} icon={CalendarDays} accent="bg-sky-100 text-sky-900" />
         <StatCard className="fade-up stagger-3" label="Total bookings" value={totalBooked} icon={Activity} accent="bg-amber-100 text-amber-900" />
         <StatCard className="fade-up stagger-4" label="Capacity used" value={`${Math.round((totalBooked / Math.max(1, totalCapacity)) * 100)}%`} icon={Flame} accent="bg-rose-100 text-rose-900" />
@@ -61,7 +62,7 @@ export function TrainerHome({ user, classes, members }) {
                       <div className="text-xs text-stone-500 shrink-0">{c.booked}/{c.capacity}</div>
                     </div>
                     <div className="h-1.5 bg-stone-100 rounded-full overflow-hidden">
-                      <div className={`h-full rounded-full ${pct >= 90 ? "bg-rose-500" : "bg-lime-500"}`} style={{ width: `${pct}%` }} />
+                      <div className={`h-full rounded-full ${pct >= 90 ? "bg-rose-500" : "bg-red-500"}`} style={{ width: `${pct}%` }} />
                     </div>
                   </div>
                 </div>
@@ -102,7 +103,7 @@ export function TrainerClasses({ user, classes, members }) {
                       <div className="text-right shrink-0">
                         <div className="text-xs font-mono text-stone-500">{c.booked}/{c.capacity}</div>
                         <div className="w-20 h-1 bg-stone-100 rounded-full mt-1 overflow-hidden">
-                          <div className={`h-full rounded-full ${pct >= 90 ? "bg-rose-500" : "bg-lime-500"}`} style={{ width: `${pct}%` }} />
+                          <div className={`h-full rounded-full ${pct >= 90 ? "bg-rose-500" : "bg-red-500"}`} style={{ width: `${pct}%` }} />
                         </div>
                       </div>
                     </div>
@@ -153,7 +154,7 @@ export function TrainerClients({ user, members, onMemberClick }) {
             </div>
             <div>
               <div className="font-mono text-stone-500 tracking-wider uppercase">Status</div>
-              <div className={`font-semibold text-base mt-0.5 ${m.status === "active" ? "text-lime-700" : "text-rose-700"}`}>
+              <div className={`font-semibold text-base mt-0.5 ${m.status === "active" ? "text-red-700" : "text-rose-700"}`}>
                 {m.status === "active" ? "Active" : "Expired"}
               </div>
             </div>
@@ -196,9 +197,9 @@ export function MemberHome({ user, members, classes, payments, checkIns, onNavig
 
       {/* Big check-in CTA */}
       <button onClick={() => onNavigate("my-qr")}
-        className="w-full bg-lime-400 text-stone-900 rounded-2xl p-6 sm:p-8 flex items-center gap-5 hover:bg-lime-500 transition group">
+        className="w-full bg-red-500 text-white rounded-2xl p-6 sm:p-8 flex items-center gap-5 hover:bg-red-600 transition group">
         <div className="w-16 h-16 sm:w-20 sm:h-20 bg-stone-900 rounded-2xl flex items-center justify-center shrink-0">
-          <QrCode className="w-8 h-8 sm:w-10 sm:h-10 text-lime-400" />
+          <QrCode className="w-8 h-8 sm:w-10 sm:h-10 text-red-400" />
         </div>
         <div className="flex-1 text-left min-w-0">
           <div className="font-display text-2xl sm:text-3xl font-semibold leading-tight">Check in</div>
@@ -208,9 +209,9 @@ export function MemberHome({ user, members, classes, payments, checkIns, onNavig
 
       <div className="relative overflow-hidden rounded-2xl bg-stone-900 text-white p-6 sm:p-8 fade-up">
         <div className="absolute inset-0 noise-bg opacity-30 pointer-events-none" />
-        <div className="absolute -right-20 -top-20 w-80 h-80 rounded-full bg-lime-400/20 blur-3xl" />
+        <div className="absolute -right-20 -top-20 w-80 h-80 rounded-full bg-red-500/20 blur-3xl" />
         <div className="relative z-10 max-w-xl">
-          <div className="text-xs font-mono tracking-widest text-lime-400 uppercase mb-3">{me.plan.toUpperCase()} MEMBER</div>
+          <div className="text-xs font-mono tracking-widest text-red-400 uppercase mb-3">{me.plan.toUpperCase()} MEMBER</div>
           <h2 className="font-display text-3xl sm:text-4xl font-semibold leading-tight mb-3">
             {me.checkIns} workouts and counting.
           </h2>
@@ -221,7 +222,7 @@ export function MemberHome({ user, members, classes, payments, checkIns, onNavig
       </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-        <StatCard className="fade-up stagger-1" label="Total visits" value={me.checkIns} icon={Activity} accent="bg-lime-100 text-lime-900" />
+        <StatCard className="fade-up stagger-1" label="Total visits" value={me.checkIns} icon={Activity} accent="bg-red-100 text-red-900" />
         <StatCard className="fade-up stagger-2" label="Classes booked" value={myClasses.length} icon={CalendarDays} accent="bg-sky-100 text-sky-900" />
         <StatCard className="fade-up stagger-3" label="Plan" value={me.plan} icon={Award} accent="bg-amber-100 text-amber-900" />
         <StatCard className="fade-up stagger-4" label="Days left" value={daysToExpiry >= 0 ? daysToExpiry : 0} icon={Calendar} accent={daysToExpiry < 14 ? "bg-rose-100 text-rose-900" : "bg-stone-100 text-stone-700"} />
@@ -257,7 +258,7 @@ export function MemberHome({ user, members, classes, payments, checkIns, onNavig
             <div className="space-y-1">
               {myCheckIns.slice(0, 5).map((ci) => (
                 <div key={ci.id} className="flex items-center gap-3 py-2">
-                  <div className="w-7 h-7 rounded-full bg-lime-100 flex items-center justify-center"><CheckCircle2 className="w-3.5 h-3.5 text-lime-700" /></div>
+                  <div className="w-7 h-7 rounded-full bg-red-100 flex items-center justify-center"><CheckCircle2 className="w-3.5 h-3.5 text-red-700" /></div>
                   <div className="flex-1 text-sm">{new Date(ci.date).toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" })}</div>
                   <div className="text-sm font-mono text-stone-500">{ci.time}</div>
                 </div>
@@ -307,7 +308,7 @@ export function MemberQRView({ user, members, setMembers, checkIns, setCheckIns,
     <div className="space-y-6 max-w-xl">
       {feedback && (
         <div className={`p-4 rounded-xl border ${
-          feedback.type === "success" ? "bg-lime-50 border-lime-200 text-lime-900" :
+          feedback.type === "success" ? "bg-red-50 border-red-200 text-red-900" :
           feedback.type === "error" ? "bg-rose-50 border-rose-200 text-rose-900" :
           "bg-sky-50 border-sky-200 text-sky-900"
         }`}>
@@ -320,14 +321,14 @@ export function MemberQRView({ user, members, setMembers, checkIns, setCheckIns,
 
       <div className="bg-white rounded-2xl border border-stone-200 p-8 text-center">
         <div className="w-20 h-20 mx-auto mb-6 bg-stone-900 rounded-2xl flex items-center justify-center">
-          <QrCode className="w-10 h-10 text-lime-400" />
+          <QrCode className="w-10 h-10 text-red-400" />
         </div>
         <h2 className="font-display text-2xl font-semibold mb-2">Check in to the gym</h2>
         <p className="text-sm text-stone-600 mb-6 max-w-sm mx-auto">
           When you arrive at the gym, tap the button below and point your camera at the QR code displayed at the front desk.
         </p>
         <button onClick={() => setShowScanner(true)}
-          className="inline-flex items-center gap-2 px-6 py-3 bg-lime-400 text-stone-900 rounded-lg text-sm font-semibold hover:bg-lime-500 transition">
+          className="inline-flex items-center gap-2 px-6 py-3 bg-red-500 text-white rounded-lg text-sm font-semibold hover:bg-red-600 transition">
           <Camera className="w-4 h-4" /> Open camera
         </button>
 
@@ -389,7 +390,7 @@ export function MemberBookClasses({ user, classes, setClasses }) {
                 const full = c.booked >= c.capacity && !isBooked;
                 const pct = Math.round((c.booked / c.capacity) * 100);
                 return (
-                  <div key={c.id} className={`bg-white border rounded-xl p-4 transition ${isBooked ? "border-lime-500 bg-lime-50" : "border-stone-200"}`}>
+                  <div key={c.id} className={`bg-white border rounded-xl p-4 transition ${isBooked ? "border-red-500 bg-red-50" : "border-stone-200"}`}>
                     <div className="flex items-start justify-between mb-2">
                       <div className="min-w-0">
                         <div className="font-semibold truncate">{c.name}</div>
@@ -401,7 +402,7 @@ export function MemberBookClasses({ user, classes, setClasses }) {
                     </div>
                     <div className="flex items-center gap-2 mb-3">
                       <div className="flex-1 h-1 bg-stone-200 rounded-full overflow-hidden">
-                        <div className={`h-full rounded-full ${pct >= 90 ? "bg-rose-500" : "bg-lime-500"}`} style={{ width: `${pct}%` }} />
+                        <div className={`h-full rounded-full ${pct >= 90 ? "bg-rose-500" : "bg-red-500"}`} style={{ width: `${pct}%` }} />
                       </div>
                       <span className="text-[10px] font-mono text-stone-500">{c.booked}/{c.capacity}</span>
                     </div>
@@ -409,7 +410,7 @@ export function MemberBookClasses({ user, classes, setClasses }) {
                       className={`w-full py-2 text-xs font-semibold rounded-lg transition ${
                         isBooked ? "bg-stone-900 text-white hover:bg-stone-800" :
                         full ? "bg-stone-100 text-stone-400 cursor-not-allowed" :
-                        "bg-lime-400 text-stone-900 hover:bg-lime-500"
+                        "bg-red-500 text-white hover:bg-red-600"
                       }`}>
                       {isBooked ? "Cancel booking" : full ? "Class full" : "Book spot"}
                     </button>
@@ -455,7 +456,7 @@ export function MemberHistory({ user, checkIns, classes }) {
                 </div>
                 {entries.map((ci) => (
                   <div key={ci.id} className="flex items-center gap-3 py-2">
-                    <div className="w-8 h-8 rounded-full bg-lime-100 flex items-center justify-center"><CheckCircle2 className="w-4 h-4 text-lime-700" /></div>
+                    <div className="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center"><CheckCircle2 className="w-4 h-4 text-red-700" /></div>
                     <div className="flex-1 text-sm">Checked in {ci.method && <span className="text-xs text-stone-500 font-mono ml-1">via {ci.method}</span>}</div>
                     <div className="text-sm font-mono text-stone-500">{ci.time}</div>
                   </div>
@@ -464,6 +465,159 @@ export function MemberHistory({ user, checkIns, classes }) {
             ))}
           </div>
         )}
+      </div>
+    </div>
+  );
+}
+
+// ========================================================================
+// MEMBER SHOP
+// ========================================================================
+const SHOP_CATEGORIES = ["Fitness Accessories", "Daily Essentials"];
+
+export function MemberShop({ user, shopOrders, setShopOrders }) {
+  const [category, setCategory] = useState("Fitness Accessories");
+  const [cart, setCart] = useState({});
+  const [ordered, setOrdered] = useState(false);
+
+  const products = seedShopProducts.filter((p) => p.category === category);
+
+  const addToCart = (id) => setCart((c) => ({ ...c, [id]: (c[id] || 0) + 1 }));
+  const removeFromCart = (id) => setCart((c) => {
+    const next = { ...c };
+    if (next[id] <= 1) delete next[id]; else next[id]--;
+    return next;
+  });
+  const clearCart = () => setCart({});
+
+  const cartItems = Object.entries(cart).map(([id, qty]) => {
+    const p = seedShopProducts.find((x) => x.id === id);
+    return { ...p, qty };
+  });
+  const cartTotal = cartItems.reduce((s, i) => s + i.price * i.qty, 0);
+  const cartCount = cartItems.reduce((s, i) => s + i.qty, 0);
+
+  const placeOrder = () => {
+    if (cartItems.length === 0) return;
+    const order = {
+      id: `ord${Date.now()}`,
+      memberId: user.memberId,
+      memberName: user.name,
+      items: cartItems,
+      total: cartTotal,
+      date: today(),
+      status: "pending",
+    };
+    setShopOrders([order, ...shopOrders]);
+    clearCart();
+    setOrdered(true);
+    setTimeout(() => setOrdered(false), 4000);
+  };
+
+  return (
+    <div className="space-y-6">
+      {ordered && (
+        <div className="flex items-center gap-3 p-4 bg-red-50 border border-red-200 rounded-xl">
+          <PackageCheck className="w-5 h-5 text-red-600 shrink-0" />
+          <div>
+            <div className="text-sm font-semibold">Order placed!</div>
+            <div className="text-xs text-stone-600">Collect and pay at the front desk.</div>
+          </div>
+        </div>
+      )}
+
+      {/* Category tabs */}
+      <div className="flex gap-2">
+        {SHOP_CATEGORIES.map((cat) => (
+          <button key={cat} onClick={() => setCategory(cat)}
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
+              category === cat ? "bg-red-500 text-white" : "bg-white border border-stone-200 text-stone-700 hover:border-stone-400"
+            }`}>
+            {cat}
+          </button>
+        ))}
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Product grid */}
+        <div className="lg:col-span-2 grid grid-cols-2 sm:grid-cols-3 gap-3">
+          {products.map((p) => {
+            const qty = cart[p.id] || 0;
+            return (
+              <div key={p.id} className="bg-white rounded-xl border border-stone-200 p-4 flex flex-col gap-3">
+                <div className="w-10 h-10 bg-stone-100 rounded-lg flex items-center justify-center">
+                  <ShoppingBag className="w-5 h-5 text-stone-500" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="font-medium text-sm leading-tight">{p.name}</div>
+                  <div className="text-xs text-stone-500 mt-0.5">{p.description}</div>
+                  <div className="font-semibold text-sm mt-2">₦{p.price.toLocaleString()}</div>
+                </div>
+                {qty === 0 ? (
+                  <button onClick={() => addToCart(p.id)}
+                    className="w-full py-1.5 bg-red-500 text-white text-xs font-semibold rounded-lg hover:bg-red-600 transition">
+                    Add
+                  </button>
+                ) : (
+                  <div className="flex items-center justify-between gap-2">
+                    <button onClick={() => removeFromCart(p.id)} className="w-8 h-8 bg-stone-100 rounded-lg flex items-center justify-center hover:bg-stone-200 transition">
+                      <Minus className="w-3.5 h-3.5" />
+                    </button>
+                    <span className="font-mono font-semibold text-sm">{qty}</span>
+                    <button onClick={() => addToCart(p.id)} className="w-8 h-8 bg-red-500 text-white rounded-lg flex items-center justify-center hover:bg-red-600 transition">
+                      <Plus className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Cart */}
+        <div className="bg-white rounded-xl border border-stone-200 p-5 h-fit sticky top-24">
+          <div className="flex items-center gap-2 mb-4">
+            <ShoppingCart className="w-5 h-5 text-stone-500" />
+            <h3 className="font-display text-lg font-semibold">Cart</h3>
+            {cartCount > 0 && (
+              <span className="ml-auto text-xs bg-red-500 text-white rounded-full px-2 py-0.5 font-mono">{cartCount}</span>
+            )}
+          </div>
+
+          {cartItems.length === 0 ? (
+            <div className="text-center py-8 text-stone-400">
+              <ShoppingCart className="w-8 h-8 mx-auto mb-2 opacity-40" />
+              <p className="text-sm">Your cart is empty</p>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {cartItems.map((item) => (
+                <div key={item.id} className="flex items-center gap-3">
+                  <div className="flex-1 min-w-0">
+                    <div className="text-sm font-medium truncate">{item.name}</div>
+                    <div className="text-xs text-stone-500">₦{item.price.toLocaleString()} × {item.qty}</div>
+                  </div>
+                  <div className="text-sm font-mono font-semibold shrink-0">₦{(item.price * item.qty).toLocaleString()}</div>
+                  <button onClick={() => removeFromCart(item.id)} className="text-stone-400 hover:text-rose-600 transition">
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              ))}
+
+              <div className="pt-3 border-t border-stone-200">
+                <div className="flex items-center justify-between mb-4">
+                  <span className="font-semibold">Total</span>
+                  <span className="font-display text-xl font-semibold">₦{cartTotal.toLocaleString()}</span>
+                </div>
+                <button onClick={placeOrder}
+                  className="w-full py-3 bg-red-500 text-white rounded-lg text-sm font-semibold hover:bg-red-600 transition">
+                  Place order
+                </button>
+                <p className="text-[10px] text-stone-400 text-center mt-2">Collect & pay at the front desk</p>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
@@ -501,14 +655,14 @@ export function MemberPayments({ user, payments, members }) {
           <div className="space-y-2">
             {myPayments.map((p) => (
               <div key={p.id} className="flex items-center gap-3 p-3 bg-stone-50 rounded-lg">
-                <div className={`w-9 h-9 rounded-full flex items-center justify-center ${p.status === "paid" ? "bg-lime-100" : p.status === "overdue" ? "bg-rose-100" : "bg-amber-100"}`}>
-                  <CheckCircle2 className={`w-4 h-4 ${p.status === "paid" ? "text-lime-700" : p.status === "overdue" ? "text-rose-700" : "text-amber-700"}`} />
+                <div className={`w-9 h-9 rounded-full flex items-center justify-center ${p.status === "paid" ? "bg-red-100" : p.status === "overdue" ? "bg-rose-100" : "bg-amber-100"}`}>
+                  <CheckCircle2 className={`w-4 h-4 ${p.status === "paid" ? "text-red-700" : p.status === "overdue" ? "text-rose-700" : "text-amber-700"}`} />
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="text-sm font-semibold">₦{p.amount.toLocaleString()}</div>
                   <div className="text-xs text-stone-500">{new Date(p.date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })} · {p.method}</div>
                 </div>
-                <span className={`text-[10px] font-mono tracking-wider uppercase px-2 py-1 rounded-full ${p.status === "paid" ? "bg-lime-100 text-lime-800" : p.status === "overdue" ? "bg-rose-100 text-rose-800" : "bg-amber-100 text-amber-800"}`}>{p.status}</span>
+                <span className={`text-[10px] font-mono tracking-wider uppercase px-2 py-1 rounded-full ${p.status === "paid" ? "bg-red-100 text-red-800" : p.status === "overdue" ? "bg-rose-100 text-rose-800" : "bg-amber-100 text-amber-800"}`}>{p.status}</span>
               </div>
             ))}
           </div>

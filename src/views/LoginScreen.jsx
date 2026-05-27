@@ -26,21 +26,21 @@ export function LoginScreen({ onLogin }) {
       <div className="w-full max-w-5xl grid lg:grid-cols-2 gap-0 bg-white rounded-2xl border border-stone-200 overflow-hidden shadow-sm">
         <div className="relative bg-stone-900 text-white p-8 lg:p-12 flex flex-col justify-between min-h-[280px] lg:min-h-[600px]">
           <div className="absolute inset-0 noise-bg opacity-20 pointer-events-none" />
-          <div className="absolute -right-24 -top-24 w-80 h-80 rounded-full bg-lime-400/20 blur-3xl" />
+          <div className="absolute -right-24 -top-24 w-80 h-80 rounded-full bg-red-500/20 blur-3xl" />
           <div className="absolute -left-12 bottom-0 w-60 h-60 rounded-full bg-amber-400/10 blur-3xl" />
 
           <div className="relative z-10">
             <div className="flex items-center gap-3 mb-12">
-              <div className="w-11 h-11 bg-lime-400 rounded-lg flex items-center justify-center">
-                <Dumbbell className="w-6 h-6 text-stone-900" strokeWidth={2.5} />
+              <div className="w-11 h-11 bg-red-500 rounded-lg flex items-center justify-center">
+                <Dumbbell className="w-6 h-6 text-white" strokeWidth={2.5} />
               </div>
               <div>
-                <div className="font-display text-2xl font-semibold">Ironside</div>
+                <div className="font-display text-2xl font-semibold">Disruptors</div>
                 <div className="text-xs text-stone-400 font-mono tracking-widest">GYM OS</div>
               </div>
             </div>
 
-            <div className="text-xs font-mono tracking-widest text-lime-400 uppercase mb-3">Welcome back</div>
+            <div className="text-xs font-mono tracking-widest text-red-400 uppercase mb-3">Welcome back</div>
             <h1 className="font-display text-4xl lg:text-5xl font-semibold leading-tight mb-4">
               Lift heavy. <br />Run the numbers.
             </h1>
@@ -50,7 +50,7 @@ export function LoginScreen({ onLogin }) {
           </div>
 
           <div className="relative z-10 text-xs text-stone-500 font-mono tracking-wider mt-8">
-            © 2026 IRONSIDE GYM SYSTEMS
+            © 2026 DISRUPTORS GYM SYSTEMS
           </div>
         </div>
 

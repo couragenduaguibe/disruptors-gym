@@ -47,7 +47,7 @@ export function Dashboard({ stats, members, classes, payments, onMemberClick, on
       )}
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-        <StatCard className="fade-up stagger-1" label="Active members" value={stats.active} icon={Users} accent="bg-lime-100 text-lime-900" trend="+12%" trendUp />
+        <StatCard className="fade-up stagger-1" label="Active members" value={stats.active} icon={Users} accent="bg-red-100 text-red-900" trend="+12%" trendUp />
         {isAdmin && <StatCard className="fade-up stagger-2" label="April revenue" value={`₦${(stats.revenue / 1000).toFixed(0)}K`} icon={DollarSign} accent="bg-amber-100 text-amber-900" trend="+8%" trendUp />}
         <StatCard className="fade-up stagger-3" label="Today's check-ins" value={stats.todayCheckIns} icon={Activity} accent="bg-sky-100 text-sky-900" />
         <StatCard className="fade-up stagger-4" label="Class utilization" value={`${Math.round(stats.classUtil * 100)}%`} icon={Flame} accent="bg-rose-100 text-rose-900" trend="-3%" />
@@ -55,9 +55,9 @@ export function Dashboard({ stats, members, classes, payments, onMemberClick, on
 
       <div className="relative overflow-hidden rounded-2xl bg-stone-900 text-white p-6 sm:p-8 fade-up">
         <div className="absolute inset-0 noise-bg opacity-30 pointer-events-none" />
-        <div className="absolute -right-20 -top-20 w-80 h-80 rounded-full bg-lime-400/20 blur-3xl" />
+        <div className="absolute -right-20 -top-20 w-80 h-80 rounded-full bg-red-500/20 blur-3xl" />
         <div className="relative z-10 max-w-xl">
-          <div className="text-xs font-mono tracking-widest text-lime-400 uppercase mb-3">This week</div>
+          <div className="text-xs font-mono tracking-widest text-red-400 uppercase mb-3">This week</div>
           <h2 className="font-display text-3xl sm:text-4xl font-semibold leading-tight mb-3">Momentum is building.</h2>
           <p className="text-stone-300 text-base sm:text-lg">
             {stats.active} active members training hard. {Math.round(stats.classUtil * 100)}% of class slots filling up.
@@ -86,7 +86,7 @@ export function Dashboard({ stats, members, classes, payments, onMemberClick, on
                       <div className="text-xs text-stone-500 shrink-0">{c.booked}/{c.capacity}</div>
                     </div>
                     <div className="h-1.5 bg-stone-100 rounded-full overflow-hidden">
-                      <div className={`h-full rounded-full ${pct >= 90 ? "bg-rose-500" : pct >= 60 ? "bg-lime-500" : "bg-sky-500"}`} style={{ width: `${pct}%` }} />
+                      <div className={`h-full rounded-full ${pct >= 90 ? "bg-rose-500" : pct >= 60 ? "bg-red-500" : "bg-sky-500"}`} style={{ width: `${pct}%` }} />
                     </div>
                   </div>
                 </div>
@@ -195,8 +195,8 @@ export function MembersView({ members, setMembers, onMemberClick, user }) {
                   <td className="px-6 py-4 text-sm font-mono">{m.checkIns}</td>
                   <td className="px-6 py-4 text-sm text-stone-600">{m.lastVisit ? new Date(m.lastVisit).toLocaleDateString("en-US", { month: "short", day: "numeric" }) : "—"}</td>
                   <td className="px-6 py-4">
-                    <span className={`inline-flex items-center gap-1.5 text-xs font-medium ${m.status === "active" ? "text-lime-700" : "text-rose-700"}`}>
-                      <span className={`w-1.5 h-1.5 rounded-full ${m.status === "active" ? "bg-lime-500" : "bg-rose-500"}`} />
+                    <span className={`inline-flex items-center gap-1.5 text-xs font-medium ${m.status === "active" ? "text-red-700" : "text-rose-700"}`}>
+                      <span className={`w-1.5 h-1.5 rounded-full ${m.status === "active" ? "bg-red-500" : "bg-rose-500"}`} />
                       {m.status === "active" ? "Active" : "Expired"}
                     </span>
                   </td>
@@ -236,8 +236,8 @@ export function MembersView({ members, setMembers, onMemberClick, user }) {
             <div className="flex items-center justify-between text-xs">
               <div className="flex items-center gap-4">
                 <span className="text-stone-600"><span className="font-mono font-semibold">{m.checkIns}</span> visits</span>
-                <span className={`inline-flex items-center gap-1 ${m.status === "active" ? "text-lime-700" : "text-rose-700"}`}>
-                  <span className={`w-1.5 h-1.5 rounded-full ${m.status === "active" ? "bg-lime-500" : "bg-rose-500"}`} />{m.status}
+                <span className={`inline-flex items-center gap-1 ${m.status === "active" ? "text-red-700" : "text-rose-700"}`}>
+                  <span className={`w-1.5 h-1.5 rounded-full ${m.status === "active" ? "bg-red-500" : "bg-rose-500"}`} />{m.status}
                 </span>
               </div>
               <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
@@ -293,7 +293,7 @@ export function MemberDetail({ member, payments, checkIns, onClose }) {
   return (
     <div className="fixed inset-0 bg-stone-900/50 backdrop-blur-sm z-50 flex justify-end" onClick={onClose}>
       <div className="bg-white w-full max-w-lg h-full overflow-y-auto slide-in" onClick={(e) => e.stopPropagation()}>
-        <div className="relative h-32 bg-gradient-to-br from-lime-200 via-amber-200 to-rose-200">
+        <div className="relative h-32 bg-gradient-to-br from-red-200 via-amber-200 to-rose-200">
           <div className="absolute inset-0 noise-bg opacity-40" />
           <button onClick={onClose} className="absolute top-4 right-4 p-2 bg-white/80 hover:bg-white rounded-lg backdrop-blur"><X className="w-5 h-5" /></button>
         </div>
@@ -302,8 +302,8 @@ export function MemberDetail({ member, payments, checkIns, onClose }) {
           <h2 className="font-display text-2xl font-semibold">{member.name}</h2>
           <div className="flex items-center gap-2 mt-1">
             <span className={`text-[10px] font-mono tracking-wider px-2 py-1 rounded-full ${planBadge(member.plan)}`}>{member.plan.toUpperCase()}</span>
-            <span className={`inline-flex items-center gap-1.5 text-xs font-medium ${member.status === "active" ? "text-lime-700" : "text-rose-700"}`}>
-              <span className={`w-1.5 h-1.5 rounded-full ${member.status === "active" ? "bg-lime-500" : "bg-rose-500"}`} />
+            <span className={`inline-flex items-center gap-1.5 text-xs font-medium ${member.status === "active" ? "text-red-700" : "text-rose-700"}`}>
+              <span className={`w-1.5 h-1.5 rounded-full ${member.status === "active" ? "bg-red-500" : "bg-rose-500"}`} />
               {member.status === "active" ? "Active" : "Expired"}
             </span>
           </div>
@@ -336,14 +336,14 @@ export function MemberDetail({ member, payments, checkIns, onClose }) {
               <div className="space-y-2">
                 {payments.slice(0, 6).map((p) => (
                   <div key={p.id} className="flex items-center gap-3 p-3 bg-stone-50 rounded-lg">
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center ${p.status === "paid" ? "bg-lime-100" : p.status === "overdue" ? "bg-rose-100" : "bg-amber-100"}`}>
-                      <Receipt className={`w-4 h-4 ${p.status === "paid" ? "text-lime-700" : p.status === "overdue" ? "text-rose-700" : "text-amber-700"}`} />
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center ${p.status === "paid" ? "bg-red-100" : p.status === "overdue" ? "bg-rose-100" : "bg-amber-100"}`}>
+                      <Receipt className={`w-4 h-4 ${p.status === "paid" ? "text-red-700" : p.status === "overdue" ? "text-rose-700" : "text-amber-700"}`} />
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="text-sm font-medium">₦{p.amount.toLocaleString()}</div>
                       <div className="text-xs text-stone-500">{new Date(p.date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })} · {p.method}</div>
                     </div>
-                    <span className={`text-[10px] font-mono tracking-wider uppercase px-2 py-1 rounded-full ${p.status === "paid" ? "bg-lime-100 text-lime-800" : p.status === "overdue" ? "bg-rose-100 text-rose-800" : "bg-amber-100 text-amber-800"}`}>{p.status}</span>
+                    <span className={`text-[10px] font-mono tracking-wider uppercase px-2 py-1 rounded-full ${p.status === "paid" ? "bg-red-100 text-red-800" : p.status === "overdue" ? "bg-rose-100 text-rose-800" : "bg-amber-100 text-amber-800"}`}>{p.status}</span>
                   </div>
                 ))}
               </div>
@@ -356,7 +356,7 @@ export function MemberDetail({ member, payments, checkIns, onClose }) {
               <div className="space-y-1">
                 {checkIns.slice(0, 8).map((ci) => (
                   <div key={ci.id} className="flex items-center gap-3 py-2">
-                    <div className="w-7 h-7 rounded-full bg-lime-100 flex items-center justify-center"><CheckCircle2 className="w-3.5 h-3.5 text-lime-700" /></div>
+                    <div className="w-7 h-7 rounded-full bg-red-100 flex items-center justify-center"><CheckCircle2 className="w-3.5 h-3.5 text-red-700" /></div>
                     <div className="flex-1 text-sm">{new Date(ci.date).toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" })}</div>
                     <div className="text-sm font-mono text-stone-500">{ci.time}</div>
                   </div>
@@ -399,7 +399,7 @@ export function ClassesView({ classes, setClasses, trainers, user }) {
         <div className="text-xs text-stone-500 mb-2 truncate">{c.trainer}</div>
         <div className="flex items-center gap-1.5">
           <div className="flex-1 h-1 bg-stone-200 rounded-full overflow-hidden">
-            <div className={`h-full rounded-full ${pct >= 90 ? "bg-rose-500" : "bg-lime-500"}`} style={{ width: `${pct}%` }} />
+            <div className={`h-full rounded-full ${pct >= 90 ? "bg-rose-500" : "bg-red-500"}`} style={{ width: `${pct}%` }} />
           </div>
           <span className="text-[10px] font-mono text-stone-500">{c.booked}/{c.capacity}</span>
         </div>
@@ -495,7 +495,7 @@ export function TrainersView({ trainers }) {
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
       {trainers.map((t, i) => (
         <div key={t.id} className={`bg-white rounded-xl border border-stone-200 overflow-hidden fade-up stagger-${(i % 4) + 1}`}>
-          <div className="h-24 bg-gradient-to-br from-lime-200 via-amber-200 to-rose-200 relative">
+          <div className="h-24 bg-gradient-to-br from-red-200 via-amber-200 to-rose-200 relative">
             <div className="absolute inset-0 noise-bg opacity-40" />
           </div>
           <div className="p-5 -mt-10 relative">
@@ -535,13 +535,13 @@ export function CheckInsView({ checkIns }) {
       {/* Single primary action: the gym's check-in poster */}
       <div className="bg-stone-900 text-white rounded-2xl p-6 sm:p-8 relative overflow-hidden">
         <div className="absolute inset-0 noise-bg opacity-20 pointer-events-none" />
-        <div className="absolute -right-12 -top-12 w-60 h-60 rounded-full bg-lime-400/20 blur-3xl" />
+        <div className="absolute -right-12 -top-12 w-60 h-60 rounded-full bg-red-500/20 blur-3xl" />
         <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center gap-5">
           <div className="w-14 h-14 bg-lime-400 rounded-xl flex items-center justify-center shrink-0">
             <QrCode className="w-7 h-7 text-stone-900" strokeWidth={2.5} />
           </div>
           <div className="flex-1 min-w-0">
-            <div className="text-xs font-mono tracking-widest text-lime-400 uppercase mb-1">FRONT DESK QR</div>
+            <div className="text-xs font-mono tracking-widest text-red-400 uppercase mb-1">FRONT DESK QR</div>
             <h3 className="font-display text-2xl sm:text-3xl font-semibold leading-tight">Check-in poster</h3>
             <p className="text-sm text-stone-300 mt-1 max-w-md">
               Members scan this from their phone to check themselves in. Print it and display it at the entrance, or show it on a tablet.
@@ -579,8 +579,8 @@ export function CheckInsView({ checkIns }) {
                 <div className="space-y-1">
                   {entries.map((ci) => (
                     <div key={ci.id} className="flex items-center gap-3 py-2 px-3 hover:bg-stone-50 rounded-lg">
-                      <div className="w-8 h-8 rounded-full bg-lime-100 flex items-center justify-center">
-                        <CheckCircle2 className="w-4 h-4 text-lime-700" />
+                      <div className="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center">
+                        <CheckCircle2 className="w-4 h-4 text-red-700" />
                       </div>
                       <div className="flex-1"><div className="text-sm font-medium">{ci.memberName}</div></div>
                       <span className="text-[10px] font-mono tracking-wider text-stone-500 uppercase">QR</span>
@@ -629,7 +629,7 @@ export function PaymentsView({ payments, setPayments, user }) {
     <div className="space-y-6">
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
         {[
-          { label: "Collected", val: totals.paid, dot: "bg-lime-500", count: payments.filter((p) => p.status === "paid").length, sub: "payments" },
+          { label: "Collected", val: totals.paid, dot: "bg-red-500", count: payments.filter((p) => p.status === "paid").length, sub: "payments" },
           { label: "Pending", val: totals.pending, dot: "bg-amber-500", count: payments.filter((p) => p.status === "pending").length, sub: "pending" },
           { label: "Overdue", val: totals.overdue, dot: "bg-rose-500", count: payments.filter((p) => p.status === "overdue").length, sub: "overdue" },
         ].map((c, i) => (
@@ -665,7 +665,7 @@ export function PaymentsView({ payments, setPayments, user }) {
                   <td className="px-6 py-4 text-sm text-stone-600">{new Date(p.date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}</td>
                   <td className="px-6 py-4 text-sm text-stone-600">{p.method}</td>
                   <td className="px-6 py-4">
-                    <span className={`text-[10px] font-mono tracking-wider uppercase px-2 py-1 rounded-full ${p.status === "paid" ? "bg-lime-100 text-lime-800" : p.status === "overdue" ? "bg-rose-100 text-rose-800" : "bg-amber-100 text-amber-800"}`}>{p.status}</span>
+                    <span className={`text-[10px] font-mono tracking-wider uppercase px-2 py-1 rounded-full ${p.status === "paid" ? "bg-red-100 text-red-800" : p.status === "overdue" ? "bg-rose-100 text-rose-800" : "bg-amber-100 text-amber-800"}`}>{p.status}</span>
                   </td>
                   <td className="px-6 py-4 text-right">
                     {p.status !== "paid" && canMarkPaid && <button onClick={() => markPaid(p.id)} className="text-xs font-medium text-stone-900 hover:underline">Mark paid</button>}
@@ -685,7 +685,7 @@ export function PaymentsView({ payments, setPayments, user }) {
                 <div className="text-sm font-medium">{p.memberName}</div>
                 <div className="text-xs text-stone-500">{new Date(p.date).toLocaleDateString("en-US", { month: "short", day: "numeric" })} · {p.method}</div>
               </div>
-              <span className={`text-[10px] font-mono tracking-wider uppercase px-2 py-1 rounded-full ${p.status === "paid" ? "bg-lime-100 text-lime-800" : p.status === "overdue" ? "bg-rose-100 text-rose-800" : "bg-amber-100 text-amber-800"}`}>{p.status}</span>
+              <span className={`text-[10px] font-mono tracking-wider uppercase px-2 py-1 rounded-full ${p.status === "paid" ? "bg-red-100 text-red-800" : p.status === "overdue" ? "bg-rose-100 text-rose-800" : "bg-amber-100 text-amber-800"}`}>{p.status}</span>
             </div>
             <div className="flex items-end justify-between">
               <div className="font-display text-xl font-semibold">₦{p.amount.toLocaleString()}</div>
@@ -762,14 +762,14 @@ export function AnalyticsView({ members, payments, classes }) {
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={revenueByMonth}>
               <defs><linearGradient id="revGrad" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#84cc16" stopOpacity={0.4} />
-                <stop offset="100%" stopColor="#84cc16" stopOpacity={0} />
+                <stop offset="0%" stopColor="#ef4444" stopOpacity={0.4} />
+                <stop offset="100%" stopColor="#ef4444" stopOpacity={0} />
               </linearGradient></defs>
               <CartesianGrid strokeDasharray="3 3" stroke="#e7e5e4" vertical={false} />
               <XAxis dataKey="month" stroke="#a8a29e" style={{ fontSize: 11, fontFamily: "JetBrains Mono" }} axisLine={false} tickLine={false} />
               <YAxis stroke="#a8a29e" style={{ fontSize: 11, fontFamily: "JetBrains Mono" }} axisLine={false} tickLine={false} tickFormatter={(v) => `₦${(v / 1000).toFixed(0)}K`} />
               <Tooltip contentStyle={{ background: "#1c1917", border: "none", borderRadius: 8, color: "white", fontSize: 12 }} formatter={(v) => [`₦${v.toLocaleString()}`, "Revenue"]} />
-              <Area type="monotone" dataKey="revenue" stroke="#65a30d" strokeWidth={2} fill="url(#revGrad)" />
+              <Area type="monotone" dataKey="revenue" stroke="#dc2626" strokeWidth={2} fill="url(#revGrad)" />
             </AreaChart>
           </ResponsiveContainer>
         </div>
@@ -812,7 +812,7 @@ export function AnalyticsView({ members, payments, classes }) {
                 <XAxis type="number" stroke="#a8a29e" style={{ fontSize: 11, fontFamily: "JetBrains Mono" }} axisLine={false} tickLine={false} domain={[0, 100]} tickFormatter={(v) => `${v}%`} />
                 <YAxis type="category" dataKey="name" stroke="#a8a29e" style={{ fontSize: 11 }} width={100} axisLine={false} tickLine={false} />
                 <Tooltip contentStyle={{ background: "#1c1917", border: "none", borderRadius: 8, color: "white", fontSize: 12 }} formatter={(v) => [`${v}%`, "Utilization"]} />
-                <Bar dataKey="util" fill="#84cc16" radius={[0, 4, 4, 0]} />
+                <Bar dataKey="util" fill="#ef4444" radius={[0, 4, 4, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>

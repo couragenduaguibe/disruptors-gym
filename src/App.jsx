@@ -15,7 +15,7 @@ import { POSView } from "./views/POSView";
 import { LeadsView, AccessControlView, MessagesView } from "./views/PipelineViews";
 import {
   TrainerHome, TrainerClasses, TrainerClients,
-  MemberHome, MemberQRView, MemberBookClasses, MemberHistory, MemberPayments,
+  MemberHome, MemberQRView, MemberBookClasses, MemberHistory, MemberPayments, MemberShop,
 } from "./views/RoleViews";
 
 export default function App() {
@@ -34,6 +34,7 @@ export default function App() {
   const [accessLogs, setAccessLogs] = useState(() => loadData("accessLogs", seedAccessLogs));
   const [messages, setMessages] = useState(() => loadData("messages", seedMessages));
   const [templates, setTemplates] = useState(() => loadData("templates", seedTemplates));
+  const [shopOrders, setShopOrders] = useState(() => loadData("shopOrders", []));
 
   // ----------------- UI state -----------------
   const [view, setView] = useState(null);
@@ -52,6 +53,7 @@ export default function App() {
   useEffect(() => { saveData("accessLogs", accessLogs); }, [accessLogs]);
   useEffect(() => { saveData("messages", messages); }, [messages]);
   useEffect(() => { saveData("templates", templates); }, [templates]);
+  useEffect(() => { saveData("shopOrders", shopOrders); }, [shopOrders]);
 
   // ----------------- Set default view when user logs in -----------------
   useEffect(() => {
@@ -249,6 +251,10 @@ export default function App() {
 
           {view === "my-payments" && (
             <MemberPayments user={user} payments={payments} members={members} />
+          )}
+
+          {view === "my-shop" && (
+            <MemberShop user={user} shopOrders={shopOrders} setShopOrders={setShopOrders} />
           )}
         </main>
       </div>

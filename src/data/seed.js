@@ -11,7 +11,7 @@ export const NAV_BY_ROLE = {
   admin: ["dashboard", "members", "classes", "trainers", "checkins", "payments", "pos", "leads", "access", "messages", "analytics"],
   receptionist: ["dashboard", "members", "classes", "checkins", "payments", "pos", "leads", "messages"],
   trainer: ["trainer-home", "my-classes", "my-clients"],
-  member: ["member-home", "my-qr", "book-classes", "my-history", "my-payments"],
+  member: ["member-home", "my-qr", "book-classes", "my-history", "my-payments", "my-shop"],
 };
 
 export const seedMembers = [
@@ -61,8 +61,8 @@ export const seedPayments = [
 export const seedProducts = [
   { id: "prod1", name: "Whey Protein 2kg", category: "Supplements", price: 18000, stock: 24, lowStock: 5, sku: "SUP-WP-2K" },
   { id: "prod2", name: "Pre-Workout (30 servings)", category: "Supplements", price: 12000, stock: 18, lowStock: 5, sku: "SUP-PW-30" },
-  { id: "prod3", name: "Ironside Tee (Black)", category: "Apparel", price: 8500, stock: 32, lowStock: 10, sku: "AP-TEE-BLK" },
-  { id: "prod4", name: "Ironside Tee (Lime)", category: "Apparel", price: 8500, stock: 3, lowStock: 10, sku: "AP-TEE-LIM" },
+  { id: "prod3", name: "Disruptors Tee (Black)", category: "Apparel", price: 8500, stock: 32, lowStock: 10, sku: "AP-TEE-BLK" },
+  { id: "prod4", name: "Disruptors Tee (Lime)", category: "Apparel", price: 8500, stock: 3, lowStock: 10, sku: "AP-TEE-LIM" },
   { id: "prod5", name: "Lifting Straps", category: "Gear", price: 5500, stock: 15, lowStock: 5, sku: "GR-STR-01" },
   { id: "prod6", name: "Resistance Band Set", category: "Gear", price: 9000, stock: 11, lowStock: 5, sku: "GR-BND-SET" },
   { id: "prod7", name: "Water Bottle (1L)", category: "Accessories", price: 3500, stock: 48, lowStock: 15, sku: "AC-BTL-1L" },
@@ -74,8 +74,29 @@ export const seedProducts = [
 export const seedSales = [
   { id: "s1", date: "2026-04-22", time: "10:14", memberId: "m1", memberName: "Amara Okafor", items: [{ productId: "prod1", name: "Whey Protein 2kg", qty: 1, price: 18000 }], total: 18000, method: "Card", staffName: "Chioma Eze" },
   { id: "s2", date: "2026-04-22", time: "11:32", memberId: null, memberName: "Walk-in", items: [{ productId: "prod9", name: "Day Pass", qty: 1, price: 3000 }, { productId: "prod7", name: "Water Bottle (1L)", qty: 1, price: 3500 }], total: 6500, method: "Cash", staffName: "Chioma Eze" },
-  { id: "s3", date: "2026-04-21", time: "16:45", memberId: "m3", memberName: "Fatima Al-Hassan", items: [{ productId: "prod3", name: "Ironside Tee (Black)", qty: 2, price: 8500 }], total: 17000, method: "Account", staffName: "Aisha Bello" },
+  { id: "s3", date: "2026-04-21", time: "16:45", memberId: "m3", memberName: "Fatima Al-Hassan", items: [{ productId: "prod3", name: "Disruptors Tee (Black)", qty: 2, price: 8500 }], total: 17000, method: "Account", staffName: "Aisha Bello" },
   { id: "s4", date: "2026-04-20", time: "09:22", memberId: "m6", memberName: "Olumide Bakare", items: [{ productId: "prod2", name: "Pre-Workout (30 servings)", qty: 1, price: 12000 }, { productId: "prod5", name: "Lifting Straps", qty: 1, price: 5500 }], total: 17500, method: "Card", staffName: "Chioma Eze" },
+];
+
+export const seedShopProducts = [
+  // Fitness Accessories
+  { id: "sp1", name: "Resistance Band Set", category: "Fitness Accessories", price: 9000, stock: 11, description: "5-level resistance set" },
+  { id: "sp2", name: "Gym Gloves", category: "Fitness Accessories", price: 6500, stock: 20, description: "Anti-slip, padded palm" },
+  { id: "sp3", name: "Jump Rope", category: "Fitness Accessories", price: 3500, stock: 15, description: "Speed rope, adjustable length" },
+  { id: "sp4", name: "Foam Roller", category: "Fitness Accessories", price: 8000, stock: 8, description: "Deep tissue recovery" },
+  { id: "sp5", name: "Yoga Mat", category: "Fitness Accessories", price: 12000, stock: 14, description: "Non-slip, 6mm thick" },
+  { id: "sp6", name: "Shaker Cup", category: "Fitness Accessories", price: 2500, stock: 30, description: "700ml BPA-free" },
+  { id: "sp7", name: "Lifting Straps", category: "Fitness Accessories", price: 5500, stock: 15, description: "Heavy-duty cotton" },
+  { id: "sp8", name: "Water Bottle 1L", category: "Fitness Accessories", price: 3500, stock: 24, description: "Stainless steel, insulated" },
+  // Daily Essentials
+  { id: "sp9", name: "Water (500ml)", category: "Daily Essentials", price: 300, stock: 120, description: "Chilled still water" },
+  { id: "sp10", name: "Water (1.5L)", category: "Daily Essentials", price: 600, stock: 60, description: "Chilled still water" },
+  { id: "sp11", name: "Orange Juice", category: "Daily Essentials", price: 800, stock: 40, description: "100% natural, 500ml" },
+  { id: "sp12", name: "Mixed Fruit Juice", category: "Daily Essentials", price: 1000, stock: 35, description: "Tropical blend, 500ml" },
+  { id: "sp13", name: "Energy Drink", category: "Daily Essentials", price: 1500, stock: 50, description: "250ml can" },
+  { id: "sp14", name: "Protein Bar", category: "Daily Essentials", price: 1200, stock: 45, description: "20g protein, various flavours" },
+  { id: "sp15", name: "Granola Bar", category: "Daily Essentials", price: 800, stock: 60, description: "Oats & honey" },
+  { id: "sp16", name: "Banana", category: "Daily Essentials", price: 200, stock: 80, description: "Fresh, natural energy boost" },
 ];
 
 export const seedLeads = [
@@ -93,7 +114,7 @@ export const LEAD_STAGES = [
   { id: "contacted", label: "Contacted", color: "bg-sky-100 text-sky-800 border-sky-300" },
   { id: "tour-booked", label: "Tour Booked", color: "bg-amber-100 text-amber-800 border-amber-300" },
   { id: "trial", label: "Free Trial", color: "bg-violet-100 text-violet-800 border-violet-300" },
-  { id: "won", label: "Won", color: "bg-lime-100 text-lime-800 border-lime-300" },
+  { id: "won", label: "Won", color: "bg-red-100 text-red-800 border-red-300" },
   { id: "lost", label: "Lost", color: "bg-rose-100 text-rose-800 border-rose-300" },
 ];
 
@@ -107,16 +128,16 @@ export const seedAccessLogs = [
 ];
 
 export const seedMessages = [
-  { id: "msg1", type: "auto", template: "Expiry Reminder", recipient: "Sarah Mwangi", channel: "SMS", status: "sent", date: "2026-04-22", time: "09:00", content: "Hi Sarah, your Ironside membership expires on May 30. Renew anytime at the front desk." },
+  { id: "msg1", type: "auto", template: "Expiry Reminder", recipient: "Sarah Mwangi", channel: "SMS", status: "sent", date: "2026-04-22", time: "09:00", content: "Hi Sarah, your Disruptors membership expires on May 30. Renew anytime at the front desk." },
   { id: "msg2", type: "auto", template: "Overdue Payment", recipient: "Marcus Thompson", channel: "Email", status: "sent", date: "2026-04-22", time: "08:00", content: "Marcus, your April payment of ₦15,000 is overdue. Please contact us." },
   { id: "msg3", type: "manual", template: null, recipient: "All Premium Members", channel: "Email", status: "sent", date: "2026-04-21", time: "14:30", content: "Premium members: exclusive yoga retreat on May 15. RSVP via app." },
-  { id: "msg4", type: "auto", template: "Welcome", recipient: "Sarah Mwangi", channel: "SMS", status: "sent", date: "2026-02-08", time: "10:00", content: "Welcome to Ironside, Sarah! Your membership is now active." },
+  { id: "msg4", type: "auto", template: "Welcome", recipient: "Sarah Mwangi", channel: "SMS", status: "sent", date: "2026-02-08", time: "10:00", content: "Welcome to Disruptors, Sarah! Your membership is now active." },
   { id: "msg5", type: "auto", template: "Class Reminder", recipient: "Amara Okafor", channel: "SMS", status: "scheduled", date: "2026-04-23", time: "05:30", content: "Reminder: Morning HIIT at 6:30am today. See you there!" },
 ];
 
 export const seedTemplates = [
-  { id: "tpl1", name: "Welcome", trigger: "Member signs up", channel: "SMS + Email", active: true, body: "Welcome to Ironside, {{name}}! Your {{plan}} membership is now active. See you at the gym." },
-  { id: "tpl2", name: "Expiry Reminder", trigger: "14 days before expiry", channel: "SMS", active: true, body: "Hi {{name}}, your Ironside membership expires on {{expiry}}. Renew anytime at the front desk." },
+  { id: "tpl1", name: "Welcome", trigger: "Member signs up", channel: "SMS + Email", active: true, body: "Welcome to Disruptors, {{name}}! Your {{plan}} membership is now active. See you at the gym." },
+  { id: "tpl2", name: "Expiry Reminder", trigger: "14 days before expiry", channel: "SMS", active: true, body: "Hi {{name}}, your Disruptors membership expires on {{expiry}}. Renew anytime at the front desk." },
   { id: "tpl3", name: "Overdue Payment", trigger: "Payment overdue 3 days", channel: "Email", active: true, body: "{{name}}, your {{month}} payment of ₦{{amount}} is overdue. Please contact us." },
   { id: "tpl4", name: "Class Reminder", trigger: "1 hour before class", channel: "SMS", active: true, body: "Reminder: {{class}} at {{time}} today. See you there!" },
   { id: "tpl5", name: "Birthday", trigger: "On member birthday", channel: "SMS", active: false, body: "Happy birthday, {{name}}! Enjoy a free smoothie on us today." },

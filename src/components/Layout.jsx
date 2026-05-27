@@ -1,7 +1,7 @@
 import React from "react";
 import {
   Dumbbell, Users, CalendarDays, UserCheck, TrendingUp, X, Menu,
-  Award, BarChart3, CreditCard, LogOut, ShoppingCart, Megaphone, DoorOpen, Send, QrCode,
+  Award, BarChart3, CreditCard, LogOut, ShoppingCart, Megaphone, DoorOpen, Send, QrCode, ShoppingBag,
 } from "lucide-react";
 import { ROLES } from "../data/roles";
 import { NAV_BY_ROLE } from "../data/seed";
@@ -26,6 +26,7 @@ const NAV_ITEMS = {
   "book-classes": { label: "Book Classes", icon: CalendarDays },
   "my-history": { label: "My Visits", icon: UserCheck },
   "my-payments": { label: "Payments", icon: CreditCard },
+  "my-shop": { label: "Shop", icon: ShoppingBag },
 };
 
 export function Sidebar({ view, setView, isOpen, onClose, user, onLogout }) {
@@ -41,11 +42,11 @@ export function Sidebar({ view, setView, isOpen, onClose, user, onLogout }) {
     `}>
       <div className="p-6 border-b border-stone-800 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-lime-400 rounded-lg flex items-center justify-center">
-            <Dumbbell className="w-5 h-5 text-stone-900" strokeWidth={2.5} />
+          <div className="w-10 h-10 bg-red-500 rounded-lg flex items-center justify-center">
+            <Dumbbell className="w-5 h-5 text-white" strokeWidth={2.5} />
           </div>
           <div>
-            <div className="font-display text-xl font-semibold">Ironside</div>
+            <div className="font-display text-xl font-semibold">Disruptors</div>
             <div className="text-xs text-stone-400 font-mono tracking-wider">GYM OS</div>
           </div>
         </div>
@@ -61,7 +62,7 @@ export function Sidebar({ view, setView, isOpen, onClose, user, onLogout }) {
           return (
             <button key={it.id} onClick={() => setView(it.id)}
               className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all ${
-                active ? "bg-lime-400 text-stone-900" : "text-stone-300 hover:bg-stone-800 hover:text-white"
+                active ? "bg-red-500 text-white" : "text-stone-300 hover:bg-stone-800 hover:text-white"
               }`}>
               <Icon className="w-4 h-4" />
               {it.label}
@@ -72,7 +73,7 @@ export function Sidebar({ view, setView, isOpen, onClose, user, onLogout }) {
 
       <div className="p-3 border-t border-stone-800">
         <div className="flex items-center gap-3 px-2 py-2 mb-2">
-          <div className="w-9 h-9 rounded-full bg-gradient-to-br from-lime-400 to-amber-400 flex items-center justify-center font-semibold text-stone-900">
+          <div className="w-9 h-9 rounded-full bg-gradient-to-br from-red-500 to-amber-400 flex items-center justify-center font-semibold text-white">
             {user.name[0]}
           </div>
           <div className="flex-1 min-w-0">
@@ -102,6 +103,7 @@ export function Header({ view, onMenuClick, user }) {
     "member-home": `Hi, ${user.name.split(" ")[0]}`,
     "my-qr": "My QR Code", "book-classes": "Book a Class",
     "my-history": "Visit History", "my-payments": "My Payments",
+    "my-shop": "Gym Shop",
   };
   const now = new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
   return (

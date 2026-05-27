@@ -8,7 +8,7 @@ export function StatCard({ label, value, icon: Icon, accent, className = "", tre
           <Icon className="w-4 h-4" />
         </div>
         {trend && (
-          <div className={`flex items-center gap-0.5 text-[10px] font-mono font-semibold ${trendUp ? "text-lime-700" : "text-rose-700"}`}>
+          <div className={`flex items-center gap-0.5 text-[10px] font-mono font-semibold ${trendUp ? "text-red-700" : "text-rose-700"}`}>
             {trendUp ? <ArrowUpRight className="w-3 h-3" /> : <ArrowDownRight className="w-3 h-3" />}
             {trend}
           </div>
