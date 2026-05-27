@@ -273,7 +273,7 @@ export default function App() {
             <AnalyticsView members={members} payments={payments} classes={classes} />
           )}
           {view === "member-stocks" && (
-            <MemberStocksView members={members} memberStocks={memberStocks} />
+            <MemberStocksView members={members} memberStocks={memberStocks} setMemberStocks={setMemberStocks} />
           )}
           {view === "chat" && (
             <ChatView user={user} directMessages={directMessages} setDirectMessages={setDirectMessages} setNotifications={setNotifications} />

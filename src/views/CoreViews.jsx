@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from "react";
 import {
-  Users, CalendarDays, UserCheck, Plus, Search, Edit2, Trash2, Clock,
+  Users, CalendarDays, UserCheck, Plus, Minus, Search, Edit2, Trash2, Clock,
   DollarSign, Activity, Flame, CheckCircle2, AlertCircle, User, Mail, Phone,
   ChevronRight, AlertTriangle, Receipt, Calendar, Award, X, QrCode, Package, Layers,
 } from "lucide-react";
@@ -10,7 +10,7 @@ import {
 } from "recharts";
 import { StatCard, Field, Modal, EmptyState } from "../components/ui";
 import { planBadge, today } from "../utils/storage";
-import { PLAN_PRICES } from "../data/seed";
+import { PLAN_PRICES, seedShopProducts } from "../data/seed";
 import { CheckInPoster } from "../components/CheckInPoster";
 
 // ---------- Dashboard ----------
@@ -699,21 +699,64 @@ export function PaymentsView({ payments, setPayments, user }) {
 }
 
 // ---------- Member Stocks (staff view) ----------
-export function MemberStocksView({ members, memberStocks }) {
+export function MemberStocksView({ members, memberStocks, setMemberStocks }) {
   const [search, setSearch] = useState("");
+  const [addModal, setAddModal] = useState(null); // { memberId, memberName }
 
-  const stockedMembers = memberStocks.filter((s) => s.items?.some((i) => i.qty > 0));
-  const filtered = stockedMembers.filter((s) =>
-    s.memberName.toLowerCase().includes(search.toLowerCase())
-  );
+  const stockedMembers = memberStocks.filter((s) => s.items?.length > 0);
+  const filtered = memberStocks
+    .filter((s) => s.memberName.toLowerCase().includes(search.toLowerCase()))
+    .filter((s) => s.items?.length > 0);
 
   const totalItems = memberStocks.reduce((sum, s) => sum + (s.items?.reduce((a, i) => a + i.qty, 0) || 0), 0);
   const lowStockCount = memberStocks.reduce((sum, s) =>
     sum + (s.items?.filter((i) => i.qty > 0 && i.qty <= 2).length || 0), 0
   );
 
+  const adjustQty = (memberId, productId, delta) => {
+    setMemberStocks((stocks) =>
+      stocks.map((s) => {
+        if (s.memberId !== memberId) return s;
+        return {
+          ...s,
+          items: s.items.map((i) =>
+            i.productId === productId
+              ? { ...i, qty: Math.max(0, i.qty + delta), lastUpdated: today() }
+              : i
+          ),
+        };
+      })
+    );
+  };
+
+  const addStock = (memberId, memberName, productId, productName, qty) => {
+    setMemberStocks((stocks) => {
+      const existing = stocks.find((s) => s.memberId === memberId);
+      if (existing) {
+        return stocks.map((s) => {
+          if (s.memberId !== memberId) return s;
+          const idx = s.items.findIndex((i) => i.productId === productId);
+          if (idx >= 0) {
+            const updated = [...s.items];
+            updated[idx] = { ...updated[idx], qty: updated[idx].qty + qty, lastUpdated: today() };
+            return { ...s, items: updated };
+          }
+          return { ...s, items: [...s.items, { productId, name: productName, qty, lastUpdated: today() }] };
+        });
+      }
+      return [...stocks, { memberId, memberName, items: [{ productId, name: productName, qty, lastUpdated: today() }] }];
+    });
+  };
+
+  // Members without stock yet (for the add modal member list)
+  const allMembersWithStock = members.map((m) => {
+    const stock = memberStocks.find((s) => s.memberId === m.id);
+    return { ...m, hasStock: !!stock };
+  });
+
   return (
     <div className="space-y-6">
+      {/* Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
         <div className="bg-white rounded-xl border border-stone-200 p-4">
           <div className="text-xs font-mono text-stone-500 tracking-wider uppercase">Members with stock</div>
@@ -723,59 +766,170 @@ export function MemberStocksView({ members, memberStocks }) {
           <div className="text-xs font-mono text-stone-500 tracking-wider uppercase">Total units</div>
           <div className="font-display text-3xl font-semibold mt-1">{totalItems}</div>
         </div>
-        <div className={`bg-white rounded-xl border p-4 ${lowStockCount > 0 ? "border-amber-300 bg-amber-50" : "border-stone-200"}`}>
+        <div className={`rounded-xl border p-4 ${lowStockCount > 0 ? "border-amber-300 bg-amber-50" : "bg-white border-stone-200"}`}>
           <div className="text-xs font-mono text-stone-500 tracking-wider uppercase">Running low</div>
           <div className={`font-display text-3xl font-semibold mt-1 ${lowStockCount > 0 ? "text-amber-700" : ""}`}>{lowStockCount}</div>
         </div>
       </div>
 
-      <div className="relative max-w-md">
-        <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-stone-400" />
-        <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search member name"
-          className="w-full pl-10 pr-4 py-2.5 bg-white border border-stone-200 rounded-lg text-sm focus:outline-none focus:border-stone-900" />
+      {/* Search + Add Stock button */}
+      <div className="flex items-center gap-3">
+        <div className="relative flex-1 max-w-md">
+          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-stone-400" />
+          <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search member name"
+            className="w-full pl-10 pr-4 py-2.5 bg-white border border-stone-200 rounded-lg text-sm focus:outline-none focus:border-stone-900" />
+        </div>
+        <button onClick={() => setAddModal("picker")}
+          className="flex items-center gap-2 px-4 py-2.5 bg-red-500 text-white rounded-lg text-sm font-semibold hover:bg-red-600 transition shrink-0">
+          <Plus className="w-4 h-4" /> Add stock
+        </button>
       </div>
 
+      <div className="bg-stone-50 border border-stone-200 rounded-xl p-3 text-xs text-stone-600">
+        Use <strong>+</strong> / <strong>−</strong> on any item to adjust a member's stock. Changes save instantly.
+      </div>
+
+      {/* Member stock cards */}
       {filtered.length === 0 ? (
         <div className="bg-white rounded-xl border border-stone-200 p-12 text-center">
           <Layers className="w-10 h-10 mx-auto mb-3 text-stone-300" />
           <p className="font-medium text-stone-600">{search ? "No matching members" : "No member stock yet"}</p>
-          <p className="text-sm text-stone-500 mt-1">Stock builds up when members order daily essentials from the shop.</p>
+          <p className="text-sm text-stone-500 mt-1">Stock is added when members order daily essentials, or manually via the Add Stock button.</p>
         </div>
       ) : (
         <div className="space-y-4">
           {filtered.map((stock) => {
-            const activeItems = stock.items.filter((i) => i.qty > 0);
             const member = members.find((m) => m.id === stock.memberId);
+            const activeItems = stock.items.filter((i) => i.qty >= 0);
             return (
               <div key={stock.memberId} className="bg-white rounded-xl border border-stone-200 p-5">
+                {/* Member header */}
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-9 h-9 rounded-full bg-gradient-to-br from-stone-200 to-stone-300 flex items-center justify-center font-semibold text-stone-700 shrink-0">
                     {stock.memberName[0]}
                   </div>
-                  <div>
+                  <div className="flex-1 min-w-0">
                     <div className="font-medium text-sm">{stock.memberName}</div>
                     {member && <span className={`text-[10px] font-mono tracking-wider px-2 py-0.5 rounded-full ${planBadge(member.plan)}`}>{member.plan.toUpperCase()}</span>}
                   </div>
-                  <div className="ml-auto text-xs font-mono text-stone-500">{activeItems.length} item type{activeItems.length !== 1 ? "s" : ""}</div>
+                  <button onClick={() => setAddModal({ memberId: stock.memberId, memberName: stock.memberName })}
+                    className="flex items-center gap-1.5 px-3 py-1.5 border border-stone-200 rounded-lg text-xs font-medium hover:border-stone-900 transition shrink-0">
+                    <Plus className="w-3 h-3" /> Add item
+                  </button>
                 </div>
-                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2">
-                  {activeItems.map((item) => {
-                    const low = item.qty <= 2;
-                    return (
-                      <div key={item.productId} className={`rounded-lg p-3 border ${low ? "border-amber-200 bg-amber-50" : "border-stone-100 bg-stone-50"}`}>
-                        <div className="text-xs font-medium truncate">{item.name}</div>
-                        <div className={`font-display text-2xl font-semibold mt-1 ${low ? "text-amber-700" : ""}`}>{item.qty}</div>
-                        {low && <div className="text-[10px] text-amber-700 font-mono">Running low</div>}
-                      </div>
-                    );
-                  })}
-                </div>
+
+                {/* Items grid with controls */}
+                {activeItems.length === 0 ? (
+                  <p className="text-xs text-stone-400 text-center py-3">No items yet</p>
+                ) : (
+                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2">
+                    {activeItems.map((item) => {
+                      const low = item.qty > 0 && item.qty <= 2;
+                      return (
+                        <div key={item.productId} className={`rounded-xl border p-3 ${low ? "border-amber-200 bg-amber-50" : item.qty === 0 ? "border-stone-100 bg-stone-50 opacity-60" : "border-stone-100 bg-stone-50"}`}>
+                          <div className="text-xs font-medium leading-tight mb-1 truncate">{item.name}</div>
+                          {low && <div className="text-[10px] font-mono text-amber-700 mb-1">⚠ Low</div>}
+                          {item.qty === 0 && <div className="text-[10px] font-mono text-rose-500 mb-1">Empty</div>}
+                          <div className="flex items-center justify-between gap-1 mt-2">
+                            <button onClick={() => adjustQty(stock.memberId, item.productId, -1)}
+                              disabled={item.qty <= 0}
+                              className="w-7 h-7 rounded-lg bg-white border border-stone-200 flex items-center justify-center hover:border-stone-900 disabled:opacity-30 disabled:cursor-not-allowed transition">
+                              <Minus className="w-3 h-3" />
+                            </button>
+                            <span className={`font-display text-xl font-semibold w-8 text-center ${low ? "text-amber-700" : ""}`}>{item.qty}</span>
+                            <button onClick={() => adjustQty(stock.memberId, item.productId, 1)}
+                              className="w-7 h-7 rounded-lg bg-red-500 text-white flex items-center justify-center hover:bg-red-600 transition">
+                              <Plus className="w-3 h-3" />
+                            </button>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
             );
           })}
         </div>
       )}
+
+      {/* Add stock modal — member picker */}
+      {addModal === "picker" && (
+        <Modal title="Add Stock" subtitle="Select a member to add stock to" onClose={() => setAddModal(null)}>
+          <div className="space-y-2 max-h-80 overflow-y-auto">
+            {allMembersWithStock.map((m) => (
+              <button key={m.id} onClick={() => setAddModal({ memberId: m.id, memberName: m.name })}
+                className="w-full flex items-center gap-3 p-3 rounded-xl border border-stone-200 hover:border-stone-900 transition text-left">
+                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-stone-200 to-stone-300 flex items-center justify-center font-semibold text-stone-700 text-sm shrink-0">
+                  {m.name[0]}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="text-sm font-medium">{m.name}</div>
+                  <div className="text-xs text-stone-500">{m.plan}</div>
+                </div>
+              </button>
+            ))}
+          </div>
+        </Modal>
+      )}
+
+      {/* Add stock modal — item picker */}
+      {addModal && addModal.memberId && (
+        <AddStockModal
+          memberName={addModal.memberName}
+          onAdd={(productId, productName, qty) => {
+            addStock(addModal.memberId, addModal.memberName, productId, productName, qty);
+            setAddModal(null);
+          }}
+          onClose={() => setAddModal(null)}
+        />
+      )}
     </div>
+  );
+}
+
+function AddStockModal({ memberName, onAdd, onClose }) {
+  const essentials = seedShopProducts.filter((p) => p.category === "Daily Essentials");
+  const [selectedId, setSelectedId] = useState(essentials[0]?.id || "");
+  const [qty, setQty] = useState(1);
+
+  const selected = essentials.find((p) => p.id === selectedId);
+
+  return (
+    <Modal title={`Add stock for ${memberName}`} onClose={onClose}>
+      <div className="space-y-4">
+        <div>
+          <label className="text-xs font-mono tracking-wider text-stone-500 uppercase mb-2 block">Item</label>
+          <div className="grid grid-cols-2 gap-2 max-h-56 overflow-y-auto">
+            {essentials.map((p) => (
+              <button key={p.id} onClick={() => setSelectedId(p.id)}
+                className={`text-left p-3 rounded-xl border transition ${selectedId === p.id ? "border-red-500 bg-red-50" : "border-stone-200 hover:border-stone-400"}`}>
+                <div className="text-sm font-medium">{p.name}</div>
+                <div className="text-xs text-stone-500">{p.description}</div>
+              </button>
+            ))}
+          </div>
+        </div>
+        <div>
+          <label className="text-xs font-mono tracking-wider text-stone-500 uppercase mb-2 block">Quantity to add</label>
+          <div className="flex items-center gap-3">
+            <button onClick={() => setQty((q) => Math.max(1, q - 1))}
+              className="w-10 h-10 rounded-xl border border-stone-200 flex items-center justify-center hover:border-stone-900 transition">
+              <Minus className="w-4 h-4" />
+            </button>
+            <span className="font-display text-3xl font-semibold w-12 text-center">{qty}</span>
+            <button onClick={() => setQty((q) => q + 1)}
+              className="w-10 h-10 rounded-xl bg-red-500 text-white flex items-center justify-center hover:bg-red-600 transition">
+              <Plus className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+        <button onClick={() => { if (!selected) return; onAdd(selected.id, selected.name, qty); }}
+          className="w-full py-3 bg-red-500 text-white rounded-xl text-sm font-semibold hover:bg-red-600 transition">
+          Add {qty} × {selected?.name || "item"} to {memberName.split(" ")[0]}'s stock
+        </button>
+      </div>
+    </Modal>
   );
 }
 
