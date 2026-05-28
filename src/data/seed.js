@@ -8,10 +8,10 @@ export const DEMO_ACCOUNTS = [
 ];
 
 export const NAV_BY_ROLE = {
-  admin: ["dashboard","members","classes","trainers","checkins","payments","pos","leads","access","messages","member-stocks","chat","analytics","shifts","equipment","expenses","challenges"],
-  receptionist: ["dashboard","members","classes","checkins","payments","pos","leads","messages","member-stocks","chat","equipment","challenges"],
-  trainer: ["trainer-home","my-classes","my-clients","chat","video-library","challenges"],
-  member: ["member-home","my-qr","book-classes","my-history","my-payments","my-shop","my-stock","chat","my-workouts","my-metrics","my-rewards","my-referrals","challenges"],
+  admin: ["dashboard","members","classes","trainers","checkins","payments","pos","leads","access","messages","member-stocks","chat","analytics","shifts","equipment","expenses","challenges","profile"],
+  receptionist: ["dashboard","members","classes","checkins","payments","pos","leads","messages","member-stocks","chat","equipment","challenges","profile"],
+  trainer: ["trainer-home","my-classes","my-clients","chat","video-library","challenges","profile"],
+  member: ["member-home","my-qr","book-classes","my-history","my-payments","my-shop","my-stock","chat","my-workouts","my-metrics","my-rewards","my-referrals","challenges","profile"],
 };
 
 export const seedMembers = [

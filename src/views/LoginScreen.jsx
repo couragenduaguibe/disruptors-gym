@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Dumbbell, User, Lock, Eye, EyeOff, AlertCircle } from "lucide-react";
 import { DEMO_ACCOUNTS } from "../data/seed";
 import { ROLES } from "../data/roles";
+import { loadData } from "../utils/storage";
 
 export function LoginScreen({ onLogin }) {
   const [username, setUsername] = useState("");
@@ -10,11 +11,14 @@ export function LoginScreen({ onLogin }) {
   const [error, setError] = useState("");
 
   const handleSubmit = () => {
-    const found = DEMO_ACCOUNTS.find(
-      (a) => a.username === username.trim().toLowerCase() && a.password === password
-    );
-    if (found) { setError(""); onLogin(found); }
-    else setError("Invalid credentials. Try one of the demo accounts below.");
+    const u = username.trim().toLowerCase();
+    const account = DEMO_ACCOUNTS.find((a) => a.username === u);
+    if (account) {
+      const credentials = loadData("credentials", {});
+      const storedPw = credentials[u]?.password ?? account.password;
+      if (password === storedPw) { setError(""); onLogin(account); return; }
+    }
+    setError("Invalid credentials. Try one of the demo accounts below.");
   };
 
   const handleKey = (e) => { if (e.key === "Enter") handleSubmit(); };

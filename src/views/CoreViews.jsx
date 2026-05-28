@@ -600,8 +600,8 @@ export function CheckInsView({ checkIns }) {
       </div>
 
       {showPoster && (
-        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto print:bg-white print:p-0 print:static" onClick={() => setShowPoster(false)}>
-          <div onClick={(e) => e.stopPropagation()} className="my-auto print:my-0">
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-3 sm:p-6 overflow-y-auto print:bg-white print:p-0 print:static" onClick={() => setShowPoster(false)}>
+          <div onClick={(e) => e.stopPropagation()} className="my-auto w-full print:my-0">
             <CheckInPoster locationId="main" locationName="Main Entrance" />
             <div className="text-center mt-4 print:hidden">
               <button onClick={() => setShowPoster(false)} className="text-white text-xs underline">Close</button>

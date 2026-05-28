@@ -68,7 +68,7 @@ export function ChatView({ user, directMessages, setDirectMessages, setNotificat
   const totalUnread = contacts.reduce((s, c) => s + getUnread(c.username), 0);
 
   return (
-    <div className="bg-stone-900 rounded-xl border border-stone-700 overflow-hidden flex" style={{ height: "calc(100vh - 220px)", minHeight: 500 }}>
+    <div className="bg-stone-900 rounded-xl border border-stone-700 overflow-hidden flex" style={{ height: "calc(100dvh - 200px)", minHeight: 360 }}>
       {/* Contact list */}
       <div className={`w-full lg:w-80 border-r border-stone-800 flex flex-col shrink-0 ${selectedContact ? "hidden lg:flex" : "flex"}`}>
         <div className="p-4 border-b border-stone-800 flex items-center justify-between">
@@ -232,7 +232,7 @@ function ChatThread({ contact, messages, currentUser, onSend, onBack }) {
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKey}
             placeholder={`Message ${contact.name.split(" ")[0]}...`}
-            className="flex-1 px-4 py-2.5 bg-stone-800 border border-stone-700 rounded-xl text-sm text-white placeholder:text-stone-500 focus:outline-none focus:border-red-500"
+            className="flex-1 px-4 py-2.5 bg-stone-800 border border-stone-700 rounded-xl text-base sm:text-sm text-white placeholder:text-stone-500 focus:outline-none focus:border-red-500 min-w-0"
           />
           <button onClick={handleSend} disabled={!input.trim()}
             className="w-10 h-10 bg-red-600 text-white rounded-xl flex items-center justify-center hover:bg-red-700 transition disabled:opacity-40 shrink-0">

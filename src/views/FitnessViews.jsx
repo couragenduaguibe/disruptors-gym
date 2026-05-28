@@ -151,8 +151,17 @@ function WorkoutForm({ user, onSave, onClose }) {
   };
 
   return (
-    <Modal title="Log Workout" subtitle={`${exercises.filter((e) => e.name).length} exercises`} onClose={onClose}>
-      <div className="space-y-5">
+    <Modal
+      title="Log Workout"
+      subtitle={`${exercises.filter((e) => e.name).length} exercises`}
+      onClose={onClose}
+      footer={
+        <button onClick={handleSave} className="w-full py-3 bg-red-600 text-white rounded-lg text-sm font-semibold hover:bg-red-700 transition">
+          Save session · +2 pts
+        </button>
+      }
+    >
+      <div className="space-y-5 pb-1">
         <div>
           <label className="text-xs font-mono tracking-wider text-stone-400 uppercase mb-1.5 block">Date</label>
           <input type="date" value={date} onChange={(e) => setDate(e.target.value)}
@@ -163,7 +172,7 @@ function WorkoutForm({ user, onSave, onClose }) {
             <div key={ei} className="bg-stone-800 rounded-xl p-4 space-y-3 border border-stone-700">
               <div className="flex items-center gap-2">
                 <input list={`ex-list-${ei}`} value={ex.name} onChange={(e) => updateName(ei, e.target.value)}
-                  placeholder="Exercise name" className="flex-1 px-3 py-2 bg-stone-900 border border-stone-700 rounded-lg text-sm text-white placeholder:text-stone-500 focus:outline-none focus:border-red-500" />
+                  placeholder="Exercise name" className="flex-1 min-w-0 px-3 py-2 bg-stone-900 border border-stone-700 rounded-lg text-base sm:text-sm text-white placeholder:text-stone-500 focus:outline-none focus:border-red-500" />
                 <datalist id={`ex-list-${ei}`}>{COMMON_EXERCISES.map((e) => <option key={e} value={e} />)}</datalist>
                 {exercises.length > 1 && (
                   <button onClick={() => removeExercise(ei)} className="p-2 text-stone-500 hover:text-rose-400 transition shrink-0"><Trash2 className="w-4 h-4" /></button>
@@ -174,9 +183,9 @@ function WorkoutForm({ user, onSave, onClose }) {
                   <div key={si} className="flex items-center gap-2">
                     <span className="text-xs font-mono text-stone-500 w-7 shrink-0">S{si + 1}</span>
                     <input type="number" value={set.reps} onChange={(e) => updateSet(ei, si, "reps", e.target.value)}
-                      placeholder="Reps" className="w-20 px-2 py-1.5 bg-stone-900 border border-stone-700 rounded-lg text-sm text-center text-white placeholder:text-stone-500 focus:outline-none focus:border-red-500" />
+                      placeholder="Reps" className="w-16 sm:w-20 px-2 py-1.5 bg-stone-900 border border-stone-700 rounded-lg text-base sm:text-sm text-center text-white placeholder:text-stone-500 focus:outline-none focus:border-red-500" />
                     <input type="number" value={set.weight} onChange={(e) => updateSet(ei, si, "weight", e.target.value)}
-                      placeholder="kg" className="w-20 px-2 py-1.5 bg-stone-900 border border-stone-700 rounded-lg text-sm text-center text-white placeholder:text-stone-500 focus:outline-none focus:border-red-500" />
+                      placeholder="kg" className="w-16 sm:w-20 px-2 py-1.5 bg-stone-900 border border-stone-700 rounded-lg text-base sm:text-sm text-center text-white placeholder:text-stone-500 focus:outline-none focus:border-red-500" />
                     <span className="text-xs text-stone-500">kg</span>
                     {ex.sets.length > 1 && (
                       <button onClick={() => removeSet(ei, si)} className="text-stone-600 hover:text-rose-400 transition ml-auto shrink-0"><X className="w-3.5 h-3.5" /></button>
@@ -198,9 +207,6 @@ function WorkoutForm({ user, onSave, onClose }) {
           <textarea value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="How did it go? Any PRs?"
             className="w-full px-3 py-2.5 bg-stone-800 border border-stone-700 rounded-lg text-sm text-white placeholder:text-stone-500 focus:outline-none focus:border-red-500 resize-none" rows={2} />
         </div>
-        <button onClick={handleSave} className="w-full py-3 bg-red-600 text-white rounded-lg text-sm font-semibold hover:bg-red-700 transition">
-          Save session · +2 pts
-        </button>
       </div>
     </Modal>
   );

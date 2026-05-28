@@ -25,6 +25,7 @@ import { ChatView } from "./views/MessagingViews";
 import { WorkoutLogView, BodyMetricsView } from "./views/FitnessViews";
 import { LoyaltyRewardsView, ReferralView, ChallengesView } from "./views/GrowthViews";
 import { StaffShiftsView, EquipmentView, ExpensesView, VideoLibraryView } from "./views/OpsViews";
+import { ProfileView } from "./views/ProfileView";
 
 export default function App() {
   // ─── Auth ──────────────────────────────────────────────────────────────────
@@ -227,6 +228,7 @@ export default function App() {
         onClose={() => setSidebarOpen(false)}
         user={user}
         onLogout={handleLogout}
+        onProfile={() => { setView("profile"); setSidebarOpen(false); }}
       />
 
       {sidebarOpen && (
@@ -348,6 +350,11 @@ export default function App() {
           )}
           {view === "my-referrals" && (
             <ReferralView user={user} members={members} />
+          )}
+
+          {/* ── PROFILE ────────────────────────────────────────────────────── */}
+          {view === "profile" && (
+            <ProfileView user={user} setUser={setUser} />
           )}
         </main>
       </div>

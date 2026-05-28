@@ -3,7 +3,7 @@ import {
   Dumbbell, Users, CalendarDays, UserCheck, TrendingUp, X, Menu,
   Award, BarChart3, CreditCard, LogOut, ShoppingCart, Megaphone, DoorOpen,
   Send, QrCode, ShoppingBag, MessageSquare, Bell, Package, Layers,
-  Activity, Gift, Clock, Wrench, DollarSign, Video, Trophy,
+  Activity, Gift, Clock, Wrench, DollarSign, Video, Trophy, User,
 } from "lucide-react";
 import { ROLES } from "../data/roles";
 import { NAV_BY_ROLE } from "../data/seed";
@@ -41,9 +41,10 @@ const NAV_ITEMS = {
   equipment:       { label: "Equipment",        icon: Wrench       },
   expenses:        { label: "Expenses & P&L",   icon: DollarSign   },
   "video-library": { label: "Video Library",    icon: Video        },
+  profile:         { label: "My Profile",       icon: User         },
 };
 
-export function Sidebar({ view, setView, isOpen, onClose, user, onLogout }) {
+export function Sidebar({ view, setView, isOpen, onClose, user, onLogout, onProfile }) {
   const items = NAV_BY_ROLE[user.role].map((id) => ({ id, ...NAV_ITEMS[id] }));
   const role = ROLES[user.role];
   const RoleIcon = role.icon;
@@ -88,9 +89,13 @@ export function Sidebar({ view, setView, isOpen, onClose, user, onLogout }) {
       </nav>
 
       <div className="p-3 border-t border-stone-800">
-        <div className="flex items-center gap-3 px-2 py-2 mb-1">
-          <div className="w-9 h-9 rounded-full bg-gradient-to-br from-red-600 to-red-400 flex items-center justify-center font-semibold text-white shrink-0">
-            {user.name[0]}
+        <button onClick={onProfile} className="w-full flex items-center gap-3 px-2 py-2 mb-1 rounded-lg hover:bg-stone-800 transition text-left">
+          <div className={`w-9 h-9 rounded-full bg-gradient-to-br ${user.avatarColor || "from-red-600 to-red-400"} flex items-center justify-center font-semibold text-white shrink-0`}>
+            {user.avatarEmoji ? (
+              <span className="text-lg leading-none">{user.avatarEmoji}</span>
+            ) : (
+              <span>{user.name.trim().split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase()}</span>
+            )}
           </div>
           <div className="flex-1 min-w-0">
             <div className="text-sm font-medium text-white truncate">{user.name}</div>
@@ -98,7 +103,7 @@ export function Sidebar({ view, setView, isOpen, onClose, user, onLogout }) {
               <RoleIcon className="w-3 h-3" />{role.label}
             </div>
           </div>
-        </div>
+        </button>
         <button onClick={onLogout}
           className="w-full flex items-center gap-2 px-3 py-2 text-xs text-stone-500 hover:text-white hover:bg-stone-800 rounded-md transition">
           <LogOut className="w-3.5 h-3.5" />Sign out
@@ -146,6 +151,7 @@ export function Header({ view, onMenuClick, user, notifications, setNotification
     challenges: "Challenges", shifts: "Staff Shifts",
     equipment: "Equipment", expenses: "Expenses & P&L",
     "video-library": "Video Library",
+    profile: "My Profile",
   };
 
   const now = new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });

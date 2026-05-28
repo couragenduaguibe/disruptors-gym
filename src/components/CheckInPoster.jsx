@@ -35,9 +35,9 @@ export function CheckInPoster({ locationId = "main", locationName = "Main Entran
   if (error) return <div className="text-rose-600 text-sm">QR error: {error}</div>;
 
   return (
-    <div className="bg-white rounded-2xl border border-stone-200 overflow-hidden max-w-md mx-auto">
+    <div className="bg-white rounded-2xl border border-stone-200 overflow-hidden w-full max-w-sm mx-auto">
       {/* Printable poster area */}
-      <div className="p-8 print:p-12">
+      <div className="p-5 sm:p-8 print:p-12">
         <div className="flex items-center justify-center gap-3 mb-6">
           <div className="w-12 h-12 bg-red-500 rounded-lg flex items-center justify-center">
             <Dumbbell className="w-7 h-7 text-white" strokeWidth={2.5} />
@@ -56,8 +56,8 @@ export function CheckInPoster({ locationId = "main", locationName = "Main Entran
         </h2>
 
         <div className="flex justify-center mb-6">
-          <div className="p-4 bg-white border-4 border-stone-900 rounded-2xl">
-            <canvas ref={canvasRef} />
+          <div className="p-3 bg-white border-4 border-stone-900 rounded-2xl" style={{ maxWidth: "100%" }}>
+            <canvas ref={canvasRef} style={{ display: "block", maxWidth: "100%", height: "auto" }} />
           </div>
         </div>
 
