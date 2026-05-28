@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { User, Lock, Check, AlertCircle, Camera } from "lucide-react";
+import React, { useState, useRef } from "react";
+import { User, Lock, Check, AlertCircle, Camera, Trash2 } from "lucide-react";
 import { loadData, saveData } from "../utils/storage";
 
 const AVATAR_COLORS = [
@@ -19,7 +19,9 @@ export function ProfileView({ user, setUser }) {
   const [displayName, setDisplayName]     = useState(user.name || "");
   const [avatarColor, setAvatarColor]     = useState(user.avatarColor || "from-red-600 to-red-400");
   const [avatarEmoji, setAvatarEmoji]     = useState(user.avatarEmoji || "");
+  const [avatarImage, setAvatarImage]     = useState(user.avatarImage || null);
   const [profileSaved, setProfileSaved]   = useState(false);
+  const fileInputRef = useRef(null);
 
   const [currentPw,    setCurrentPw]      = useState("");
   const [newPw,        setNewPw]          = useState("");
@@ -29,10 +31,35 @@ export function ProfileView({ user, setUser }) {
 
   const roleLabels = { admin: "Admin", receptionist: "Receptionist", trainer: "Trainer", member: "Member" };
 
+  // ── Image upload ─────────────────────────────────────────────────────────────
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        const size = 200;
+        canvas.width = size;
+        canvas.height = size;
+        const ctx = canvas.getContext("2d");
+        const min = Math.min(img.width, img.height);
+        const sx = (img.width - min) / 2;
+        const sy = (img.height - min) / 2;
+        ctx.drawImage(img, sx, sy, min, min, 0, 0, size, size);
+        setAvatarImage(canvas.toDataURL("image/jpeg", 0.85));
+      };
+      img.src = ev.target.result;
+    };
+    reader.readAsDataURL(file);
+    e.target.value = "";
+  };
+
   // ── Profile save ────────────────────────────────────────────────────────────
   const handleSaveProfile = () => {
     if (!displayName.trim()) return;
-    const updated = { ...user, name: displayName.trim(), avatarColor, avatarEmoji };
+    const updated = { ...user, name: displayName.trim(), avatarColor, avatarEmoji, avatarImage };
     setUser(updated);
     saveData("session", updated);
     setProfileSaved(true);
@@ -67,11 +94,40 @@ export function ProfileView({ user, setUser }) {
 
         <div className="flex flex-col items-center gap-5">
           {/* Preview */}
-          <div className={`w-24 h-24 rounded-full bg-gradient-to-br ${avatarColor} flex items-center justify-center shrink-0 relative`}>
-            {avatarEmoji ? (
-              <span className="text-4xl leading-none">{avatarEmoji}</span>
-            ) : (
-              <span className="font-display text-3xl font-semibold text-white">{initials || "?"}</span>
+          <div className="relative group">
+            <div className={`w-24 h-24 rounded-full bg-gradient-to-br ${avatarColor} flex items-center justify-center shrink-0 overflow-hidden`}>
+              {avatarImage ? (
+                <img src={avatarImage} className="w-full h-full object-cover" alt="Profile" />
+              ) : avatarEmoji ? (
+                <span className="text-4xl leading-none">{avatarEmoji}</span>
+              ) : (
+                <span className="font-display text-3xl font-semibold text-white">{initials || "?"}</span>
+              )}
+            </div>
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              className="absolute inset-0 rounded-full flex items-center justify-center bg-black/50 opacity-0 group-hover:opacity-100 transition"
+              title="Upload photo"
+            >
+              <Camera className="w-7 h-7 text-white" />
+            </button>
+            <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
+          </div>
+
+          <div className="flex gap-2">
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              className="px-3 py-1.5 text-xs font-medium bg-stone-800 hover:bg-stone-700 text-stone-200 rounded-lg border border-stone-700 transition flex items-center gap-1.5"
+            >
+              <Camera className="w-3.5 h-3.5" /> Upload photo
+            </button>
+            {avatarImage && (
+              <button
+                onClick={() => setAvatarImage(null)}
+                className="px-3 py-1.5 text-xs font-medium bg-stone-800 hover:bg-rose-900/40 text-stone-400 hover:text-rose-300 rounded-lg border border-stone-700 hover:border-rose-800 transition flex items-center gap-1.5"
+              >
+                <Trash2 className="w-3.5 h-3.5" /> Remove
+              </button>
             )}
           </div>
 

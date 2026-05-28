@@ -90,8 +90,10 @@ export function Sidebar({ view, setView, isOpen, onClose, user, onLogout, onProf
 
       <div className="p-3 border-t border-stone-800">
         <button onClick={onProfile} className="w-full flex items-center gap-3 px-2 py-2 mb-1 rounded-lg hover:bg-stone-800 transition text-left">
-          <div className={`w-9 h-9 rounded-full bg-gradient-to-br ${user.avatarColor || "from-red-600 to-red-400"} flex items-center justify-center font-semibold text-white shrink-0`}>
-            {user.avatarEmoji ? (
+          <div className={`w-9 h-9 rounded-full bg-gradient-to-br ${user.avatarColor || "from-red-600 to-red-400"} flex items-center justify-center font-semibold text-white shrink-0 overflow-hidden`}>
+            {user.avatarImage ? (
+              <img src={user.avatarImage} className="w-full h-full object-cover" alt="" />
+            ) : user.avatarEmoji ? (
               <span className="text-lg leading-none">{user.avatarEmoji}</span>
             ) : (
               <span>{user.name.trim().split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase()}</span>
