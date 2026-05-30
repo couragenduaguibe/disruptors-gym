@@ -260,9 +260,9 @@ export function LeaderboardView({ members, checkIns, loyaltyPoints, workoutLogs,
       )}
 
       <div className="bg-stone-900 border border-stone-700 rounded-2xl overflow-hidden">
-        <div className="px-5 py-4 border-b border-stone-800 flex items-center justify-between">
-          <div className="font-display text-lg font-semibold text-white">{board.label} Leaderboard</div>
-          <div className="text-xs font-mono text-stone-500">{board.sub}</div>
+        <div className="px-5 py-4 border-b border-stone-800 flex items-center justify-between gap-2">
+          <div className="font-display text-lg font-semibold text-white truncate">{board.label} Leaderboard</div>
+          <div className="text-xs font-mono text-stone-500 shrink-0">{board.sub}</div>
         </div>
         {board.data.length === 0 ? (
           <div className="p-10 text-center">
@@ -509,10 +509,10 @@ export function AssignPlanView({ user, members, workoutPlans, setWorkoutPlans })
 
   return (
     <div className="space-y-6 fade-up">
-      <div className="flex items-center justify-between">
+      <div className="flex items-start gap-3 justify-between">
         <p className="text-sm text-stone-400">Create personalised plans and assign them to your clients.</p>
         <button onClick={() => setShowForm(true)}
-          className="flex items-center gap-2 px-4 py-2.5 bg-red-600 text-white rounded-lg text-sm font-semibold hover:bg-red-700 transition">
+          className="flex items-center gap-2 px-4 py-2.5 bg-red-600 text-white rounded-lg text-sm font-semibold hover:bg-red-700 transition whitespace-nowrap shrink-0">
           <Plus className="w-4 h-4" /> New plan
         </button>
       </div>

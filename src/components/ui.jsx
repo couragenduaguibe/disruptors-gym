@@ -1,4 +1,5 @@
 import { ArrowUpRight, ArrowDownRight } from "lucide-react";
+import { createPortal } from "react-dom";
 
 export function StatCard({ label, value, icon: Icon, accent, className = "", trend, trendUp }) {
   return (
@@ -66,9 +67,11 @@ export function Select({ label, value, onChange, options }) {
 }
 
 /* Modal slides up from bottom on mobile, centers on sm+.
-   Uses dvh so it shrinks when the keyboard appears. */
+   Uses dvh so it shrinks when the keyboard appears.
+   Rendered via portal to escape any CSS-transform ancestor (which would
+   otherwise create a new containing block, clipping position:fixed). */
 export function Modal({ title, subtitle, onClose, children, footer, maxWidth = "max-w-md" }) {
-  return (
+  return createPortal(
     <div className="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-0 sm:p-4" onClick={onClose}>
       <div
         className={`bg-stone-900 border border-stone-700 rounded-t-2xl sm:rounded-2xl w-full ${maxWidth} flex flex-col fade-up`}
@@ -103,7 +106,8 @@ export function Modal({ title, subtitle, onClose, children, footer, maxWidth = "
           <div className="pb-5 shrink-0" />
         )}
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
 
