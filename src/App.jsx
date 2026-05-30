@@ -5,6 +5,7 @@ import {
   seedMessages, seedTemplates, seedMemberStocks, seedDirectMessages,
   seedNotifications, seedWorkoutLogs, seedBodyMetrics, seedLoyaltyPoints,
   seedChallenges, seedShifts, seedEquipment, seedExpenses, seedVideos,
+  seedClassRatings, seedProgressPhotos, seedWorkoutPlans,
   NAV_BY_ROLE,
 } from "./data/seed";
 import { loadData, saveData, clearData } from "./utils/storage";
@@ -26,6 +27,7 @@ import { WorkoutLogView, BodyMetricsView } from "./views/FitnessViews";
 import { LoyaltyRewardsView, ReferralView, ChallengesView } from "./views/GrowthViews";
 import { StaffShiftsView, EquipmentView, ExpensesView, VideoLibraryView } from "./views/OpsViews";
 import { ProfileView } from "./views/ProfileView";
+import { ProgressPhotosView, LeaderboardView, WorkoutPlanView, AssignPlanView } from "./views/NewMemberFeatures";
 
 export default function App() {
   // ─── Auth ──────────────────────────────────────────────────────────────────
@@ -55,6 +57,9 @@ export default function App() {
   const [equipment, setEquipment] = useState(() => loadData("equipment", seedEquipment));
   const [expenses, setExpenses] = useState(() => loadData("expenses", seedExpenses));
   const [videos, setVideos] = useState(() => loadData("videos", seedVideos));
+  const [classRatings, setClassRatings] = useState(() => loadData("classRatings", seedClassRatings));
+  const [progressPhotos, setProgressPhotos] = useState(() => loadData("progressPhotos", seedProgressPhotos));
+  const [workoutPlans, setWorkoutPlans] = useState(() => loadData("workoutPlans", seedWorkoutPlans));
 
   // ─── UI state ──────────────────────────────────────────────────────────────
   const [view, setView] = useState(null);
@@ -85,6 +90,9 @@ export default function App() {
   useEffect(() => { saveData("equipment", equipment); }, [equipment]);
   useEffect(() => { saveData("expenses", expenses); }, [expenses]);
   useEffect(() => { saveData("videos", videos); }, [videos]);
+  useEffect(() => { saveData("classRatings", classRatings); }, [classRatings]);
+  useEffect(() => { saveData("progressPhotos", progressPhotos); }, [progressPhotos]);
+  useEffect(() => { saveData("workoutPlans", workoutPlans); }, [workoutPlans]);
 
   // ─── Default view on login ─────────────────────────────────────────────────
   useEffect(() => {
@@ -311,7 +319,9 @@ export default function App() {
 
           {/* ── MEMBER VIEWS ───────────────────────────────────────────────── */}
           {view === "member-home" && (
-            <MemberHome user={user} members={members} classes={classes} payments={payments} checkIns={checkIns} onNavigate={setView} />
+            <MemberHome user={user} members={members} classes={classes} payments={payments} checkIns={checkIns} onNavigate={setView}
+              workoutLogs={workoutLogs} classRatings={classRatings} setClassRatings={setClassRatings}
+            />
           )}
           {view === "my-qr" && (
             <MemberQRView
@@ -346,10 +356,24 @@ export default function App() {
             <BodyMetricsView user={user} bodyMetrics={bodyMetrics} setBodyMetrics={setBodyMetrics} />
           )}
           {view === "my-rewards" && (
-            <LoyaltyRewardsView user={user} loyaltyPoints={loyaltyPoints} />
+            <LoyaltyRewardsView user={user} loyaltyPoints={loyaltyPoints} checkIns={checkIns} workoutLogs={workoutLogs} classes={classes} members={members} />
           )}
           {view === "my-referrals" && (
             <ReferralView user={user} members={members} />
+          )}
+
+          {/* ── NEW MEMBER FEATURES ────────────────────────────────────────── */}
+          {view === "my-progress" && (
+            <ProgressPhotosView user={user} progressPhotos={progressPhotos} setProgressPhotos={setProgressPhotos} />
+          )}
+          {view === "leaderboard" && (
+            <LeaderboardView members={members} checkIns={checkIns} loyaltyPoints={loyaltyPoints} workoutLogs={workoutLogs} user={user} />
+          )}
+          {view === "my-plan" && (
+            <WorkoutPlanView user={user} workoutPlans={workoutPlans} />
+          )}
+          {view === "assign-plans" && (
+            <AssignPlanView user={user} members={members} workoutPlans={workoutPlans} setWorkoutPlans={setWorkoutPlans} />
           )}
 
           {/* ── PROFILE ────────────────────────────────────────────────────── */}

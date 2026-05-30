@@ -9,6 +9,7 @@ import { StatCard, EmptyState, Modal } from "../components/ui";
 import { planBadge, today, nowTime } from "../utils/storage";
 import { PLAN_PRICES, seedShopProducts } from "../data/seed";
 import { MemberQRScanner } from "../components/QRScanner";
+import { computeStreak, getWorkoutSuggestion, ClassRatingPrompt, MilestoneCard } from "./NewMemberFeatures";
 
 // ========================================================================
 // TRAINER VIEWS
@@ -194,8 +195,9 @@ export function TrainerClients({ user, members, onMemberClick }) {
 // ========================================================================
 // MEMBER VIEWS
 // ========================================================================
-export function MemberHome({ user, members, classes, payments, checkIns, onNavigate }) {
+export function MemberHome({ user, members, classes, payments, checkIns, onNavigate, workoutLogs = [], classRatings = [], setClassRatings = () => {} }) {
   const me = members.find((m) => m.id === user.memberId);
+  const [milestoneDismissed, setMilestoneDismissed] = useState(false);
   if (!me) return <div className="text-stone-500">Member record not found.</div>;
 
   const myClasses = classes.filter((c) => (c.bookedMemberIds || []).includes(me.id));
@@ -203,6 +205,8 @@ export function MemberHome({ user, members, classes, payments, checkIns, onNavig
   const myPayments = payments.filter((p) => p.memberId === me.id);
   const daysToExpiry = Math.ceil((new Date(me.expiryDate) - new Date()) / (1000 * 60 * 60 * 24));
   const overdue = myPayments.find((p) => p.status === "overdue");
+  const streak = computeStreak(checkIns, workoutLogs, me.id);
+  const suggestion = getWorkoutSuggestion(workoutLogs, me.id);
 
   const todayDay = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][new Date().getDay()];
   const todaysClasses = myClasses.filter((c) => c.day === todayDay).sort((a, b) => a.time.localeCompare(b.time));
@@ -253,6 +257,26 @@ export function MemberHome({ user, members, classes, payments, checkIns, onNavig
         </div>
       </button>
 
+      {/* Milestone share card */}
+      {!milestoneDismissed && (
+        <MilestoneCard totalCheckIns={me.checkIns} memberName={me.name} onDismiss={() => setMilestoneDismissed(true)} />
+      )}
+
+      {/* Streak card */}
+      {streak > 0 && (
+        <div className={`flex items-center gap-4 rounded-xl p-4 border ${streak >= 7 ? "bg-amber-950/30 border-amber-800" : "bg-stone-900 border-stone-700"}`}>
+          <span className="text-4xl shrink-0">🔥</span>
+          <div>
+            <div className={`font-display text-2xl font-semibold ${streak >= 7 ? "text-amber-300" : "text-white"}`}>
+              {streak} day streak!
+            </div>
+            <div className="text-xs text-stone-400 mt-0.5">
+              {streak >= 30 ? "Unreal consistency. Iron Will badge unlocked!" : streak >= 7 ? "You're on fire — don't break the chain!" : `Keep going — ${7 - streak} more days for the Week Warrior badge!`}
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="relative overflow-hidden rounded-2xl bg-stone-900 text-white p-6 sm:p-8 fade-up">
         <div className="absolute inset-0 noise-bg opacity-30 pointer-events-none" />
         <div className="absolute -right-20 -top-20 w-80 h-80 rounded-full bg-red-500/20 blur-3xl" />
@@ -266,6 +290,23 @@ export function MemberHome({ user, members, classes, payments, checkIns, onNavig
           </p>
         </div>
       </div>
+
+      {/* Workout suggestion */}
+      {suggestion && (
+        <div className="flex items-start gap-3 bg-stone-900 border border-stone-700 rounded-xl p-4">
+          <span className="text-xl shrink-0 mt-0.5">{suggestion.icon}</span>
+          <div>
+            <div className="text-xs font-mono tracking-wider text-stone-500 uppercase mb-0.5">Workout suggestion</div>
+            <div className="text-sm text-stone-200">{suggestion.msg}</div>
+            <button onClick={() => onNavigate("my-workouts")} className="text-xs text-red-400 hover:text-red-300 mt-2 inline-block transition">
+              Log a session →
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Class rating prompt */}
+      <ClassRatingPrompt classes={classes} user={user} classRatings={classRatings} setClassRatings={setClassRatings} />
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         <StatCard className="fade-up stagger-1" label="Total visits" value={me.checkIns} icon={Activity} accent="bg-red-500/20 text-red-400" />

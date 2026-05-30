@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Gift, Copy, Check, Trophy, Plus, Users } from "lucide-react";
 import { EmptyState, Modal } from "../components/ui";
 import { today } from "../utils/storage";
+import { BADGE_DEFS, computeStreak } from "./NewMemberFeatures";
 
 // ======================================================================
 // LOYALTY & REWARDS
@@ -19,12 +20,29 @@ const HOW_TO_EARN = [
   { action: "Log a workout session", points: 2, icon: "💪" },
 ];
 
-export function LoyaltyRewardsView({ user, loyaltyPoints }) {
+export function LoyaltyRewardsView({ user, loyaltyPoints, checkIns = [], workoutLogs = [], classes = [], members = [] }) {
   const myLoyalty = loyaltyPoints.find((l) => l.memberId === user.memberId) || { points: 0, history: [] };
   const pts = myLoyalty.points;
   const tier = TIERS.find((t) => pts >= t.min && pts <= t.max) || TIERS[0];
   const nextTier = TIERS.find((t) => t.min > pts);
   const progress = nextTier ? Math.round(((pts - tier.min) / (nextTier.min - tier.min)) * 100) : 100;
+
+  const myCheckIns = checkIns.filter((c) => c.memberId === user.memberId);
+  const myWorkouts = workoutLogs.filter((l) => l.memberId === user.memberId);
+  const myClasses = classes.filter((c) => (c.bookedMemberIds || []).includes(user.memberId));
+  const streak = computeStreak(checkIns, workoutLogs, user.memberId);
+  const me = members.find((m) => m.id === user.memberId);
+  const referrals = members.filter((m) => m.referredBy === user.memberId).length;
+
+  const badgeStats = {
+    totalCheckIns: myCheckIns.length,
+    totalWorkouts: myWorkouts.length,
+    totalClasses: myClasses.length,
+    streak,
+    referrals,
+  };
+  const badges = BADGE_DEFS.map((b) => ({ ...b, earned: b.check(badgeStats) }));
+  const earnedCount = badges.filter((b) => b.earned).length;
 
   return (
     <div className="space-y-6">
@@ -70,6 +88,23 @@ export function LoyaltyRewardsView({ user, loyaltyPoints }) {
                 <span className="text-sm text-stone-300">{h.action}</span>
               </div>
               <span className="text-sm font-semibold font-mono text-red-400">+{h.points} pts</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Badges */}
+      <div className="bg-stone-900 rounded-xl border border-stone-700 p-5">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="font-display text-lg font-semibold text-white">Badges</h3>
+          <span className="text-xs font-mono text-stone-400">{earnedCount}/{badges.length} earned</span>
+        </div>
+        <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
+          {badges.map((b) => (
+            <div key={b.id} className={`flex flex-col items-center text-center p-3 rounded-xl border transition ${b.earned ? "bg-stone-800 border-stone-600" : "bg-stone-900 border-stone-800 opacity-40 grayscale"}`}>
+              <span className="text-3xl mb-1.5 leading-none">{b.emoji}</span>
+              <div className={`text-[11px] font-semibold leading-tight ${b.earned ? "text-stone-200" : "text-stone-500"}`}>{b.label}</div>
+              {b.earned && <div className="text-[9px] font-mono text-red-400 uppercase tracking-wider mt-0.5">Earned</div>}
             </div>
           ))}
         </div>

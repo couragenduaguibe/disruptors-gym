@@ -4,6 +4,7 @@ import {
   Award, BarChart3, CreditCard, LogOut, ShoppingCart, Megaphone, DoorOpen,
   Send, QrCode, ShoppingBag, MessageSquare, Bell, Package, Layers,
   Activity, Gift, Clock, Wrench, DollarSign, Video, Trophy, User,
+  Camera, BookOpen,
 } from "lucide-react";
 import { ROLES } from "../data/roles";
 import { NAV_BY_ROLE } from "../data/seed";
@@ -41,6 +42,10 @@ const NAV_ITEMS = {
   equipment:       { label: "Equipment",        icon: Wrench       },
   expenses:        { label: "Expenses & P&L",   icon: DollarSign   },
   "video-library": { label: "Video Library",    icon: Video        },
+  "my-progress":   { label: "Progress Photos",  icon: Camera       },
+  "my-plan":       { label: "My Plan",          icon: BookOpen     },
+  "assign-plans":  { label: "Client Plans",     icon: BookOpen     },
+  leaderboard:     { label: "Leaderboard",      icon: Trophy       },
   profile:         { label: "My Profile",       icon: User         },
 };
 
@@ -153,6 +158,10 @@ export function Header({ view, onMenuClick, user, notifications, setNotification
     challenges: "Challenges", shifts: "Staff Shifts",
     equipment: "Equipment", expenses: "Expenses & P&L",
     "video-library": "Video Library",
+    "my-progress": "Progress Photos",
+    "my-plan": "My Workout Plan",
+    "assign-plans": "Client Plans",
+    leaderboard: "Leaderboard",
     profile: "My Profile",
   };
 

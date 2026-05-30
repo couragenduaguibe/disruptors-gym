@@ -8,10 +8,10 @@ export const DEMO_ACCOUNTS = [
 ];
 
 export const NAV_BY_ROLE = {
-  admin: ["dashboard","members","classes","trainers","checkins","payments","pos","leads","access","messages","member-stocks","chat","analytics","shifts","equipment","expenses","challenges","profile"],
-  receptionist: ["dashboard","members","classes","checkins","payments","pos","leads","messages","member-stocks","chat","equipment","challenges","profile"],
-  trainer: ["trainer-home","my-classes","my-clients","chat","video-library","challenges","profile"],
-  member: ["member-home","my-qr","book-classes","my-history","my-payments","my-shop","my-stock","chat","my-workouts","my-metrics","my-rewards","my-referrals","challenges","profile"],
+  admin: ["dashboard","members","classes","trainers","checkins","payments","pos","leads","access","messages","member-stocks","chat","analytics","shifts","equipment","expenses","challenges","leaderboard","profile"],
+  receptionist: ["dashboard","members","classes","checkins","payments","pos","leads","messages","member-stocks","chat","equipment","challenges","leaderboard","profile"],
+  trainer: ["trainer-home","my-classes","my-clients","assign-plans","chat","video-library","challenges","profile"],
+  member: ["member-home","my-qr","book-classes","my-history","my-payments","my-shop","my-stock","chat","my-workouts","my-metrics","my-progress","my-plan","my-rewards","my-referrals","challenges","leaderboard","profile"],
 };
 
 export const seedMembers = [
@@ -280,4 +280,58 @@ export const seedVideos = [
   { id: "vid4", title: "HIIT Cardio Blast", trainerId: "t3", trainerName: "Tomás Vega", category: "Workout", duration: "20:00", emoji: "🔥", uploadDate: "2026-05-18", description: "20-minute no-equipment HIIT. 40s on, 20s off. All levels welcome." },
   { id: "vid5", title: "How to Deadlift", trainerId: "t1", trainerName: "Jordan Rivera", category: "Technique", duration: "10:15", emoji: "🎯", uploadDate: "2026-05-20", description: "Conventional deadlift from setup to lockout. Includes warm-up sets and full cue breakdown." },
   { id: "vid6", title: "Post-Workout Recovery Routine", trainerId: "t2", trainerName: "Kemi Adebayo", category: "Recovery", duration: "10:00", emoji: "⚡", uploadDate: "2026-05-22", description: "Cool-down stretches and foam rolling routine for faster muscle recovery." },
+];
+
+export const seedClassRatings = [];
+
+export const seedProgressPhotos = [];
+
+export const seedWorkoutPlans = [
+  {
+    id: "wp1",
+    trainerId: "t1",
+    trainerName: "Jordan Rivera",
+    memberId: "m1",
+    memberName: "Amara Okafor",
+    name: "12-Week Strength Foundation",
+    createdDate: "2026-04-01",
+    active: true,
+    weeks: [
+      {
+        week: 1,
+        sessions: [
+          {
+            day: "Monday",
+            focus: "Upper Body Push",
+            exercises: [
+              { name: "Bench Press",       sets: 3, reps: "8–10", notes: "Control the descent" },
+              { name: "Overhead Press",    sets: 3, reps: "8–10", notes: "" },
+              { name: "Tricep Dips",       sets: 3, reps: "12",   notes: "" },
+              { name: "Lateral Raises",    sets: 3, reps: "15",   notes: "Light weight, full ROM" },
+            ],
+          },
+          {
+            day: "Wednesday",
+            focus: "Lower Body",
+            exercises: [
+              { name: "Barbell Squat",     sets: 4, reps: "6–8",  notes: "Below parallel" },
+              { name: "Romanian Deadlift", sets: 3, reps: "10",   notes: "Hip hinge, flat back" },
+              { name: "Leg Press",         sets: 3, reps: "12",   notes: "" },
+              { name: "Calf Raises",       sets: 4, reps: "15",   notes: "" },
+            ],
+          },
+          {
+            day: "Friday",
+            focus: "Upper Body Pull",
+            exercises: [
+              { name: "Deadlift",          sets: 3, reps: "5",    notes: "Form first, then load" },
+              { name: "Pull-ups",          sets: 3, reps: "Max",  notes: "" },
+              { name: "Barbell Row",       sets: 3, reps: "8–10", notes: "" },
+              { name: "Bicep Curls",       sets: 3, reps: "12",   notes: "" },
+            ],
+          },
+        ],
+      },
+    ],
+  },
 ];
