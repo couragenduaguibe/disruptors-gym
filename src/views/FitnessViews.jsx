@@ -39,23 +39,23 @@ export function WorkoutLogView({ user, workoutLogs, setWorkoutLogs, loyaltyPoint
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between gap-4">
-        <div className="flex gap-3">
-          <div className="bg-stone-900 rounded-xl border border-stone-700 p-4 text-center">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div className="flex gap-2 sm:gap-3">
+          <div className="flex-1 bg-stone-900 rounded-xl border border-stone-700 p-4 text-center">
             <div className="font-display text-3xl font-semibold text-white">{myLogs.length}</div>
             <div className="text-xs font-mono text-stone-500 tracking-wider uppercase mt-0.5">Sessions</div>
           </div>
-          <div className="bg-stone-900 rounded-xl border border-stone-700 p-4 text-center">
+          <div className="flex-1 bg-stone-900 rounded-xl border border-stone-700 p-4 text-center">
             <div className="font-display text-3xl font-semibold text-white">{totalExercises}</div>
             <div className="text-xs font-mono text-stone-500 tracking-wider uppercase mt-0.5">Exercises</div>
           </div>
-          <div className="bg-stone-900 rounded-xl border border-stone-700 p-4 text-center">
+          <div className="flex-1 bg-stone-900 rounded-xl border border-stone-700 p-4 text-center">
             <div className="font-display text-3xl font-semibold text-white">{totalSets}</div>
             <div className="text-xs font-mono text-stone-500 tracking-wider uppercase mt-0.5">Total sets</div>
           </div>
         </div>
         <button onClick={() => setShowForm(true)}
-          className="flex items-center gap-2 px-4 py-2.5 bg-red-600 text-white rounded-lg text-sm font-semibold hover:bg-red-700 transition shrink-0">
+          className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2.5 bg-red-600 text-white rounded-lg text-sm font-semibold hover:bg-red-700 transition shrink-0">
           <Plus className="w-4 h-4" /> Log workout
         </button>
       </div>

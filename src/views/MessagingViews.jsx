@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
-import { MessageSquare, Send, ChevronLeft, CheckCheck } from "lucide-react";
+import { MessageSquare, Send, ChevronLeft, CheckCheck, PenLine } from "lucide-react";
 import { DEMO_ACCOUNTS } from "../data/seed";
+import { Modal } from "../components/ui";
 import { today } from "../utils/storage";
 
 // ========================================================================
@@ -9,6 +10,7 @@ import { today } from "../utils/storage";
 export function ChatView({ user, directMessages, setDirectMessages, setNotifications }) {
   const myId = user.username;
   const [selectedContact, setSelectedContact] = useState(null);
+  const [composing, setComposing] = useState(false);
 
   const contacts = DEMO_ACCOUNTS.filter((a) => a.username !== myId);
 
@@ -71,11 +73,19 @@ export function ChatView({ user, directMessages, setDirectMessages, setNotificat
     <div className="bg-stone-900 rounded-xl border border-stone-700 overflow-hidden flex" style={{ height: "calc(100dvh - 200px)", minHeight: 360 }}>
       {/* Contact list */}
       <div className={`w-full lg:w-80 border-r border-stone-800 flex flex-col shrink-0 ${selectedContact ? "hidden lg:flex" : "flex"}`}>
-        <div className="p-4 border-b border-stone-800 flex items-center justify-between">
+        <div className="p-4 border-b border-stone-800 flex items-center justify-between gap-2">
           <h3 className="font-display text-lg font-semibold text-white">Messages</h3>
-          {totalUnread > 0 && (
-            <span className="text-xs bg-red-600 text-white rounded-full px-2 py-0.5 font-mono">{totalUnread} new</span>
-          )}
+          <div className="flex items-center gap-2">
+            {totalUnread > 0 && (
+              <span className="text-xs bg-red-600 text-white rounded-full px-2 py-0.5 font-mono">{totalUnread} new</span>
+            )}
+            <button
+              onClick={() => setComposing(true)}
+              title="New message"
+              className="p-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition flex items-center justify-center">
+              <PenLine className="w-4 h-4" />
+            </button>
+          </div>
         </div>
         <div className="flex-1 overflow-y-auto">
           {contacts.map((contact) => {
@@ -129,6 +139,34 @@ export function ChatView({ user, directMessages, setDirectMessages, setNotificat
             <p className="text-xs text-stone-500 mt-1">Choose someone from the list to start chatting</p>
           </div>
         </div>
+      )}
+
+      {/* New message compose picker */}
+      {composing && (
+        <Modal title="New Message" subtitle="Choose who to message" onClose={() => setComposing(false)}>
+          <div className="space-y-1 pb-2">
+            {contacts.map((contact) => (
+              <button
+                key={contact.username}
+                onClick={() => { selectContact(contact); setComposing(false); }}
+                className="w-full flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-stone-800 transition text-left"
+              >
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-stone-700 to-stone-600 flex items-center justify-center font-semibold text-stone-200 shrink-0">
+                  {contact.name[0]}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="text-sm font-semibold text-stone-100">{contact.name}</div>
+                  <div className="text-xs text-stone-500 capitalize">{contact.role}</div>
+                </div>
+                {getUnread(contact.username) > 0 && (
+                  <span className="w-5 h-5 bg-red-600 text-white text-[9px] rounded-full flex items-center justify-center font-bold shrink-0">
+                    {getUnread(contact.username)}
+                  </span>
+                )}
+              </button>
+            ))}
+          </div>
+        </Modal>
       )}
     </div>
   );
