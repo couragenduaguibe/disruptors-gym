@@ -1075,6 +1075,7 @@ export function MemberFriendsView({ user, members, setMembers }) {
   const [search, setSearch] = useState("");
   const me = members.find((m) => m.id === user.memberId);
   const myFollowing = me?.following || [];
+  const myFollowers = members.filter((m) => m.id !== user.memberId && (m.following || []).includes(user.memberId));
 
   const toggleFollow = (targetId) => {
     setMembers((prev) => prev.map((m) => {
@@ -1092,6 +1093,8 @@ export function MemberFriendsView({ user, members, setMembers }) {
   const others = members.filter((m) => m.id !== user.memberId);
   const pool = tab === "following"
     ? others.filter((m) => myFollowing.includes(m.id))
+    : tab === "followers"
+    ? myFollowers
     : others.filter((m) => m.status === "active");
 
   const visible = search
@@ -1106,6 +1109,7 @@ export function MemberFriendsView({ user, members, setMembers }) {
         {[
           { id: "discover",  label: "Discover" },
           { id: "following", label: `Following · ${myFollowing.length}` },
+          { id: "followers", label: `Followers · ${myFollowers.length}` },
         ].map((t) => (
           <button key={t.id} onClick={() => setTab(t.id)}
             className={`flex-1 py-1.5 text-xs font-medium rounded-md transition ${tab === t.id ? "bg-stone-950 text-white shadow-sm" : "text-stone-400 hover:text-white"}`}>
@@ -1143,6 +1147,9 @@ export function MemberFriendsView({ user, members, setMembers }) {
                   {isMutual && (
                     <span className="text-[9px] font-mono px-1.5 py-0.5 rounded-full bg-red-900/30 text-red-300 border border-red-800/50 shrink-0">Friends</span>
                   )}
+                  {!isMutual && (m.following || []).includes(user.memberId) && (
+                    <span className="text-[9px] font-mono px-1.5 py-0.5 rounded-full bg-stone-700/60 text-stone-400 border border-stone-600/50 shrink-0">Follows you</span>
+                  )}
                 </div>
                 <div className="flex items-center gap-2 mt-0.5 flex-wrap">
                   <span className={`text-[9px] font-mono px-1.5 py-0.5 rounded-full ${planBadge(m.plan)}`}>{m.plan.toUpperCase()}</span>
@@ -1168,7 +1175,7 @@ export function MemberFriendsView({ user, members, setMembers }) {
         {visible.length === 0 && (
           <div className="py-12 text-center text-stone-500">
             <Users className="w-8 h-8 mx-auto mb-3 opacity-30" />
-            <div className="text-sm">{tab === "following" ? "You're not following anyone yet" : "No members found"}</div>
+            <div className="text-sm">{tab === "following" ? "You're not following anyone yet" : tab === "followers" ? "No one is following you yet" : "No members found"}</div>
           </div>
         )}
       </div>

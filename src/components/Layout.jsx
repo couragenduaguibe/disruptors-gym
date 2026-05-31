@@ -57,7 +57,7 @@ export function Sidebar({ view, setView, isOpen, onClose, user, onLogout, onProf
 
   return (
     <aside className={`
-      fixed lg:sticky top-0 left-0 h-screen w-64 bg-stone-950 border-r border-stone-800 text-stone-100 flex flex-col z-50
+      fixed lg:sticky top-0 left-0 h-screen w-64 bg-stone-950 border-r border-stone-800 text-stone-100 flex flex-col z-[60]
       transition-transform duration-300
       ${isOpen ? "translate-x-0" : "-translate-x-full"} lg:translate-x-0
     `}>
@@ -266,10 +266,10 @@ const BOTTOM_CATS = {
     { id: "more",     icon: Layers,        label: "More",     items: ["leaderboard","profile"] },
   ],
   member: [
-    { id: "train",  icon: Dumbbell,     label: "Train",  items: ["my-workouts","my-metrics","my-progress","my-plan","book-classes","my-history"] },
-    { id: "social", icon: Users,        label: "Social", items: ["friends","chat","challenges","leaderboard","my-rewards","my-referrals"] },
-    { id: "shop",   icon: ShoppingBag,  label: "Shop",   items: ["my-shop","my-stock","my-payments"] },
-    { id: "more",   icon: Layers,       label: "More",   items: ["profile","my-qr"] },
+    { id: "train",   icon: Dumbbell,    label: "Train",   items: ["my-workouts","book-classes","my-history"] },
+    { id: "social",  icon: Users,       label: "Social",  items: ["friends","chat","challenges","leaderboard","my-rewards","my-referrals"] },
+    { id: "shop",    icon: ShoppingBag, label: "Shop",    items: ["my-shop","my-stock","my-payments"] },
+    { id: "profile", icon: User,        label: "Profile", items: ["profile","my-progress","my-metrics","my-plan"] },
   ],
 };
 
