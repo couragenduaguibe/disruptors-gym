@@ -244,7 +244,7 @@ export function BodyMetricsView({ user, bodyMetrics, setBodyMetrics }) {
       <div className="flex items-center justify-between">
         <p className="text-sm text-stone-400">Track your body composition over time.</p>
         <button onClick={() => setShowForm(true)}
-          className="flex items-center gap-2 px-4 py-2.5 bg-red-600 text-white rounded-lg text-sm font-semibold hover:bg-red-700 transition">
+          className="flex items-center gap-2 px-4 py-2.5 bg-red-600 text-white rounded-lg text-sm font-semibold hover:bg-red-700 transition whitespace-nowrap shrink-0">
           <Plus className="w-4 h-4" /> Log metrics
         </button>
       </div>

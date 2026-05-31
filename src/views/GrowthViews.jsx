@@ -103,7 +103,7 @@ export function LoyaltyRewardsView({ user, loyaltyPoints, checkIns = [], workout
           {badges.map((b) => (
             <div key={b.id} className={`flex flex-col items-center text-center p-3 rounded-xl border transition ${b.earned ? "bg-stone-800 border-stone-600" : "bg-stone-900 border-stone-800 opacity-40 grayscale"}`}>
               <span className="text-3xl mb-1.5 leading-none">{b.emoji}</span>
-              <div className={`text-[11px] font-semibold leading-tight ${b.earned ? "text-stone-200" : "text-stone-500"}`}>{b.label}</div>
+              <div className={`text-[9px] font-semibold leading-tight ${b.earned ? "text-stone-200" : "text-stone-500"}`}>{b.label}</div>
               {b.earned && <div className="text-[9px] font-mono text-red-400 uppercase tracking-wider mt-0.5">Earned</div>}
             </div>
           ))}

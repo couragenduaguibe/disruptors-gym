@@ -189,15 +189,15 @@ export function EquipmentView({ user, equipment, setEquipment }) {
       <div className="grid grid-cols-3 gap-3">
         <div className="bg-stone-900 rounded-xl border border-stone-700 p-4 text-center">
           <div className="font-display text-3xl font-semibold text-red-400">{operational}</div>
-          <div className="text-xs font-mono text-stone-500 tracking-wider uppercase mt-0.5">Operational</div>
+          <div className="text-[10px] font-mono text-stone-500 uppercase mt-0.5 leading-tight">Operational</div>
         </div>
         <div className={`rounded-xl border p-4 text-center ${maintenance > 0 ? "bg-amber-950/20 border-amber-800" : "bg-stone-900 border-stone-700"}`}>
           <div className={`font-display text-3xl font-semibold ${maintenance > 0 ? "text-amber-400" : "text-stone-400"}`}>{maintenance}</div>
-          <div className="text-xs font-mono text-stone-500 tracking-wider uppercase mt-0.5">Maintenance</div>
+          <div className="text-[10px] font-mono text-stone-500 uppercase mt-0.5 leading-tight">Maintenance</div>
         </div>
         <div className={`rounded-xl border p-4 text-center ${outOfService > 0 ? "bg-rose-950/20 border-rose-800" : "bg-stone-900 border-stone-700"}`}>
           <div className={`font-display text-3xl font-semibold ${outOfService > 0 ? "text-rose-400" : "text-stone-400"}`}>{outOfService}</div>
-          <div className="text-xs font-mono text-stone-500 tracking-wider uppercase mt-0.5">Out of service</div>
+          <div className="text-[10px] font-mono text-stone-500 uppercase mt-0.5 leading-tight">Out of svc</div>
         </div>
       </div>
 
@@ -378,26 +378,26 @@ export function ExpensesView({ user, expenses, setExpenses, payments }) {
 
       {/* P&L summary */}
       <div className="grid grid-cols-3 gap-3">
-        <div className="bg-stone-900 rounded-xl border border-stone-700 p-5">
-          <div className="flex items-center gap-2 mb-2">
-            <TrendingUp className="w-4 h-4 text-red-400" />
-            <div className="text-xs font-mono text-stone-500 tracking-wider uppercase">Revenue</div>
+        <div className="bg-stone-900 rounded-xl border border-stone-700 p-3">
+          <div className="flex items-center gap-1 mb-2">
+            <TrendingUp className="w-3.5 h-3.5 text-red-400 shrink-0" />
+            <div className="text-[10px] font-mono text-stone-500 uppercase">Revenue</div>
           </div>
-          <div className="font-display text-2xl font-semibold text-white">₦{(revenue / 1000).toFixed(0)}K</div>
+          <div className="font-display text-xl font-semibold text-white">₦{(revenue / 1000).toFixed(0)}K</div>
         </div>
-        <div className={`rounded-xl border p-5 ${totalExpenses > 0 ? "bg-rose-950/20 border-rose-800" : "bg-stone-900 border-stone-700"}`}>
-          <div className="flex items-center gap-2 mb-2">
-            <TrendingDown className="w-4 h-4 text-rose-400" />
-            <div className="text-xs font-mono text-stone-500 tracking-wider uppercase">Expenses</div>
+        <div className={`rounded-xl border p-3 ${totalExpenses > 0 ? "bg-rose-950/20 border-rose-800" : "bg-stone-900 border-stone-700"}`}>
+          <div className="flex items-center gap-1 mb-2">
+            <TrendingDown className="w-3.5 h-3.5 text-rose-400 shrink-0" />
+            <div className="text-[10px] font-mono text-stone-500 uppercase">Expenses</div>
           </div>
-          <div className="font-display text-2xl font-semibold text-rose-400">₦{(totalExpenses / 1000).toFixed(0)}K</div>
+          <div className="font-display text-xl font-semibold text-rose-400">₦{(totalExpenses / 1000).toFixed(0)}K</div>
         </div>
-        <div className={`rounded-xl border p-5 ${profit >= 0 ? "bg-red-950/20 border-red-800" : "bg-rose-950/20 border-rose-800"}`}>
-          <div className="flex items-center gap-2 mb-2">
-            <DollarSign className={`w-4 h-4 ${profit >= 0 ? "text-red-400" : "text-rose-400"}`} />
-            <div className="text-xs font-mono text-stone-500 tracking-wider uppercase">Net P&L</div>
+        <div className={`rounded-xl border p-3 ${profit >= 0 ? "bg-red-950/20 border-red-800" : "bg-rose-950/20 border-rose-800"}`}>
+          <div className="flex items-center gap-1 mb-2">
+            <DollarSign className={`w-3.5 h-3.5 shrink-0 ${profit >= 0 ? "text-red-400" : "text-rose-400"}`} />
+            <div className="text-[10px] font-mono text-stone-500 uppercase whitespace-nowrap">Net P&L</div>
           </div>
-          <div className={`font-display text-2xl font-semibold ${profit >= 0 ? "text-red-400" : "text-rose-400"}`}>
+          <div className={`font-display text-xl font-semibold ${profit >= 0 ? "text-red-400" : "text-rose-400"}`}>
             {profit >= 0 ? "+" : ""}₦{(Math.abs(profit) / 1000).toFixed(0)}K
           </div>
         </div>
