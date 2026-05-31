@@ -122,31 +122,31 @@ function ShiftForm({ shift, onSave, onClose }) {
         <div>
           <label className="text-xs font-mono tracking-wider text-stone-400 uppercase mb-1.5 block">Staff member</label>
           <select value={form.staffId} onChange={(e) => handleStaff(e.target.value)}
-            className="w-full px-3 py-2.5 bg-stone-800 border border-stone-700 rounded-lg text-sm text-white focus:outline-none focus:border-red-500">
+            className="w-full px-3 py-2.5 bg-stone-800 border border-stone-700 rounded-lg text-base sm:text-sm text-white focus:outline-none focus:border-red-500">
             {STAFF_ACCOUNTS.map((a) => <option key={a.username} value={a.username}>{a.name} ({a.role})</option>)}
           </select>
         </div>
         <div>
           <label className="text-xs font-mono tracking-wider text-stone-400 uppercase mb-1.5 block">Date</label>
           <input type="date" value={form.date} onChange={(e) => set("date", e.target.value)}
-            className="w-full px-3 py-2.5 bg-stone-800 border border-stone-700 rounded-lg text-sm text-white focus:outline-none focus:border-red-500" />
+            className="w-full px-3 py-2.5 bg-stone-800 border border-stone-700 rounded-lg text-base sm:text-sm text-white focus:outline-none focus:border-red-500" />
         </div>
         <div className="grid grid-cols-2 gap-3">
           <div>
             <label className="text-xs font-mono tracking-wider text-stone-400 uppercase mb-1.5 block">Start</label>
             <input type="time" value={form.startTime} onChange={(e) => set("startTime", e.target.value)}
-              className="w-full px-3 py-2.5 bg-stone-800 border border-stone-700 rounded-lg text-sm text-white focus:outline-none focus:border-red-500" />
+              className="w-full px-3 py-2.5 bg-stone-800 border border-stone-700 rounded-lg text-base sm:text-sm text-white focus:outline-none focus:border-red-500" />
           </div>
           <div>
             <label className="text-xs font-mono tracking-wider text-stone-400 uppercase mb-1.5 block">End</label>
             <input type="time" value={form.endTime} onChange={(e) => set("endTime", e.target.value)}
-              className="w-full px-3 py-2.5 bg-stone-800 border border-stone-700 rounded-lg text-sm text-white focus:outline-none focus:border-red-500" />
+              className="w-full px-3 py-2.5 bg-stone-800 border border-stone-700 rounded-lg text-base sm:text-sm text-white focus:outline-none focus:border-red-500" />
           </div>
         </div>
         <div>
           <label className="text-xs font-mono tracking-wider text-stone-400 uppercase mb-1.5 block">Location</label>
           <select value={form.location} onChange={(e) => set("location", e.target.value)}
-            className="w-full px-3 py-2.5 bg-stone-800 border border-stone-700 rounded-lg text-sm text-white focus:outline-none focus:border-red-500">
+            className="w-full px-3 py-2.5 bg-stone-800 border border-stone-700 rounded-lg text-base sm:text-sm text-white focus:outline-none focus:border-red-500">
             {["Main Floor", "Reception", "Cardio Zone", "Weight Room", "Studio"].map((l) => <option key={l} value={l}>{l}</option>)}
           </select>
         </div>
@@ -287,20 +287,20 @@ function EquipmentForm({ item, onSave, onClose }) {
         <div>
           <label className="text-xs font-mono tracking-wider text-stone-400 uppercase mb-1.5 block">Name</label>
           <input type="text" value={form.name} onChange={(e) => set("name", e.target.value)} placeholder="e.g. Treadmill #4"
-            className="w-full px-3 py-2.5 bg-stone-800 border border-stone-700 rounded-lg text-sm text-white placeholder:text-stone-500 focus:outline-none focus:border-red-500" />
+            className="w-full px-3 py-2.5 bg-stone-800 border border-stone-700 rounded-lg text-base sm:text-sm text-white placeholder:text-stone-500 focus:outline-none focus:border-red-500" />
         </div>
         <div className="grid grid-cols-2 gap-3">
           <div>
             <label className="text-xs font-mono tracking-wider text-stone-400 uppercase mb-1.5 block">Category</label>
             <select value={form.category} onChange={(e) => set("category", e.target.value)}
-              className="w-full px-3 py-2.5 bg-stone-800 border border-stone-700 rounded-lg text-sm text-white focus:outline-none focus:border-red-500">
+              className="w-full px-3 py-2.5 bg-stone-800 border border-stone-700 rounded-lg text-base sm:text-sm text-white focus:outline-none focus:border-red-500">
               {EQ_CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
             </select>
           </div>
           <div>
             <label className="text-xs font-mono tracking-wider text-stone-400 uppercase mb-1.5 block">Status</label>
             <select value={form.status} onChange={(e) => set("status", e.target.value)}
-              className="w-full px-3 py-2.5 bg-stone-800 border border-stone-700 rounded-lg text-sm text-white focus:outline-none focus:border-red-500">
+              className="w-full px-3 py-2.5 bg-stone-800 border border-stone-700 rounded-lg text-base sm:text-sm text-white focus:outline-none focus:border-red-500">
               <option value="operational">Operational</option>
               <option value="maintenance">Maintenance</option>
               <option value="out-of-service">Out of service</option>
@@ -311,18 +311,18 @@ function EquipmentForm({ item, onSave, onClose }) {
           <div>
             <label className="text-xs font-mono tracking-wider text-stone-400 uppercase mb-1.5 block">Last service</label>
             <input type="date" value={form.lastService} onChange={(e) => set("lastService", e.target.value)}
-              className="w-full px-3 py-2.5 bg-stone-800 border border-stone-700 rounded-lg text-sm text-white focus:outline-none focus:border-red-500" />
+              className="w-full px-3 py-2.5 bg-stone-800 border border-stone-700 rounded-lg text-base sm:text-sm text-white focus:outline-none focus:border-red-500" />
           </div>
           <div>
             <label className="text-xs font-mono tracking-wider text-stone-400 uppercase mb-1.5 block">Next service</label>
             <input type="date" value={form.nextService} onChange={(e) => set("nextService", e.target.value)}
-              className="w-full px-3 py-2.5 bg-stone-800 border border-stone-700 rounded-lg text-sm text-white focus:outline-none focus:border-red-500" />
+              className="w-full px-3 py-2.5 bg-stone-800 border border-stone-700 rounded-lg text-base sm:text-sm text-white focus:outline-none focus:border-red-500" />
           </div>
         </div>
         <div>
           <label className="text-xs font-mono tracking-wider text-stone-400 uppercase mb-1.5 block">Notes</label>
           <textarea value={form.notes} onChange={(e) => set("notes", e.target.value)} placeholder="Maintenance notes..."
-            className="w-full px-3 py-2.5 bg-stone-800 border border-stone-700 rounded-lg text-sm text-white placeholder:text-stone-500 focus:outline-none focus:border-red-500 resize-none" rows={2} />
+            className="w-full px-3 py-2.5 bg-stone-800 border border-stone-700 rounded-lg text-base sm:text-sm text-white placeholder:text-stone-500 focus:outline-none focus:border-red-500 resize-none" rows={2} />
         </div>
         <button onClick={() => { if (!form.name) return; onSave(form); }} className="w-full py-3 bg-red-600 text-white rounded-lg text-sm font-semibold hover:bg-red-700 transition">
           {item ? "Update equipment" : "Add equipment"}
@@ -367,7 +367,7 @@ export function ExpensesView({ user, expenses, setExpenses, payments }) {
     <div className="space-y-6">
       <div className="flex items-center gap-3 flex-wrap">
         <input type="month" value={filterMonth} onChange={(e) => setFilterMonth(e.target.value)}
-          className="px-3 py-2 bg-stone-800 border border-stone-700 rounded-lg text-sm text-white focus:outline-none focus:border-red-500" />
+          className="px-3 py-2 bg-stone-800 border border-stone-700 rounded-lg text-base sm:text-sm text-white focus:outline-none focus:border-red-500" />
         {canEdit && (
           <button onClick={() => setShowForm(true)}
             className="flex items-center gap-2 px-4 py-2.5 bg-red-600 text-white rounded-lg text-sm font-semibold hover:bg-red-700 transition ml-auto">
@@ -475,24 +475,24 @@ function ExpenseForm({ onSave, onClose }) {
         <div>
           <label className="text-xs font-mono tracking-wider text-stone-400 uppercase mb-1.5 block">Category</label>
           <select value={form.category} onChange={(e) => set("category", e.target.value)}
-            className="w-full px-3 py-2.5 bg-stone-800 border border-stone-700 rounded-lg text-sm text-white focus:outline-none focus:border-red-500">
+            className="w-full px-3 py-2.5 bg-stone-800 border border-stone-700 rounded-lg text-base sm:text-sm text-white focus:outline-none focus:border-red-500">
             {EXP_CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
           </select>
         </div>
         <div>
           <label className="text-xs font-mono tracking-wider text-stone-400 uppercase mb-1.5 block">Amount (₦)</label>
           <input type="number" value={form.amount} onChange={(e) => set("amount", e.target.value)} placeholder="0"
-            className="w-full px-3 py-2.5 bg-stone-800 border border-stone-700 rounded-lg text-sm text-white placeholder:text-stone-500 focus:outline-none focus:border-red-500" />
+            className="w-full px-3 py-2.5 bg-stone-800 border border-stone-700 rounded-lg text-base sm:text-sm text-white placeholder:text-stone-500 focus:outline-none focus:border-red-500" />
         </div>
         <div>
           <label className="text-xs font-mono tracking-wider text-stone-400 uppercase mb-1.5 block">Description</label>
           <input type="text" value={form.description} onChange={(e) => set("description", e.target.value)} placeholder="What was this for?"
-            className="w-full px-3 py-2.5 bg-stone-800 border border-stone-700 rounded-lg text-sm text-white placeholder:text-stone-500 focus:outline-none focus:border-red-500" />
+            className="w-full px-3 py-2.5 bg-stone-800 border border-stone-700 rounded-lg text-base sm:text-sm text-white placeholder:text-stone-500 focus:outline-none focus:border-red-500" />
         </div>
         <div>
           <label className="text-xs font-mono tracking-wider text-stone-400 uppercase mb-1.5 block">Date</label>
           <input type="date" value={form.date} onChange={(e) => set("date", e.target.value)}
-            className="w-full px-3 py-2.5 bg-stone-800 border border-stone-700 rounded-lg text-sm text-white focus:outline-none focus:border-red-500" />
+            className="w-full px-3 py-2.5 bg-stone-800 border border-stone-700 rounded-lg text-base sm:text-sm text-white focus:outline-none focus:border-red-500" />
         </div>
         <label className="flex items-center gap-2 cursor-pointer">
           <input type="checkbox" checked={form.recurring} onChange={(e) => set("recurring", e.target.checked)} className="rounded accent-red-500" />
@@ -602,20 +602,20 @@ function VideoUploadForm({ user, onSave, onClose }) {
         <div>
           <label className="text-xs font-mono tracking-wider text-stone-400 uppercase mb-1.5 block">Title</label>
           <input type="text" value={form.title} onChange={(e) => set("title", e.target.value)} placeholder="e.g. 30-min Full Body Burn"
-            className="w-full px-3 py-2.5 bg-stone-800 border border-stone-700 rounded-lg text-sm text-white placeholder:text-stone-500 focus:outline-none focus:border-red-500" />
+            className="w-full px-3 py-2.5 bg-stone-800 border border-stone-700 rounded-lg text-base sm:text-sm text-white placeholder:text-stone-500 focus:outline-none focus:border-red-500" />
         </div>
         <div className="grid grid-cols-2 gap-3">
           <div>
             <label className="text-xs font-mono tracking-wider text-stone-400 uppercase mb-1.5 block">Category</label>
             <select value={form.category} onChange={(e) => set("category", e.target.value)}
-              className="w-full px-3 py-2.5 bg-stone-800 border border-stone-700 rounded-lg text-sm text-white focus:outline-none focus:border-red-500">
+              className="w-full px-3 py-2.5 bg-stone-800 border border-stone-700 rounded-lg text-base sm:text-sm text-white focus:outline-none focus:border-red-500">
               {["Technique", "Workout", "Recovery", "Nutrition"].map((c) => <option key={c} value={c}>{c}</option>)}
             </select>
           </div>
           <div>
             <label className="text-xs font-mono tracking-wider text-stone-400 uppercase mb-1.5 block">Duration</label>
             <input type="text" value={form.duration} onChange={(e) => set("duration", e.target.value)} placeholder="e.g. 15:30"
-              className="w-full px-3 py-2.5 bg-stone-800 border border-stone-700 rounded-lg text-sm text-white placeholder:text-stone-500 focus:outline-none focus:border-red-500" />
+              className="w-full px-3 py-2.5 bg-stone-800 border border-stone-700 rounded-lg text-base sm:text-sm text-white placeholder:text-stone-500 focus:outline-none focus:border-red-500" />
           </div>
         </div>
         <div>
@@ -632,7 +632,7 @@ function VideoUploadForm({ user, onSave, onClose }) {
         <div>
           <label className="text-xs font-mono tracking-wider text-stone-400 uppercase mb-1.5 block">Description</label>
           <textarea value={form.description} onChange={(e) => set("description", e.target.value)} placeholder="What will members learn or do?"
-            className="w-full px-3 py-2.5 bg-stone-800 border border-stone-700 rounded-lg text-sm text-white placeholder:text-stone-500 focus:outline-none focus:border-red-500 resize-none" rows={2} />
+            className="w-full px-3 py-2.5 bg-stone-800 border border-stone-700 rounded-lg text-base sm:text-sm text-white placeholder:text-stone-500 focus:outline-none focus:border-red-500 resize-none" rows={2} />
         </div>
         <button onClick={() => { if (!form.title) return; onSave(form); }}
           className="w-full py-3 bg-red-600 text-white rounded-lg text-sm font-semibold hover:bg-red-700 transition">

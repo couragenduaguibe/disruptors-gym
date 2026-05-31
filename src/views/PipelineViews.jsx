@@ -141,14 +141,14 @@ function LeadModal({ lead, onSave, onClose, onDelete }) {
           <div>
             <label className="text-xs font-mono tracking-wider text-stone-400 uppercase mb-1.5 block">Source</label>
             <select value={form.source} onChange={(e) => update("source", e.target.value)}
-              className="w-full px-3 py-2.5 bg-stone-800 border border-stone-700 rounded-lg text-sm text-white focus:outline-none focus:border-red-500">
+              className="w-full px-3 py-2.5 bg-stone-800 border border-stone-700 rounded-lg text-base sm:text-sm text-white focus:outline-none focus:border-red-500">
               {["Walk-in", "Instagram", "Facebook", "Referral", "Website", "Google Ads", "Other"].map((s) => <option key={s}>{s}</option>)}
             </select>
           </div>
           <div>
             <label className="text-xs font-mono tracking-wider text-stone-400 uppercase mb-1.5 block">Interested in</label>
             <select value={form.interest} onChange={(e) => update("interest", e.target.value)}
-              className="w-full px-3 py-2.5 bg-stone-800 border border-stone-700 rounded-lg text-sm text-white focus:outline-none focus:border-red-500">
+              className="w-full px-3 py-2.5 bg-stone-800 border border-stone-700 rounded-lg text-base sm:text-sm text-white focus:outline-none focus:border-red-500">
               {["Basic", "Standard", "Premium"].map((s) => <option key={s}>{s}</option>)}
             </select>
           </div>

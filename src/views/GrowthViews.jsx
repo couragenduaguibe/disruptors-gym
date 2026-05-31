@@ -339,17 +339,17 @@ function ChallengeForm({ onSave, onClose }) {
         <div>
           <label className="text-xs font-mono tracking-wider text-stone-400 uppercase mb-1.5 block">Challenge name</label>
           <input type="text" value={form.name} onChange={(e) => set("name", e.target.value)} placeholder="e.g. June Check-in King"
-            className="w-full px-3 py-2.5 bg-stone-800 border border-stone-700 rounded-lg text-sm text-white placeholder:text-stone-500 focus:outline-none focus:border-red-500" />
+            className="w-full px-3 py-2.5 bg-stone-800 border border-stone-700 rounded-lg text-base sm:text-sm text-white placeholder:text-stone-500 focus:outline-none focus:border-red-500" />
         </div>
         <div>
           <label className="text-xs font-mono tracking-wider text-stone-400 uppercase mb-1.5 block">Description</label>
           <textarea value={form.description} onChange={(e) => set("description", e.target.value)} placeholder="Describe what members need to do..."
-            className="w-full px-3 py-2.5 bg-stone-800 border border-stone-700 rounded-lg text-sm text-white placeholder:text-stone-500 focus:outline-none focus:border-red-500 resize-none" rows={2} />
+            className="w-full px-3 py-2.5 bg-stone-800 border border-stone-700 rounded-lg text-base sm:text-sm text-white placeholder:text-stone-500 focus:outline-none focus:border-red-500 resize-none" rows={2} />
         </div>
         <div>
           <label className="text-xs font-mono tracking-wider text-stone-400 uppercase mb-1.5 block">Prize</label>
           <input type="text" value={form.prize} onChange={(e) => set("prize", e.target.value)} placeholder="e.g. 1 month free membership"
-            className="w-full px-3 py-2.5 bg-stone-800 border border-stone-700 rounded-lg text-sm text-white placeholder:text-stone-500 focus:outline-none focus:border-red-500" />
+            className="w-full px-3 py-2.5 bg-stone-800 border border-stone-700 rounded-lg text-base sm:text-sm text-white placeholder:text-stone-500 focus:outline-none focus:border-red-500" />
         </div>
         <div>
           <label className="text-xs font-mono tracking-wider text-stone-400 uppercase mb-1.5 block">Metric</label>
@@ -365,7 +365,7 @@ function ChallengeForm({ onSave, onClose }) {
         <div>
           <label className="text-xs font-mono tracking-wider text-stone-400 uppercase mb-1.5 block">Month</label>
           <input type="month" value={form.period} onChange={(e) => set("period", e.target.value)}
-            className="w-full px-3 py-2.5 bg-stone-800 border border-stone-700 rounded-lg text-sm text-white focus:outline-none focus:border-red-500" />
+            className="w-full px-3 py-2.5 bg-stone-800 border border-stone-700 rounded-lg text-base sm:text-sm text-white focus:outline-none focus:border-red-500" />
         </div>
         <button onClick={() => { if (!form.name || !form.prize) return; onSave({ id: `ch${Date.now()}`, ...form, active: true, createdBy: "admin" }); }}
           className="w-full py-3 bg-red-600 text-white rounded-lg text-sm font-semibold hover:bg-red-700 transition">

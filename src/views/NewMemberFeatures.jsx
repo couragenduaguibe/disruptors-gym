@@ -610,7 +610,7 @@ function PlanForm({ clients, trainer, onSave, onClose }) {
         <div>
           <label className="text-xs font-mono tracking-wider text-stone-400 uppercase mb-1.5 block">Assign to</label>
           <select value={memberId} onChange={(e) => setMemberId(e.target.value)}
-            className="w-full px-3 py-2.5 bg-stone-800 border border-stone-700 rounded-lg text-sm text-white focus:outline-none focus:border-red-500">
+            className="w-full px-3 py-2.5 bg-stone-800 border border-stone-700 rounded-lg text-base sm:text-sm text-white focus:outline-none focus:border-red-500">
             {clients.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
           </select>
           {clients.length === 0 && <p className="text-xs text-rose-400 mt-1">No clients assigned to you yet.</p>}
@@ -627,7 +627,7 @@ function PlanForm({ clients, trainer, onSave, onClose }) {
             <div key={si} className="border border-stone-700 rounded-xl p-4 space-y-3 bg-stone-800/30">
               <div className="flex items-center gap-2">
                 <select value={session.day} onChange={(e) => upd(si, "day", e.target.value)}
-                  className="px-3 py-2 bg-stone-800 border border-stone-700 rounded-lg text-sm text-white focus:outline-none focus:border-red-500">
+                  className="px-3 py-2 bg-stone-800 border border-stone-700 rounded-lg text-base sm:text-sm text-white focus:outline-none focus:border-red-500">
                   {DAYS.map((d) => <option key={d}>{d}</option>)}
                 </select>
                 <input value={session.focus} onChange={(e) => upd(si, "focus", e.target.value)} placeholder="Focus (e.g. Upper Push)"

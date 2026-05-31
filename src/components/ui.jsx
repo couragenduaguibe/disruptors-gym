@@ -32,7 +32,7 @@ export function Field({ icon: Icon, label, type = "text", value, onChange, place
           value={value || ""}
           placeholder={placeholder}
           onChange={(e) => onChange?.(e.target.value)}
-          className={`w-full ${Icon ? "pl-10" : "pl-3"} pr-3 py-2.5 bg-stone-800 border border-stone-700 rounded-lg text-sm text-white placeholder:text-stone-500 focus:outline-none focus:border-red-500`}
+          className={`w-full ${Icon ? "pl-10" : "pl-3"} pr-3 py-2.5 bg-stone-800 border border-stone-700 rounded-lg text-base sm:text-sm text-white placeholder:text-stone-500 focus:outline-none focus:border-red-500`}
         />
       </div>
     </div>
@@ -48,7 +48,7 @@ export function TextArea({ label, value, onChange, rows = 3, placeholder }) {
         onChange={(e) => onChange?.(e.target.value)}
         rows={rows}
         placeholder={placeholder}
-        className="w-full px-3 py-2.5 bg-stone-800 border border-stone-700 rounded-lg text-sm text-white placeholder:text-stone-500 focus:outline-none focus:border-red-500 resize-none"
+        className="w-full px-3 py-2.5 bg-stone-800 border border-stone-700 rounded-lg text-base sm:text-sm text-white placeholder:text-stone-500 focus:outline-none focus:border-red-500 resize-none"
       />
     </div>
   );
@@ -59,7 +59,7 @@ export function Select({ label, value, onChange, options }) {
     <div>
       <label className="text-xs font-mono tracking-wider text-stone-400 uppercase mb-1.5 block">{label}</label>
       <select value={value} onChange={(e) => onChange(e.target.value)}
-        className="w-full px-3 py-2.5 bg-stone-800 border border-stone-700 rounded-lg text-sm text-white focus:outline-none focus:border-red-500">
+        className="w-full px-3 py-2.5 bg-stone-800 border border-stone-700 rounded-lg text-base sm:text-sm text-white focus:outline-none focus:border-red-500">
         {options.map((opt) => <option key={opt.value || opt} value={opt.value || opt}>{opt.label || opt}</option>)}
       </select>
     </div>

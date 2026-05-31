@@ -165,7 +165,7 @@ function WorkoutForm({ user, onSave, onClose }) {
         <div>
           <label className="text-xs font-mono tracking-wider text-stone-400 uppercase mb-1.5 block">Date</label>
           <input type="date" value={date} onChange={(e) => setDate(e.target.value)}
-            className="w-full px-3 py-2.5 bg-stone-800 border border-stone-700 rounded-lg text-sm text-white focus:outline-none focus:border-red-500" />
+            className="w-full px-3 py-2.5 bg-stone-800 border border-stone-700 rounded-lg text-base sm:text-sm text-white focus:outline-none focus:border-red-500" />
         </div>
         <div className="space-y-4">
           {exercises.map((ex, ei) => (
@@ -205,7 +205,7 @@ function WorkoutForm({ user, onSave, onClose }) {
         <div>
           <label className="text-xs font-mono tracking-wider text-stone-400 uppercase mb-1.5 block">Notes</label>
           <textarea value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="How did it go? Any PRs?"
-            className="w-full px-3 py-2.5 bg-stone-800 border border-stone-700 rounded-lg text-sm text-white placeholder:text-stone-500 focus:outline-none focus:border-red-500 resize-none" rows={2} />
+            className="w-full px-3 py-2.5 bg-stone-800 border border-stone-700 rounded-lg text-base sm:text-sm text-white placeholder:text-stone-500 focus:outline-none focus:border-red-500 resize-none" rows={2} />
         </div>
       </div>
     </Modal>
@@ -367,7 +367,7 @@ function MetricsForm({ user, onSave, onClose }) {
         <div>
           <label className="text-xs font-mono tracking-wider text-stone-400 uppercase mb-1.5 block">Date</label>
           <input type="date" value={form.date} onChange={(e) => set("date", e.target.value)}
-            className="w-full px-3 py-2.5 bg-stone-800 border border-stone-700 rounded-lg text-sm text-white focus:outline-none focus:border-red-500" />
+            className="w-full px-3 py-2.5 bg-stone-800 border border-stone-700 rounded-lg text-base sm:text-sm text-white focus:outline-none focus:border-red-500" />
         </div>
         <div className="grid grid-cols-2 gap-3">
           {[
@@ -380,14 +380,14 @@ function MetricsForm({ user, onSave, onClose }) {
             <div key={field}>
               <label className="text-xs font-mono tracking-wider text-stone-400 uppercase mb-1.5 block">{label}</label>
               <input type="number" step="0.1" value={form[field]} onChange={(e) => set(field, e.target.value)}
-                className="w-full px-3 py-2.5 bg-stone-800 border border-stone-700 rounded-lg text-sm text-white placeholder:text-stone-500 focus:outline-none focus:border-red-500" />
+                className="w-full px-3 py-2.5 bg-stone-800 border border-stone-700 rounded-lg text-base sm:text-sm text-white placeholder:text-stone-500 focus:outline-none focus:border-red-500" />
             </div>
           ))}
         </div>
         <div>
           <label className="text-xs font-mono tracking-wider text-stone-400 uppercase mb-1.5 block">Notes</label>
           <input type="text" value={form.notes} onChange={(e) => set("notes", e.target.value)} placeholder="How are you feeling?"
-            className="w-full px-3 py-2.5 bg-stone-800 border border-stone-700 rounded-lg text-sm text-white placeholder:text-stone-500 focus:outline-none focus:border-red-500" />
+            className="w-full px-3 py-2.5 bg-stone-800 border border-stone-700 rounded-lg text-base sm:text-sm text-white placeholder:text-stone-500 focus:outline-none focus:border-red-500" />
         </div>
         <button onClick={handleSave} className="w-full py-3 bg-red-600 text-white rounded-lg text-sm font-semibold hover:bg-red-700 transition">
           Save metrics

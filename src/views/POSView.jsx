@@ -102,10 +102,10 @@ export function POSView({ products, setProducts, sales, setSales, members, user 
               <div className="relative flex-1">
                 <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-stone-500" />
                 <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search products"
-                  className="w-full pl-10 pr-4 py-2.5 bg-stone-800 border border-stone-700 rounded-lg text-sm text-white placeholder:text-stone-500 focus:outline-none focus:border-red-500" />
+                  className="w-full pl-10 pr-4 py-2.5 bg-stone-800 border border-stone-700 rounded-lg text-base sm:text-sm text-white placeholder:text-stone-500 focus:outline-none focus:border-red-500" />
               </div>
               <select value={category} onChange={(e) => setCategory(e.target.value)}
-                className="px-3 py-2.5 bg-stone-800 border border-stone-700 rounded-lg text-sm text-white focus:outline-none focus:border-red-500">
+                className="px-3 py-2.5 bg-stone-800 border border-stone-700 rounded-lg text-base sm:text-sm text-white focus:outline-none focus:border-red-500">
                 {CATEGORIES.map((c) => <option key={c}>{c}</option>)}
               </select>
             </div>
@@ -218,7 +218,7 @@ function CheckoutModal({ cart, cartTotal, memberId, setMemberId, memberSearch, s
           ) : (
             <>
               <input value={memberSearch} onChange={(e) => setMemberSearch(e.target.value)} placeholder="Search member name (leave blank for walk-in)"
-                className="w-full px-3 py-2.5 bg-stone-800 border border-stone-700 rounded-lg text-sm text-white placeholder:text-stone-500 focus:outline-none focus:border-red-500" />
+                className="w-full px-3 py-2.5 bg-stone-800 border border-stone-700 rounded-lg text-base sm:text-sm text-white placeholder:text-stone-500 focus:outline-none focus:border-red-500" />
               {matchingMembers.length > 0 && (
                 <div className="mt-2 border border-stone-700 rounded-lg overflow-hidden">
                   {matchingMembers.map((m) => (

@@ -151,7 +151,7 @@ export function MembersView({ members, setMembers, onMemberClick, user }) {
           <div className="relative flex-1 max-w-md">
             <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-stone-500" />
             <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search by name or email"
-              className="w-full pl-10 pr-4 py-2.5 bg-stone-800 border border-stone-700 rounded-lg text-sm text-white placeholder:text-stone-500 focus:outline-none focus:border-red-500" />
+              className="w-full pl-10 pr-4 py-2.5 bg-stone-800 border border-stone-700 rounded-lg text-base sm:text-sm text-white placeholder:text-stone-500 focus:outline-none focus:border-red-500" />
           </div>
           <div className="flex gap-1 bg-stone-800 p-1 rounded-lg">
             {["all", "active", "expired"].map((f) => (
@@ -465,7 +465,7 @@ function ClassModal({ trainers, onSave, onClose }) {
   const [form, setForm] = useState({ name: "", trainer: trainers[0]?.name || "", day: "Mon", time: "08:00", capacity: 15 });
   const update = (k, v) => setForm((f) => ({ ...f, [k]: v }));
   const submit = () => { if (!form.name) return alert("Class name required"); onSave({ ...form, capacity: Number(form.capacity) }); };
-  const inputCls = "w-full px-3 py-2.5 bg-stone-800 border border-stone-700 rounded-lg text-sm text-white focus:outline-none focus:border-red-500";
+  const inputCls = "w-full px-3 py-2.5 bg-stone-800 border border-stone-700 rounded-lg text-base sm:text-sm text-white focus:outline-none focus:border-red-500";
 
   return (
     <Modal title="New class" onClose={onClose} footer={<>
@@ -775,7 +775,7 @@ export function MemberStocksView({ members, memberStocks, setMemberStocks }) {
         <div className="relative flex-1 max-w-md">
           <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-stone-500" />
           <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search member name"
-            className="w-full pl-10 pr-4 py-2.5 bg-stone-800 border border-stone-700 rounded-lg text-sm text-white placeholder:text-stone-500 focus:outline-none focus:border-red-500" />
+            className="w-full pl-10 pr-4 py-2.5 bg-stone-800 border border-stone-700 rounded-lg text-base sm:text-sm text-white placeholder:text-stone-500 focus:outline-none focus:border-red-500" />
         </div>
         <button onClick={() => setAddModal("picker")}
           className="flex items-center gap-2 px-4 py-2.5 bg-red-600 text-white rounded-lg text-sm font-semibold hover:bg-red-700 transition shrink-0">
