@@ -9,7 +9,7 @@ import {
   NAV_BY_ROLE,
 } from "./data/seed";
 import { loadData, saveData, clearData } from "./utils/storage";
-import { Sidebar, Header } from "./components/Layout";
+import { Sidebar, Header, BottomNav } from "./components/Layout";
 import { LoginScreen } from "./views/LoginScreen";
 import {
   Dashboard, MembersView, MemberDetail, ClassesView, TrainersView,
@@ -257,7 +257,7 @@ export default function App() {
         <div className="fixed inset-0 bg-stone-900/40 backdrop-blur-sm z-40 lg:hidden" onClick={() => setSidebarOpen(false)} />
       )}
 
-      <div className="flex-1 flex flex-col min-w-0">
+      <div className="flex-1 flex flex-col min-w-0 relative">
         <Header
           view={view}
           onMenuClick={() => setSidebarOpen(true)}
@@ -266,7 +266,7 @@ export default function App() {
           setNotifications={setNotifications}
         />
 
-        <main className="flex-1 px-4 sm:px-6 lg:px-8 py-5 lg:py-8 max-w-7xl w-full mx-auto">
+        <main className="flex-1 px-4 sm:px-6 lg:px-8 pt-5 pb-24 lg:py-8 max-w-7xl w-full mx-auto">
 
           {/* ── ADMIN & RECEPTIONIST ───────────────────────────────────────── */}
           {view === "dashboard" && (
@@ -395,6 +395,8 @@ export default function App() {
             <ProfileView user={user} setUser={setUser} members={members} setMembers={setMembers} />
           )}
         </main>
+
+        <BottomNav view={view} setView={(v) => { setView(v); setSidebarOpen(false); }} user={user} />
       </div>
 
       {selectedMember && (

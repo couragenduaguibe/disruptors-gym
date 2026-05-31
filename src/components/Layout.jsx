@@ -4,7 +4,7 @@ import {
   Award, BarChart3, CreditCard, LogOut, ShoppingCart, Megaphone, DoorOpen,
   Send, QrCode, ShoppingBag, MessageSquare, Bell, Package, Layers,
   Activity, Gift, Clock, Wrench, DollarSign, Video, Trophy, User,
-  Camera, BookOpen,
+  Camera, BookOpen, Home,
 } from "lucide-react";
 import { ROLES } from "../data/roles";
 import { NAV_BY_ROLE } from "../data/seed";
@@ -231,5 +231,143 @@ export function Header({ view, onMenuClick, user, notifications, setNotification
         </div>
       </div>
     </div>
+  );
+}
+
+// ─── Bottom navigation (mobile / tablet only) ────────────────────────────────
+
+const BOTTOM_CATS = {
+  admin: [
+    { id: "people",  icon: Users,        label: "People",  items: ["members","classes","trainers","checkins","leads"] },
+    { id: "revenue", icon: CreditCard,   label: "Revenue", items: ["payments","pos","analytics","expenses"] },
+    { id: "ops",     icon: Wrench,       label: "Ops",     items: ["shifts","equipment","access","messages","member-stocks"] },
+    { id: "more",    icon: Layers,       label: "More",    items: ["chat","challenges","leaderboard","profile"] },
+  ],
+  receptionist: [
+    { id: "people",  icon: Users,        label: "People",  items: ["members","classes","checkins","leads"] },
+    { id: "revenue", icon: CreditCard,   label: "Revenue", items: ["payments","pos"] },
+    { id: "ops",     icon: Wrench,       label: "Ops",     items: ["equipment","messages","member-stocks"] },
+    { id: "more",    icon: Layers,       label: "More",    items: ["chat","challenges","leaderboard","profile"] },
+  ],
+  trainer: [
+    { id: "schedule", icon: CalendarDays,  label: "Schedule", items: ["my-classes","assign-plans"] },
+    { id: "clients",  icon: Users,         label: "Clients",  items: ["my-clients","video-library"] },
+    { id: "social",   icon: MessageSquare, label: "Social",   items: ["chat","challenges"] },
+    { id: "more",     icon: Layers,        label: "More",     items: ["leaderboard","profile"] },
+  ],
+  member: [
+    { id: "train",   icon: Dumbbell,     label: "Train",   items: ["my-qr","my-workouts","my-metrics","my-progress","my-plan"] },
+    { id: "classes", icon: CalendarDays, label: "Classes", items: ["book-classes","my-history"] },
+    { id: "shop",    icon: ShoppingBag,  label: "Shop",    items: ["my-shop","my-stock","my-payments"] },
+    { id: "more",    icon: Layers,       label: "More",    items: ["chat","my-rewards","my-referrals","challenges","leaderboard","profile"] },
+  ],
+};
+
+export function BottomNav({ view, setView, user }) {
+  const [openCat, setOpenCat] = useState(null);
+  const cats = BOTTOM_CATS[user.role] || [];
+  const homeView = NAV_BY_ROLE[user.role][0];
+  const navSet = new Set(NAV_BY_ROLE[user.role]);
+
+  const navigate = (id) => { setView(id); setOpenCat(null); };
+  const toggleCat = (catId) => setOpenCat((c) => (c === catId ? null : catId));
+
+  const openCatData = cats.find((c) => c.id === openCat);
+
+  return (
+    <>
+      {/* Dim backdrop — closes tray on tap */}
+      {openCat && (
+        <div
+          className="fixed inset-0 z-40 lg:hidden"
+          onClick={() => setOpenCat(null)}
+        />
+      )}
+
+      {/* Category tray — slides up above the bar */}
+      {openCatData && (() => {
+        const visibleItems = openCatData.items.filter((id) => navSet.has(id));
+        return (
+          <div className="fixed bottom-14 left-0 right-0 z-50 lg:hidden bg-stone-950 border-t border-stone-800 safe-b">
+            {/* Tray header */}
+            <div className="px-4 pt-3 pb-1 flex items-center justify-between">
+              <span className="text-[10px] font-mono tracking-widest text-stone-600 uppercase">
+                {openCatData.label}
+              </span>
+              <button onClick={() => setOpenCat(null)} className="p-1 text-stone-600 hover:text-stone-400 transition">
+                <X className="w-3.5 h-3.5" />
+              </button>
+            </div>
+
+            {/* Items grid */}
+            <div className="px-3 pb-3 grid grid-cols-4 gap-2">
+              {visibleItems.map((id) => {
+                const item = NAV_ITEMS[id];
+                if (!item) return null;
+                const Icon = item.icon;
+                const active = view === id;
+                return (
+                  <button
+                    key={id}
+                    onClick={() => navigate(id)}
+                    className={`flex flex-col items-center gap-1.5 py-3 px-1 rounded-xl transition ${
+                      active
+                        ? "bg-red-600/20 text-red-400"
+                        : "bg-stone-900 text-stone-400 active:bg-stone-800"
+                    }`}
+                  >
+                    <Icon className={`w-5 h-5 shrink-0 ${active ? "text-red-400" : ""}`} />
+                    <span className={`text-[9px] font-medium leading-tight text-center line-clamp-2 ${active ? "text-red-300" : "text-stone-500"}`}>
+                      {item.label}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        );
+      })()}
+
+      {/* Bottom bar */}
+      <nav
+        className="fixed bottom-0 left-0 right-0 z-50 lg:hidden bg-stone-950 border-t border-stone-800 flex items-stretch"
+        style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
+      >
+        {/* Home */}
+        <button
+          onClick={() => navigate(homeView)}
+          className={`flex-1 flex items-center justify-center h-14 transition ${
+            view === homeView ? "text-red-500" : "text-stone-500 active:text-stone-300"
+          }`}
+          aria-label="Home"
+        >
+          <Home className="w-[22px] h-[22px]" />
+        </button>
+
+        {/* Category buttons */}
+        {cats.map((cat) => {
+          const CatIcon = cat.icon;
+          const catHasActive = cat.items.some((id) => id === view);
+          const isOpen = openCat === cat.id;
+          const highlight = catHasActive || isOpen;
+          return (
+            <button
+              key={cat.id}
+              onClick={() => toggleCat(cat.id)}
+              className={`flex-1 flex items-center justify-center h-14 relative transition ${
+                highlight ? "text-red-500" : "text-stone-500 active:text-stone-300"
+              }`}
+              aria-label={cat.label}
+            >
+              <CatIcon className="w-[22px] h-[22px]" />
+              {/* Dot indicator when active item is in this cat (but tray is closed) */}
+              {catHasActive && !isOpen && (
+                <span className="absolute top-2.5 right-[calc(50%-14px)] w-1.5 h-1.5 rounded-full bg-red-500" />
+              )}
+            </button>
+          );
+        })}
+      </nav>
+    </>
   );
 }
