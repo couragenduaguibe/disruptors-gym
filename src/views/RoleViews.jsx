@@ -3,7 +3,7 @@ import {
   Users, CalendarDays, Activity, Flame, CheckCircle2, AlertTriangle,
   Calendar, Award, UserCheck, QrCode, Camera, ShoppingBag, ShoppingCart,
   Plus, Minus, Trash2, PackageCheck, CreditCard, DollarSign, Truck, Store,
-  Layers, RefreshCw, Bell,
+  Layers, RefreshCw, Bell, UserPlus, UserMinus, X,
 } from "lucide-react";
 import { StatCard, EmptyState, Modal } from "../components/ui";
 import { planBadge, today, nowTime } from "../utils/storage";
@@ -195,10 +195,45 @@ export function TrainerClients({ user, members, onMemberClick }) {
 // ========================================================================
 // MEMBER VIEWS
 // ========================================================================
-export function MemberHome({ user, members, classes, payments, checkIns, onNavigate, workoutLogs = [], classRatings = [], setClassRatings = () => {} }) {
+export function MemberHome({ user, members, setMembers, classes, payments, checkIns, setCheckIns, onNavigate, workoutLogs = [], classRatings = [], setClassRatings = () => {}, loyaltyPoints, setLoyaltyPoints }) {
   const me = members.find((m) => m.id === user.memberId);
   const [milestoneDismissed, setMilestoneDismissed] = useState(false);
+  const [showScanner, setShowScanner] = useState(false);
+  const [checkInFeedback, setCheckInFeedback] = useState(null);
   if (!me) return <div className="text-stone-500">Member record not found.</div>;
+
+  const handleCheckIn = (locationId) => {
+    if (!me || !setCheckIns || !setMembers) return;
+    if (me.status === "paused") {
+      setCheckInFeedback({ type: "error", message: "Your membership is on hold. Please contact the front desk." });
+      setShowScanner(false); return;
+    }
+    if (me.status !== "active") {
+      setCheckInFeedback({ type: "error", message: "Your membership is expired. Please renew at the front desk." });
+      setShowScanner(false); return;
+    }
+    const recentCheckIn = checkIns.find((c) => c.memberId === me.id && c.date === today() && Math.abs(parseInt(c.time.replace(":", "")) - parseInt(nowTime().replace(":", ""))) < 5);
+    if (recentCheckIn) {
+      setCheckInFeedback({ type: "info", message: "You're already checked in! Get to work." });
+      setShowScanner(false); return;
+    }
+    setMembers((prev) => prev.map((m) => m.id === me.id ? { ...m, checkIns: m.checkIns + 1, lastVisit: today() } : m));
+    setCheckIns((prev) => [{ id: `ci${Date.now()}`, memberId: me.id, memberName: me.name, date: today(), time: nowTime(), method: "QR" }, ...prev]);
+    if (setLoyaltyPoints) {
+      setLoyaltyPoints((lps) => {
+        const entry = { id: `lph${Date.now()}`, date: today(), points: 5, reason: "Gym check-in" };
+        const existing = lps.find((l) => l.memberId === me.id);
+        if (existing) return lps.map((l) => l.memberId === me.id ? { ...l, points: l.points + 5, history: [entry, ...l.history] } : l);
+        return [...lps, { memberId: me.id, points: 5, history: [entry] }];
+      });
+    }
+    setCheckInFeedback({ type: "success", message: `Welcome back, ${me.name.split(" ")[0]}! That's visit #${me.checkIns + 1}. +5 loyalty points!` });
+    setShowScanner(false);
+  };
+
+  if (showScanner) {
+    return <MemberQRScanner onCheckIn={handleCheckIn} onClose={() => setShowScanner(false)} />;
+  }
 
   const myClasses = classes.filter((c) => (c.bookedMemberIds || []).includes(me.id));
   const myCheckIns = checkIns.filter((c) => c.memberId === me.id);
@@ -245,8 +280,23 @@ export function MemberHome({ user, members, classes, payments, checkIns, onNavig
         </div>
       )}
 
+      {/* Check-in feedback */}
+      {checkInFeedback && (
+        <div className={`flex items-center gap-3 p-4 rounded-xl border ${
+          checkInFeedback.type === "success" ? "bg-red-950/40 border-red-800 text-red-300" :
+          checkInFeedback.type === "error"   ? "bg-rose-950/40 border-rose-800 text-rose-300" :
+          "bg-sky-950/40 border-sky-800 text-sky-300"
+        }`}>
+          {checkInFeedback.type === "success" ? <CheckCircle2 className="w-5 h-5 shrink-0" /> : <AlertTriangle className="w-5 h-5 shrink-0" />}
+          <p className="text-sm font-medium flex-1">{checkInFeedback.message}</p>
+          <button onClick={() => setCheckInFeedback(null)} className="shrink-0 opacity-60 hover:opacity-100 transition">
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+      )}
+
       {/* Big check-in CTA */}
-      <button onClick={() => onNavigate("my-qr")}
+      <button onClick={() => setMembers && setCheckIns ? setShowScanner(true) : onNavigate("my-qr")}
         className="w-full bg-red-600 text-white rounded-2xl p-6 sm:p-8 flex items-center gap-5 hover:bg-red-700 transition group">
         <div className="w-16 h-16 sm:w-20 sm:h-20 bg-stone-900 rounded-2xl flex items-center justify-center shrink-0">
           <QrCode className="w-8 h-8 sm:w-10 sm:h-10 text-red-400" />
@@ -1012,6 +1062,113 @@ export function MemberPayments({ user, payments, members }) {
                 <span className={`text-[10px] font-mono tracking-wider uppercase px-2 py-1 rounded-full ${p.status === "paid" ? "bg-red-900/40 text-red-300" : p.status === "overdue" ? "bg-rose-900/40 text-rose-300" : "bg-amber-900/40 text-amber-300"}`}>{p.status}</span>
               </div>
             ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ── Member Friends / Social ───────────────────────────────────────────────────
+export function MemberFriendsView({ user, members, setMembers }) {
+  const [tab, setTab] = useState("discover");
+  const [search, setSearch] = useState("");
+  const me = members.find((m) => m.id === user.memberId);
+  const myFollowing = me?.following || [];
+
+  const toggleFollow = (targetId) => {
+    setMembers((prev) => prev.map((m) => {
+      if (m.id !== user.memberId) return m;
+      const following = m.following || [];
+      return {
+        ...m,
+        following: following.includes(targetId)
+          ? following.filter((id) => id !== targetId)
+          : [...following, targetId],
+      };
+    }));
+  };
+
+  const others = members.filter((m) => m.id !== user.memberId);
+  const pool = tab === "following"
+    ? others.filter((m) => myFollowing.includes(m.id))
+    : others.filter((m) => m.status === "active");
+
+  const visible = search
+    ? pool.filter((m) => m.name.toLowerCase().includes(search.toLowerCase()))
+    : pool;
+
+  const followersOf = (memberId) => members.filter((m) => (m.following || []).includes(memberId)).length;
+
+  return (
+    <div className="space-y-4 max-w-lg">
+      <div className="flex gap-1 bg-stone-800 p-1 rounded-lg">
+        {[
+          { id: "discover",  label: "Discover" },
+          { id: "following", label: `Following · ${myFollowing.length}` },
+        ].map((t) => (
+          <button key={t.id} onClick={() => setTab(t.id)}
+            className={`flex-1 py-1.5 text-xs font-medium rounded-md transition ${tab === t.id ? "bg-stone-950 text-white shadow-sm" : "text-stone-400 hover:text-white"}`}>
+            {t.label}
+          </button>
+        ))}
+      </div>
+
+      <div className="relative">
+        <Users className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-stone-500" />
+        <input
+          value={search} onChange={(e) => setSearch(e.target.value)}
+          placeholder="Search members…"
+          className="w-full pl-10 pr-4 py-2.5 bg-stone-800 border border-stone-700 rounded-lg text-base sm:text-sm text-white placeholder:text-stone-500 focus:outline-none focus:border-red-500"
+        />
+      </div>
+
+      <div className="space-y-2">
+        {visible.map((m) => {
+          const isFollowing = myFollowing.includes(m.id);
+          const isMutual = isFollowing && (m.following || []).includes(user.memberId);
+          const followerCount = followersOf(m.id);
+          return (
+            <div key={m.id} className="flex items-center gap-3 bg-stone-900 border border-stone-700 rounded-xl p-4">
+              <div className={`w-11 h-11 rounded-full bg-gradient-to-br ${m.avatarColor || "from-stone-700 to-stone-600"} flex items-center justify-center font-semibold text-stone-200 shrink-0 overflow-hidden`}>
+                {m.avatarImage
+                  ? <img src={m.avatarImage} className="w-full h-full object-cover" alt="" />
+                  : m.avatarEmoji
+                    ? <span className="text-xl leading-none">{m.avatarEmoji}</span>
+                    : <span>{m.name[0]}</span>}
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  <div className="font-medium text-sm text-stone-200 truncate">{m.name}</div>
+                  {isMutual && (
+                    <span className="text-[9px] font-mono px-1.5 py-0.5 rounded-full bg-red-900/30 text-red-300 border border-red-800/50 shrink-0">Friends</span>
+                  )}
+                </div>
+                <div className="flex items-center gap-2 mt-0.5 flex-wrap">
+                  <span className={`text-[9px] font-mono px-1.5 py-0.5 rounded-full ${planBadge(m.plan)}`}>{m.plan.toUpperCase()}</span>
+                  <span className="text-xs text-stone-500">{m.checkIns} visits</span>
+                  {followerCount > 0 && <span className="text-xs text-stone-500">{followerCount} follower{followerCount !== 1 ? "s" : ""}</span>}
+                </div>
+              </div>
+              <button
+                onClick={() => toggleFollow(m.id)}
+                className={`shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition border ${
+                  isFollowing
+                    ? "bg-stone-800 border-stone-700 text-stone-400 hover:border-rose-700 hover:text-rose-300"
+                    : "bg-red-600/20 border-red-600/50 text-red-400 hover:bg-red-600/30"
+                }`}
+              >
+                {isFollowing
+                  ? <><UserMinus className="w-3.5 h-3.5" /> Unfollow</>
+                  : <><UserPlus className="w-3.5 h-3.5" /> Follow</>}
+              </button>
+            </div>
+          );
+        })}
+        {visible.length === 0 && (
+          <div className="py-12 text-center text-stone-500">
+            <Users className="w-8 h-8 mx-auto mb-3 opacity-30" />
+            <div className="text-sm">{tab === "following" ? "You're not following anyone yet" : "No members found"}</div>
           </div>
         )}
       </div>

@@ -9,7 +9,7 @@ import {
   NAV_BY_ROLE,
 } from "./data/seed";
 import { loadData, saveData, clearData } from "./utils/storage";
-import { Sidebar, Header, BottomNav } from "./components/Layout";
+import { Sidebar, Header, BottomNav, CategoryPage } from "./components/Layout";
 import { LoginScreen } from "./views/LoginScreen";
 import {
   Dashboard, MembersView, MemberDetail, ClassesView, TrainersView,
@@ -20,7 +20,7 @@ import { LeadsView, AccessControlView, MessagesView } from "./views/PipelineView
 import {
   TrainerHome, TrainerClasses, TrainerClients,
   MemberHome, MemberQRView, MemberBookClasses, MemberHistory, MemberPayments,
-  MemberShop, MemberStock,
+  MemberShop, MemberStock, MemberFriendsView,
 } from "./views/RoleViews";
 import { ChatView } from "./views/MessagingViews";
 import { WorkoutLogView, BodyMetricsView } from "./views/FitnessViews";
@@ -333,8 +333,10 @@ export default function App() {
 
           {/* ── MEMBER VIEWS ───────────────────────────────────────────────── */}
           {view === "member-home" && (
-            <MemberHome user={user} members={members} classes={classes} payments={payments} checkIns={checkIns} onNavigate={setView}
+            <MemberHome user={user} members={members} setMembers={setMembers} classes={classes} payments={payments}
+              checkIns={checkIns} setCheckIns={setCheckIns} onNavigate={setView}
               workoutLogs={workoutLogs} classRatings={classRatings} setClassRatings={setClassRatings}
+              loyaltyPoints={loyaltyPoints} setLoyaltyPoints={setLoyaltyPoints}
             />
           )}
           {view === "my-qr" && (
@@ -390,9 +392,19 @@ export default function App() {
             <AssignPlanView user={user} members={members} workoutPlans={workoutPlans} setWorkoutPlans={setWorkoutPlans} />
           )}
 
+          {/* ── FRIENDS ───────────────────────────────────────────────────── */}
+          {view === "friends" && (
+            <MemberFriendsView user={user} members={members} setMembers={setMembers} />
+          )}
+
           {/* ── PROFILE ────────────────────────────────────────────────────── */}
           {view === "profile" && (
             <ProfileView user={user} setUser={setUser} members={members} setMembers={setMembers} />
+          )}
+
+          {/* ── CATEGORY PAGES (bottom nav) ────────────────────────────────── */}
+          {view?.startsWith("_cat_") && (
+            <CategoryPage catId={view.replace("_cat_", "")} user={user} setView={setView} />
           )}
         </main>
 

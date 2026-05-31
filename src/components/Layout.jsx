@@ -4,7 +4,7 @@ import {
   Award, BarChart3, CreditCard, LogOut, ShoppingCart, Megaphone, DoorOpen,
   Send, QrCode, ShoppingBag, MessageSquare, Bell, Package, Layers,
   Activity, Gift, Clock, Wrench, DollarSign, Video, Trophy, User,
-  Camera, BookOpen, Home,
+  Camera, BookOpen, Home, UserPlus,
 } from "lucide-react";
 import { ROLES } from "../data/roles";
 import { NAV_BY_ROLE } from "../data/seed";
@@ -47,6 +47,7 @@ const NAV_ITEMS = {
   "assign-plans":  { label: "Client Plans",     icon: BookOpen     },
   leaderboard:     { label: "Leaderboard",      icon: Trophy       },
   profile:         { label: "My Profile",       icon: User         },
+  friends:         { label: "Friends",           icon: UserPlus     },
 };
 
 export function Sidebar({ view, setView, isOpen, onClose, user, onLogout, onProfile }) {
@@ -167,6 +168,15 @@ export function Header({ view, onMenuClick, user, notifications, setNotification
 
   const now = new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
 
+  const pageTitle = (() => {
+    if (view?.startsWith("_cat_")) {
+      const catId = view.replace("_cat_", "");
+      const cat = (BOTTOM_CATS[user.role] || []).find((c) => c.id === catId);
+      return cat?.label || "Menu";
+    }
+    return titles[view] || view;
+  })();
+
   return (
     <div className="px-4 sm:px-6 lg:px-8 pt-4 pb-3 border-b border-stone-800 bg-stone-950/95 backdrop-blur sticky top-0 z-30">
       <div className="flex items-center justify-between max-w-7xl gap-3">
@@ -176,7 +186,7 @@ export function Header({ view, onMenuClick, user, notifications, setNotification
         <div className="flex-1 min-w-0">
           <div className="text-[10px] font-mono text-stone-600 tracking-widest uppercase mb-0.5 truncate">{now}</div>
           <h1 className="font-display text-xl sm:text-2xl lg:text-3xl font-semibold text-white truncate leading-tight">
-            {titles[view]}
+            {pageTitle}
           </h1>
         </div>
 
@@ -256,118 +266,109 @@ const BOTTOM_CATS = {
     { id: "more",     icon: Layers,        label: "More",     items: ["leaderboard","profile"] },
   ],
   member: [
-    { id: "train",   icon: Dumbbell,     label: "Train",   items: ["my-qr","my-workouts","my-metrics","my-progress","my-plan"] },
-    { id: "classes", icon: CalendarDays, label: "Classes", items: ["book-classes","my-history"] },
-    { id: "shop",    icon: ShoppingBag,  label: "Shop",    items: ["my-shop","my-stock","my-payments"] },
-    { id: "more",    icon: Layers,       label: "More",    items: ["chat","my-rewards","my-referrals","challenges","leaderboard","profile"] },
+    { id: "train",  icon: Dumbbell,     label: "Train",  items: ["my-workouts","my-metrics","my-progress","my-plan","book-classes","my-history"] },
+    { id: "social", icon: Users,        label: "Social", items: ["friends","chat","challenges","leaderboard","my-rewards","my-referrals"] },
+    { id: "shop",   icon: ShoppingBag,  label: "Shop",   items: ["my-shop","my-stock","my-payments"] },
+    { id: "more",   icon: Layers,       label: "More",   items: ["profile","my-qr"] },
   ],
 };
 
 export function BottomNav({ view, setView, user }) {
-  const [openCat, setOpenCat] = useState(null);
   const cats = BOTTOM_CATS[user.role] || [];
   const homeView = NAV_BY_ROLE[user.role][0];
-  const navSet = new Set(NAV_BY_ROLE[user.role]);
 
-  const navigate = (id) => { setView(id); setOpenCat(null); };
-  const toggleCat = (catId) => setOpenCat((c) => (c === catId ? null : catId));
-
-  const openCatData = cats.find((c) => c.id === openCat);
+  const isHome = view === homeView;
+  const activeCatId = (() => {
+    // If currently on a _cat_ page, match that cat
+    if (view?.startsWith("_cat_")) return view.replace("_cat_", "");
+    // Otherwise highlight whichever cat owns the current view
+    return cats.find((c) => c.items.includes(view))?.id ?? null;
+  })();
 
   return (
-    <>
-      {/* Dim backdrop — closes tray on tap */}
-      {openCat && (
-        <div
-          className="fixed inset-0 z-40 lg:hidden"
-          onClick={() => setOpenCat(null)}
-        />
-      )}
-
-      {/* Category tray — slides up above the bar */}
-      {openCatData && (() => {
-        const visibleItems = openCatData.items.filter((id) => navSet.has(id));
-        return (
-          <div className="fixed bottom-14 left-0 right-0 z-50 lg:hidden bg-stone-950 border-t border-stone-800 safe-b">
-            {/* Tray header */}
-            <div className="px-4 pt-3 pb-1 flex items-center justify-between">
-              <span className="text-[10px] font-mono tracking-widest text-stone-600 uppercase">
-                {openCatData.label}
-              </span>
-              <button onClick={() => setOpenCat(null)} className="p-1 text-stone-600 hover:text-stone-400 transition">
-                <X className="w-3.5 h-3.5" />
-              </button>
-            </div>
-
-            {/* Items grid */}
-            <div className="px-3 pb-3 grid grid-cols-4 gap-2">
-              {visibleItems.map((id) => {
-                const item = NAV_ITEMS[id];
-                if (!item) return null;
-                const Icon = item.icon;
-                const active = view === id;
-                return (
-                  <button
-                    key={id}
-                    onClick={() => navigate(id)}
-                    className={`flex flex-col items-center gap-1.5 py-3 px-1 rounded-xl transition ${
-                      active
-                        ? "bg-red-600/20 text-red-400"
-                        : "bg-stone-900 text-stone-400 active:bg-stone-800"
-                    }`}
-                  >
-                    <Icon className={`w-5 h-5 shrink-0 ${active ? "text-red-400" : ""}`} />
-                    <span className={`text-[9px] font-medium leading-tight text-center line-clamp-2 ${active ? "text-red-300" : "text-stone-500"}`}>
-                      {item.label}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        );
-      })()}
-
-      {/* Bottom bar */}
-      <nav
-        className="fixed bottom-0 left-0 right-0 z-50 lg:hidden bg-stone-950 border-t border-stone-800 flex items-stretch"
-        style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
+    <nav
+      className="fixed bottom-0 left-0 right-0 z-50 lg:hidden bg-stone-950 border-t border-stone-800 flex items-stretch"
+      style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
+    >
+      {/* Home */}
+      <button
+        onClick={() => setView(homeView)}
+        className={`flex-1 flex items-center justify-center h-14 transition ${
+          isHome ? "text-red-500" : "text-stone-500 active:text-stone-300"
+        }`}
+        aria-label="Home"
       >
-        {/* Home */}
-        <button
-          onClick={() => navigate(homeView)}
-          className={`flex-1 flex items-center justify-center h-14 transition ${
-            view === homeView ? "text-red-500" : "text-stone-500 active:text-stone-300"
-          }`}
-          aria-label="Home"
-        >
-          <Home className="w-[22px] h-[22px]" />
-        </button>
+        <Home className="w-[22px] h-[22px]" />
+      </button>
 
-        {/* Category buttons */}
-        {cats.map((cat) => {
-          const CatIcon = cat.icon;
-          const catHasActive = cat.items.some((id) => id === view);
-          const isOpen = openCat === cat.id;
-          const highlight = catHasActive || isOpen;
+      {/* Category buttons — navigate to a full category page */}
+      {cats.map((cat) => {
+        const CatIcon = cat.icon;
+        const highlight = activeCatId === cat.id;
+        return (
+          <button
+            key={cat.id}
+            onClick={() => setView("_cat_" + cat.id)}
+            className={`flex-1 flex items-center justify-center h-14 relative transition ${
+              highlight ? "text-red-500" : "text-stone-500 active:text-stone-300"
+            }`}
+            aria-label={cat.label}
+          >
+            <CatIcon className="w-[22px] h-[22px]" />
+            {/* Dot when an item in this cat is active but we're not on the cat page */}
+            {highlight && !view?.startsWith("_cat_") && (
+              <span className="absolute top-2.5 right-[calc(50%-14px)] w-1.5 h-1.5 rounded-full bg-red-500" />
+            )}
+          </button>
+        );
+      })}
+    </nav>
+  );
+}
+
+// ── Category page — full-screen grid of items in a category ──────────────────
+export function CategoryPage({ catId, user, setView }) {
+  const cats = BOTTOM_CATS[user.role] || [];
+  const cat = cats.find((c) => c.id === catId);
+  if (!cat) return null;
+
+  const navSet = new Set(NAV_BY_ROLE[user.role]);
+  const visibleItems = cat.items.filter((id) => navSet.has(id));
+  const CatIcon = cat.icon;
+
+  return (
+    <div className="space-y-5 fade-up">
+      <div className="flex items-center gap-3">
+        <div className="w-10 h-10 rounded-xl bg-red-600/20 flex items-center justify-center shrink-0">
+          <CatIcon className="w-5 h-5 text-red-400" />
+        </div>
+        <div>
+          <div className="text-xs font-mono tracking-widest text-stone-500 uppercase">Menu</div>
+          <div className="font-display text-xl font-semibold text-white">{cat.label}</div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-3 gap-3">
+        {visibleItems.map((id) => {
+          const item = NAV_ITEMS[id];
+          if (!item) return null;
+          const Icon = item.icon;
           return (
             <button
-              key={cat.id}
-              onClick={() => toggleCat(cat.id)}
-              className={`flex-1 flex items-center justify-center h-14 relative transition ${
-                highlight ? "text-red-500" : "text-stone-500 active:text-stone-300"
-              }`}
-              aria-label={cat.label}
+              key={id}
+              onClick={() => setView(id)}
+              className="flex flex-col items-center gap-3 p-5 bg-stone-900 border border-stone-700 rounded-2xl hover:border-red-600 active:bg-stone-800 transition group"
             >
-              <CatIcon className="w-[22px] h-[22px]" />
-              {/* Dot indicator when active item is in this cat (but tray is closed) */}
-              {catHasActive && !isOpen && (
-                <span className="absolute top-2.5 right-[calc(50%-14px)] w-1.5 h-1.5 rounded-full bg-red-500" />
-              )}
+              <div className="w-12 h-12 rounded-xl bg-stone-800 group-hover:bg-red-600/20 flex items-center justify-center transition">
+                <Icon className="w-6 h-6 text-stone-400 group-hover:text-red-400 transition" />
+              </div>
+              <span className="text-xs font-medium text-stone-400 group-hover:text-stone-200 text-center leading-tight transition">
+                {item.label}
+              </span>
             </button>
           );
         })}
-      </nav>
-    </>
+      </div>
+    </div>
   );
 }
