@@ -3,6 +3,7 @@ import {
   Users, CalendarDays, UserCheck, Plus, Minus, Search, Edit2, Trash2, Clock,
   DollarSign, Activity, Flame, CheckCircle2, AlertCircle, User, Mail, Phone,
   ChevronRight, AlertTriangle, Receipt, Calendar, Award, X, QrCode, Package, Layers,
+  MapPin, PauseCircle, Check,
 } from "lucide-react";
 import {
   LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis,
@@ -10,7 +11,7 @@ import {
 } from "recharts";
 import { StatCard, Field, Modal, EmptyState } from "../components/ui";
 import { planBadge, today } from "../utils/storage";
-import { PLAN_PRICES, seedShopProducts } from "../data/seed";
+import { PLAN_PRICES, BRANCHES, seedShopProducts } from "../data/seed";
 import { CheckInPoster } from "../components/CheckInPoster";
 
 // ---------- Dashboard ----------
@@ -18,10 +19,11 @@ export function Dashboard({ stats, members, classes, payments, onMemberClick, on
   const isAdmin = user.role === "admin";
   const topClasses = [...classes].sort((a, b) => b.booked / b.capacity - a.booked / a.capacity).slice(0, 4);
   const recentMembers = [...members].sort((a, b) => new Date(b.joinDate) - new Date(a.joinDate)).slice(0, 5);
+  const pendingPausesCount = members.filter((m) => m.pauseRequest?.status === "pending").length;
 
   return (
     <div className="space-y-5 lg:space-y-6">
-      {(stats.overdueCount > 0 || stats.expiringSoon > 0) && (
+      {(stats.overdueCount > 0 || stats.expiringSoon > 0 || pendingPausesCount > 0) && (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 fade-up">
           {stats.overdueCount > 0 && (
             <button onClick={() => onNavigate("payments")} className="flex items-center gap-3 p-4 bg-rose-950/40 border border-rose-800 rounded-xl text-left hover:border-rose-600 transition">
@@ -41,6 +43,16 @@ export function Dashboard({ stats, members, classes, payments, onMemberClick, on
                 <div className="text-xs text-amber-500">Within 14 days</div>
               </div>
               <ChevronRight className="w-4 h-4 text-amber-500" />
+            </button>
+          )}
+          {pendingPausesCount > 0 && (
+            <button onClick={() => onNavigate("members")} className="flex items-center gap-3 p-4 bg-amber-950/20 border border-amber-900 rounded-xl text-left hover:border-amber-700 transition">
+              <div className="w-10 h-10 rounded-lg bg-amber-900/30 flex items-center justify-center shrink-0"><PauseCircle className="w-5 h-5 text-amber-500" /></div>
+              <div className="flex-1 min-w-0">
+                <div className="text-sm font-semibold text-amber-400">{pendingPausesCount} hold request{pendingPausesCount > 1 ? "s" : ""} pending</div>
+                <div className="text-xs text-amber-600">Review in Members</div>
+              </div>
+              <ChevronRight className="w-4 h-4 text-amber-600" />
             </button>
           )}
         </div>
@@ -116,6 +128,30 @@ export function Dashboard({ stats, members, classes, payments, onMemberClick, on
 }
 
 // ---------- Members ----------
+const PAUSE_DURATION_LABELS = { "1w": "1 Week", "2w": "2 Weeks", "1m": "1 Month" };
+const PAUSE_DURATION_DAYS   = { "1w": 7, "2w": 14, "1m": 30 };
+
+const addDays = (dateStr, days) => {
+  const d = new Date(dateStr); d.setDate(d.getDate() + days);
+  return d.toISOString().slice(0, 10);
+};
+
+const statusStyle = (status) => {
+  if (status === "active")  return "text-red-400";
+  if (status === "paused")  return "text-amber-400";
+  return "text-rose-400";
+};
+const statusDot = (status) => {
+  if (status === "active")  return "bg-red-500";
+  if (status === "paused")  return "bg-amber-500";
+  return "bg-rose-500";
+};
+const statusLabel = (status) => {
+  if (status === "active")  return "Active";
+  if (status === "paused")  return "Paused";
+  return "Expired";
+};
+
 export function MembersView({ members, setMembers, onMemberClick, user }) {
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("all");
@@ -123,11 +159,33 @@ export function MembersView({ members, setMembers, onMemberClick, user }) {
   const [editing, setEditing] = useState(null);
   const canDelete = user.role === "admin";
 
+  const pendingPauses = members.filter((m) => m.pauseRequest?.status === "pending");
+
   const filtered = members.filter((m) => {
     const matchSearch = m.name.toLowerCase().includes(search.toLowerCase()) || m.email.toLowerCase().includes(search.toLowerCase());
-    const matchFilter = filter === "all" || m.status === filter;
+    const matchFilter = filter === "all" || (filter === "paused" ? m.pauseRequest?.status === "pending" || m.status === "paused" : m.status === filter);
     return matchSearch && matchFilter;
   });
+
+  const approvePause = (memberId) => {
+    setMembers((prev) => prev.map((m) => {
+      if (m.id !== memberId || !m.pauseRequest) return m;
+      const days = PAUSE_DURATION_DAYS[m.pauseRequest.duration] || 30;
+      return {
+        ...m,
+        expiryDate: addDays(m.expiryDate, days),
+        pauseRequest: { ...m.pauseRequest, status: "approved", reviewedDate: new Date().toISOString().slice(0, 10) },
+      };
+    }));
+  };
+
+  const rejectPause = (memberId) => {
+    setMembers((prev) => prev.map((m) =>
+      m.id === memberId && m.pauseRequest
+        ? { ...m, pauseRequest: { ...m.pauseRequest, status: "rejected", reviewedDate: new Date().toISOString().slice(0, 10) } }
+        : m
+    ));
+  };
 
   const handleSave = (data) => {
     if (editing) setMembers(members.map((m) => (m.id === editing.id ? { ...m, ...data } : m)));
@@ -158,6 +216,10 @@ export function MembersView({ members, setMembers, onMemberClick, user }) {
               <button key={f} onClick={() => setFilter(f)}
                 className={`flex-1 sm:flex-initial px-3 py-1.5 text-xs font-medium rounded-md capitalize transition ${filter === f ? "bg-stone-950 text-white shadow-sm" : "text-stone-400 hover:text-white"}`}>{f}</button>
             ))}
+            <button onClick={() => setFilter("paused")}
+              className={`flex-1 sm:flex-initial px-3 py-1.5 text-xs font-medium rounded-md transition relative ${filter === "paused" ? "bg-stone-950 text-white shadow-sm" : "text-stone-400 hover:text-white"}`}>
+              Hold{pendingPauses.length > 0 && <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-amber-500 border border-stone-800" />}
+            </button>
           </div>
         </div>
         <button onClick={() => { setEditing(null); setShowModal(true); }}
@@ -165,6 +227,77 @@ export function MembersView({ members, setMembers, onMemberClick, user }) {
           <Plus className="w-4 h-4" /> Add member
         </button>
       </div>
+
+      {/* Pending pause requests banner */}
+      {pendingPauses.length > 0 && filter !== "paused" && (
+        <button
+          onClick={() => setFilter("paused")}
+          className="w-full flex items-center gap-3 p-4 bg-amber-950/30 border border-amber-800 rounded-xl text-left hover:border-amber-600 transition"
+        >
+          <div className="w-9 h-9 rounded-lg bg-amber-900/40 flex items-center justify-center shrink-0">
+            <PauseCircle className="w-5 h-5 text-amber-400" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="text-sm font-semibold text-amber-300">
+              {pendingPauses.length} membership hold request{pendingPauses.length > 1 ? "s" : ""} pending
+            </div>
+            <div className="text-xs text-amber-600 truncate">{pendingPauses.map((m) => m.name).join(", ")}</div>
+          </div>
+          <ChevronRight className="w-4 h-4 text-amber-500 shrink-0" />
+        </button>
+      )}
+
+      {/* Pause requests panel (when "Hold" filter is active) */}
+      {filter === "paused" && (
+        <div className="bg-stone-900 rounded-xl border border-amber-800/50 overflow-hidden">
+          <div className="px-5 py-3 border-b border-stone-800 flex items-center gap-2">
+            <PauseCircle className="w-4 h-4 text-amber-400" />
+            <span className="text-sm font-semibold text-amber-300">Membership Hold Requests</span>
+            <span className="ml-auto text-xs font-mono text-stone-500">{pendingPauses.length} pending</span>
+          </div>
+          {pendingPauses.length === 0 ? (
+            <div className="px-5 py-8 text-center text-stone-500 text-sm">No pending hold requests.</div>
+          ) : (
+            <div className="divide-y divide-stone-800">
+              {pendingPauses.map((m) => {
+                const durLabel = PAUSE_DURATION_LABELS[m.pauseRequest.duration] ?? m.pauseRequest.duration;
+                const branch = BRANCHES.find((b) => b.id === m.branchId);
+                return (
+                  <div key={m.id} className="flex items-center gap-3 px-5 py-4 flex-wrap sm:flex-nowrap">
+                    <div className="w-9 h-9 rounded-full bg-gradient-to-br from-stone-700 to-stone-600 flex items-center justify-center font-semibold text-stone-200 text-sm shrink-0">{m.name[0]}</div>
+                    <div className="flex-1 min-w-0">
+                      <div className="font-medium text-sm text-stone-200">{m.name}</div>
+                      <div className="text-xs text-stone-500 flex items-center gap-2 flex-wrap">
+                        <span className={`text-[10px] font-mono px-1.5 py-0.5 rounded-full ${planBadge(m.plan)}`}>{m.plan.toUpperCase()}</span>
+                        <span>Hold: <span className="text-amber-400 font-medium">{durLabel}</span></span>
+                        <span>Requested: {new Date(m.pauseRequest.requestedDate).toLocaleDateString("en-US", { month: "short", day: "numeric" })}</span>
+                        {branch && <span className="flex items-center gap-1"><MapPin className="w-3 h-3" />{branch.name}</span>}
+                      </div>
+                      {m.pauseRequest.note && (
+                        <div className="text-xs text-stone-400 italic mt-0.5">"{m.pauseRequest.note}"</div>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-2 shrink-0 ml-auto">
+                      <button
+                        onClick={() => approvePause(m.id)}
+                        className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-900/40 hover:bg-emerald-800/50 border border-emerald-800 text-emerald-300 rounded-lg text-xs font-medium transition"
+                      >
+                        <Check className="w-3.5 h-3.5" /> Approve
+                      </button>
+                      <button
+                        onClick={() => rejectPause(m.id)}
+                        className="flex items-center gap-1.5 px-3 py-1.5 bg-rose-950/30 hover:bg-rose-900/40 border border-rose-800 text-rose-300 rounded-lg text-xs font-medium transition"
+                      >
+                        <X className="w-3.5 h-3.5" /> Decline
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Desktop table */}
       <div className="hidden md:block bg-stone-900 rounded-xl border border-stone-700 overflow-hidden">
@@ -174,6 +307,7 @@ export function MembersView({ members, setMembers, onMemberClick, user }) {
               <tr className="text-left text-[10px] font-mono tracking-wider text-stone-500 uppercase border-b border-stone-700">
                 <th className="px-6 py-3 font-medium">Member</th>
                 <th className="px-6 py-3 font-medium">Plan</th>
+                <th className="px-6 py-3 font-medium">Branch</th>
                 <th className="px-6 py-3 font-medium">Visits</th>
                 <th className="px-6 py-3 font-medium">Last visit</th>
                 <th className="px-6 py-3 font-medium">Status</th>
@@ -181,24 +315,36 @@ export function MembersView({ members, setMembers, onMemberClick, user }) {
               </tr>
             </thead>
             <tbody>
-              {filtered.map((m) => (
+              {filtered.map((m) => {
+                const branch = BRANCHES.find((b) => b.id === m.branchId);
+                return (
                 <tr key={m.id} onClick={() => onMemberClick(m)} className="border-b border-stone-800 last:border-0 hover:bg-stone-800 transition cursor-pointer">
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
                       <div className="w-9 h-9 rounded-full bg-gradient-to-br from-stone-700 to-stone-600 flex items-center justify-center text-sm font-semibold text-stone-200">{m.name[0]}</div>
                       <div>
-                        <div className="font-medium text-sm text-stone-200">{m.name}</div>
+                        <div className="flex items-center gap-1.5">
+                          <div className="font-medium text-sm text-stone-200">{m.name}</div>
+                          {m.pauseRequest?.status === "pending" && <span className="text-[9px] font-mono px-1.5 py-0.5 rounded-full bg-amber-900/40 text-amber-300 border border-amber-800/50">HOLD</span>}
+                        </div>
                         <div className="text-xs text-stone-500">{m.email}</div>
                       </div>
                     </div>
                   </td>
                   <td className="px-6 py-4"><span className={`text-[10px] font-mono tracking-wider px-2 py-1 rounded-full ${planBadge(m.plan)}`}>{m.plan.toUpperCase()}</span></td>
+                  <td className="px-6 py-4">
+                    {branch ? (
+                      <span className="inline-flex items-center gap-1 text-xs text-stone-400">
+                        <MapPin className="w-3 h-3 text-stone-600" />{branch.name}
+                      </span>
+                    ) : <span className="text-stone-600 text-xs">—</span>}
+                  </td>
                   <td className="px-6 py-4 text-sm font-mono text-stone-300">{m.checkIns}</td>
                   <td className="px-6 py-4 text-sm text-stone-400">{m.lastVisit ? new Date(m.lastVisit).toLocaleDateString("en-US", { month: "short", day: "numeric" }) : "—"}</td>
                   <td className="px-6 py-4">
-                    <span className={`inline-flex items-center gap-1.5 text-xs font-medium ${m.status === "active" ? "text-red-400" : "text-rose-400"}`}>
-                      <span className={`w-1.5 h-1.5 rounded-full ${m.status === "active" ? "bg-red-500" : "bg-rose-500"}`} />
-                      {m.status === "active" ? "Active" : "Expired"}
+                    <span className={`inline-flex items-center gap-1.5 text-xs font-medium ${statusStyle(m.status)}`}>
+                      <span className={`w-1.5 h-1.5 rounded-full ${statusDot(m.status)}`} />
+                      {statusLabel(m.status)}
                     </span>
                   </td>
                   <td className="px-6 py-4" onClick={(e) => e.stopPropagation()}>
@@ -214,9 +360,10 @@ export function MembersView({ members, setMembers, onMemberClick, user }) {
                     </div>
                   </td>
                 </tr>
-              ))}
+              );
+              })}
               {filtered.length === 0 && (
-                <tr><td colSpan={6} className="px-6 py-12 text-center text-stone-500">
+                <tr><td colSpan={7} className="px-6 py-12 text-center text-stone-500">
                   <AlertCircle className="w-6 h-6 mx-auto mb-2 opacity-40" />No members match your search.
                 </td></tr>
               )}
@@ -227,24 +374,30 @@ export function MembersView({ members, setMembers, onMemberClick, user }) {
 
       {/* Mobile cards */}
       <div className="md:hidden space-y-3">
-        {filtered.map((m) => (
+        {filtered.map((m) => {
+          const branch = BRANCHES.find((b) => b.id === m.branchId);
+          return (
           <div key={m.id} onClick={() => onMemberClick(m)} className="bg-stone-900 rounded-xl border border-stone-700 p-4">
             <div className="flex items-start gap-3 mb-3">
               <div className="w-10 h-10 rounded-full bg-gradient-to-br from-stone-700 to-stone-600 flex items-center justify-center font-semibold text-stone-200 shrink-0">{m.name[0]}</div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-start justify-between gap-2">
-                  <div className="font-medium text-sm text-stone-200">{m.name}</div>
+                  <div className="flex items-center gap-1.5 min-w-0">
+                    <div className="font-medium text-sm text-stone-200 truncate">{m.name}</div>
+                    {m.pauseRequest?.status === "pending" && <span className="text-[9px] font-mono px-1.5 py-0.5 rounded-full bg-amber-900/40 text-amber-300 border border-amber-800/50 shrink-0">HOLD</span>}
+                  </div>
                   <span className={`text-[10px] font-mono tracking-wider px-2 py-0.5 rounded-full ${planBadge(m.plan)} shrink-0`}>{m.plan.toUpperCase()}</span>
                 </div>
                 <div className="text-xs text-stone-500 truncate">{m.email}</div>
               </div>
             </div>
             <div className="flex items-center justify-between text-xs">
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-3 flex-wrap">
                 <span className="text-stone-400"><span className="font-mono font-semibold text-stone-200">{m.checkIns}</span> visits</span>
-                <span className={`inline-flex items-center gap-1 ${m.status === "active" ? "text-red-400" : "text-rose-400"}`}>
-                  <span className={`w-1.5 h-1.5 rounded-full ${m.status === "active" ? "bg-red-500" : "bg-rose-500"}`} />{m.status}
+                <span className={`inline-flex items-center gap-1 ${statusStyle(m.status)}`}>
+                  <span className={`w-1.5 h-1.5 rounded-full ${statusDot(m.status)}`} />{statusLabel(m.status)}
                 </span>
+                {branch && <span className="inline-flex items-center gap-1 text-stone-500"><MapPin className="w-3 h-3" />{branch.name}</span>}
               </div>
               <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
                 <button onClick={() => { setEditing(m); setShowModal(true); }} className="p-2 hover:bg-stone-700 rounded-md transition">
@@ -253,7 +406,8 @@ export function MembersView({ members, setMembers, onMemberClick, user }) {
               </div>
             </div>
           </div>
-        ))}
+          );
+        })}
         {filtered.length === 0 && (
           <div className="bg-stone-900 rounded-xl border border-stone-700 p-10 text-center text-stone-500 text-sm">No members found.</div>
         )}
@@ -300,6 +454,8 @@ function MemberModal({ member, onSave, onClose }) {
 export function MemberDetail({ member, payments, checkIns, onClose }) {
   const totalPaid = payments.filter((p) => p.status === "paid").reduce((s, p) => s + p.amount, 0);
   const daysToExpiry = Math.ceil((new Date(member.expiryDate) - new Date()) / (1000 * 60 * 60 * 24));
+  const branch = BRANCHES.find((b) => b.id === member.branchId);
+  const pr = member.pauseRequest;
 
   return (
     <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex justify-end" onClick={onClose}>
@@ -311,18 +467,46 @@ export function MemberDetail({ member, payments, checkIns, onClose }) {
         <div className="px-6 -mt-10 relative pb-8">
           <div className="w-18 h-18 w-[4.5rem] h-[4.5rem] rounded-2xl bg-stone-900 text-white flex items-center justify-center font-display text-3xl font-semibold border-4 border-stone-950 mb-4">{member.name[0]}</div>
           <h2 className="font-display text-2xl font-semibold text-white">{member.name}</h2>
-          <div className="flex items-center gap-2 mt-1">
+          <div className="flex items-center gap-2 mt-1 flex-wrap">
             <span className={`text-[10px] font-mono tracking-wider px-2 py-1 rounded-full ${planBadge(member.plan)}`}>{member.plan.toUpperCase()}</span>
-            <span className={`inline-flex items-center gap-1.5 text-xs font-medium ${member.status === "active" ? "text-red-400" : "text-rose-400"}`}>
-              <span className={`w-1.5 h-1.5 rounded-full ${member.status === "active" ? "bg-red-500" : "bg-rose-500"}`} />
-              {member.status === "active" ? "Active" : "Expired"}
+            <span className={`inline-flex items-center gap-1.5 text-xs font-medium ${statusStyle(member.status)}`}>
+              <span className={`w-1.5 h-1.5 rounded-full ${statusDot(member.status)}`} />
+              {statusLabel(member.status)}
             </span>
+            {branch && (
+              <span className="inline-flex items-center gap-1 text-xs text-stone-500">
+                <MapPin className="w-3 h-3" />{branch.name}
+              </span>
+            )}
+            {pr?.status === "pending" && (
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-amber-900/40 text-amber-300 border border-amber-800/50">HOLD PENDING</span>
+            )}
+            {pr?.status === "approved" && (
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-900/40 text-emerald-300 border border-emerald-800/50">HOLD APPROVED</span>
+            )}
           </div>
 
           <div className="grid grid-cols-2 gap-3 mt-4">
             <div className="text-sm flex items-center gap-2 text-stone-400 min-w-0"><Mail className="w-4 h-4 shrink-0 text-stone-600" /><span className="truncate">{member.email}</span></div>
             <div className="text-sm flex items-center gap-2 text-stone-400"><Phone className="w-4 h-4 shrink-0 text-stone-600" /><span className="truncate">{member.phone}</span></div>
           </div>
+
+          {pr && (
+            <div className={`mt-3 flex items-start gap-2.5 p-3 rounded-xl border text-xs ${
+              pr.status === "pending" ? "bg-amber-950/30 border-amber-800" :
+              pr.status === "approved" ? "bg-emerald-900/20 border-emerald-800" :
+              "bg-rose-950/30 border-rose-800"
+            }`}>
+              <PauseCircle className={`w-4 h-4 shrink-0 mt-0.5 ${pr.status === "pending" ? "text-amber-400" : pr.status === "approved" ? "text-emerald-400" : "text-rose-400"}`} />
+              <div>
+                <div className={`font-medium ${pr.status === "pending" ? "text-amber-300" : pr.status === "approved" ? "text-emerald-300" : "text-rose-300"}`}>
+                  Hold {pr.status === "pending" ? "Pending" : pr.status === "approved" ? "Approved" : "Declined"} — {PAUSE_DURATION_LABELS[pr.duration] ?? pr.duration}
+                </div>
+                <div className="text-stone-500 mt-0.5">Requested {new Date(pr.requestedDate).toLocaleDateString("en-US", { month: "short", day: "numeric" })}</div>
+                {pr.note && <div className="text-stone-400 italic mt-0.5">"{pr.note}"</div>}
+              </div>
+            </div>
+          )}
 
           <div className="grid grid-cols-3 gap-3 mt-5">
             {[

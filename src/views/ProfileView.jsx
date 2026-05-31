@@ -1,6 +1,7 @@
 import React, { useState, useRef } from "react";
-import { User, Lock, Check, AlertCircle, Camera, Trash2 } from "lucide-react";
-import { loadData, saveData } from "../utils/storage";
+import { User, Lock, Check, AlertCircle, Camera, Trash2, PauseCircle, MapPin, ChevronRight, X } from "lucide-react";
+import { loadData, saveData, today } from "../utils/storage";
+import { BRANCHES } from "../data/seed";
 
 const AVATAR_COLORS = [
   { label: "Red",    value: "from-red-600 to-red-400"         },
@@ -15,7 +16,13 @@ const AVATAR_COLORS = [
 
 const AVATAR_EMOJIS = ["", "💪", "🏋️", "🔥", "⚡", "🎯", "🏆", "🦁", "🐺", "🦅", "👊", "🥊"];
 
-export function ProfileView({ user, setUser }) {
+const PAUSE_DURATIONS = [
+  { id: "1w", label: "1 Week",  days: 7  },
+  { id: "2w", label: "2 Weeks", days: 14 },
+  { id: "1m", label: "1 Month", days: 30 },
+];
+
+export function ProfileView({ user, setUser, members, setMembers }) {
   const [displayName, setDisplayName]     = useState(user.name || "");
   const [avatarColor, setAvatarColor]     = useState(user.avatarColor || "from-red-600 to-red-400");
   const [avatarEmoji, setAvatarEmoji]     = useState(user.avatarEmoji || "");
@@ -29,7 +36,15 @@ export function ProfileView({ user, setUser }) {
   const [pwStatus,     setPwStatus]       = useState(null); // "success" | "error"
   const [pwMsg,        setPwMsg]          = useState("");
 
+  // ── Membership pause state ───────────────────────────────────────────────────
+  const [pauseDuration, setPauseDuration] = useState("1m");
+  const [pauseNote,     setPauseNote]     = useState("");
+  const [pauseSubmitted, setPauseSubmitted] = useState(false);
+
   const roleLabels = { admin: "Admin", receptionist: "Receptionist", trainer: "Trainer", member: "Member" };
+
+  // ── Member-specific data ──────────────────────────────────────────────────────
+  const memberRecord = (user.role === "member" && members) ? members.find((m) => m.id === user.memberId) : null;
 
   // ── Image upload ─────────────────────────────────────────────────────────────
   const handleImageUpload = (e) => {
@@ -81,6 +96,29 @@ export function ProfileView({ user, setUser }) {
     setCurrentPw(""); setNewPw(""); setConfirmPw("");
     setPwStatus("success"); setPwMsg("Password updated");
     setTimeout(() => setPwStatus(null), 3000);
+  };
+
+  // ── Membership pause / hold ───────────────────────────────────────────────────
+  const handlePauseRequest = () => {
+    if (!memberRecord || !setMembers) return;
+    setMembers((prev) => prev.map((m) => m.id === memberRecord.id
+      ? { ...m, pauseRequest: { status: "pending", duration: pauseDuration, requestedDate: today(), startDate: today(), note: pauseNote.trim() } }
+      : m
+    ));
+    setPauseNote("");
+    setPauseSubmitted(true);
+  };
+
+  const handleCancelPause = () => {
+    if (!memberRecord || !setMembers) return;
+    setMembers((prev) => prev.map((m) => m.id === memberRecord.id ? { ...m, pauseRequest: null } : m));
+    setPauseSubmitted(false);
+  };
+
+  // ── Branch change ────────────────────────────────────────────────────────────
+  const handleBranchChange = (branchId) => {
+    if (!memberRecord || !setMembers) return;
+    setMembers((prev) => prev.map((m) => m.id === memberRecord.id ? { ...m, branchId } : m));
   };
 
   const initials = displayName.trim().split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase();
@@ -254,6 +292,151 @@ export function ProfileView({ user, setUser }) {
           <Lock className="w-4 h-4" /> Update password
         </button>
       </div>
+
+      {/* ── Home Branch (members only) ───────────────────────────────────────── */}
+      {user.role === "member" && memberRecord && (
+        <div className="bg-stone-900 border border-stone-700 rounded-2xl p-5 sm:p-6">
+          <div className="flex items-center gap-2 mb-5">
+            <MapPin className="w-4 h-4 text-stone-500" />
+            <div className="text-xs font-mono tracking-widest text-stone-500 uppercase">Home Branch</div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-2">
+            {BRANCHES.map((b) => {
+              const active = (memberRecord.branchId || BRANCHES[0].id) === b.id;
+              return (
+                <button
+                  key={b.id}
+                  onClick={() => handleBranchChange(b.id)}
+                  className={`p-3 rounded-xl border text-left transition ${
+                    active
+                      ? "bg-red-600/20 border-red-600 text-red-300"
+                      : "bg-stone-800 border-stone-700 text-stone-400 hover:border-stone-500"
+                  }`}
+                >
+                  <div className={`font-semibold text-sm ${active ? "text-red-200" : "text-stone-300"}`}>{b.name}</div>
+                  <div className="text-[11px] text-stone-500 mt-0.5 leading-tight">{b.address}</div>
+                  {active && <div className="text-[10px] font-mono text-red-400 mt-1 uppercase tracking-wider">Your branch</div>}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* ── Membership Hold (members only) ──────────────────────────────────── */}
+      {user.role === "member" && memberRecord && (() => {
+        const pr = memberRecord.pauseRequest;
+
+        // Approved hold
+        if (pr?.status === "approved") {
+          const durLabel = PAUSE_DURATIONS.find((d) => d.id === pr.duration)?.label ?? pr.duration;
+          return (
+            <div className="bg-stone-900 border border-stone-700 rounded-2xl p-5 sm:p-6">
+              <div className="flex items-center gap-2 mb-4">
+                <PauseCircle className="w-4 h-4 text-stone-500" />
+                <div className="text-xs font-mono tracking-widest text-stone-500 uppercase">Membership Hold</div>
+              </div>
+              <div className="flex items-center gap-3 p-3 bg-emerald-900/20 border border-emerald-800 rounded-xl">
+                <Check className="w-5 h-5 text-emerald-400 shrink-0" />
+                <div>
+                  <div className="text-sm font-semibold text-emerald-300">Hold approved — {durLabel}</div>
+                  <div className="text-xs text-stone-500 mt-0.5">Your membership will be extended accordingly.</div>
+                </div>
+              </div>
+            </div>
+          );
+        }
+
+        // Pending hold
+        if (pr?.status === "pending") {
+          const durLabel = PAUSE_DURATIONS.find((d) => d.id === pr.duration)?.label ?? pr.duration;
+          return (
+            <div className="bg-stone-900 border border-stone-700 rounded-2xl p-5 sm:p-6">
+              <div className="flex items-center gap-2 mb-4">
+                <PauseCircle className="w-4 h-4 text-stone-500" />
+                <div className="text-xs font-mono tracking-widest text-stone-500 uppercase">Membership Hold</div>
+              </div>
+              <div className="flex items-start gap-3 p-3 bg-amber-900/20 border border-amber-800 rounded-xl mb-4">
+                <AlertCircle className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
+                <div className="flex-1 min-w-0">
+                  <div className="text-sm font-semibold text-amber-300">Request pending — {durLabel}</div>
+                  <div className="text-xs text-stone-500 mt-0.5">Our team will review and confirm shortly.</div>
+                  {pr.note && <div className="text-xs text-stone-400 mt-1 italic">"{pr.note}"</div>}
+                </div>
+              </div>
+              <button
+                onClick={handleCancelPause}
+                className="w-full py-2.5 border border-stone-700 hover:border-rose-700 text-stone-400 hover:text-rose-300 rounded-lg text-sm font-medium transition"
+              >
+                Cancel request
+              </button>
+            </div>
+          );
+        }
+
+        // Rejected / no request — show form
+        return (
+          <div className="bg-stone-900 border border-stone-700 rounded-2xl p-5 sm:p-6">
+            <div className="flex items-center gap-2 mb-1">
+              <PauseCircle className="w-4 h-4 text-stone-500" />
+              <div className="text-xs font-mono tracking-widest text-stone-500 uppercase">Membership Hold</div>
+            </div>
+            <p className="text-xs text-stone-500 mb-5 mt-1">Going away? Pause your membership and we'll extend your expiry by the same duration.</p>
+
+            {pr?.status === "rejected" && (
+              <div className="flex items-center gap-2 p-3 bg-rose-950/30 border border-rose-800 rounded-xl mb-4">
+                <X className="w-4 h-4 text-rose-400 shrink-0" />
+                <div className="text-sm text-rose-300">Your last request was declined. You can submit a new one.</div>
+              </div>
+            )}
+
+            {pauseSubmitted && !pr && (
+              <div className="flex items-center gap-2 p-3 bg-emerald-900/20 border border-emerald-800 rounded-xl mb-4">
+                <Check className="w-4 h-4 text-emerald-400 shrink-0" />
+                <div className="text-sm text-emerald-300">Request submitted! Pending admin review.</div>
+              </div>
+            )}
+
+            <div className="mb-4">
+              <label className="text-xs font-mono tracking-wider text-stone-400 uppercase mb-2 block">Pause duration</label>
+              <div className="grid grid-cols-3 gap-2">
+                {PAUSE_DURATIONS.map((d) => (
+                  <button
+                    key={d.id}
+                    onClick={() => setPauseDuration(d.id)}
+                    className={`py-2.5 rounded-lg text-sm font-medium border transition ${
+                      pauseDuration === d.id
+                        ? "bg-red-600 text-white border-red-600"
+                        : "bg-stone-800 border-stone-700 text-stone-300 hover:border-stone-500"
+                    }`}
+                  >
+                    {d.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="mb-5">
+              <label className="text-xs font-mono tracking-wider text-stone-400 uppercase mb-1.5 block">Reason (optional)</label>
+              <textarea
+                value={pauseNote}
+                onChange={(e) => setPauseNote(e.target.value)}
+                placeholder="e.g. travelling, injury recovery…"
+                rows={2}
+                className="w-full px-3 py-2.5 bg-stone-800 border border-stone-700 rounded-lg text-base sm:text-sm text-white placeholder:text-stone-500 focus:outline-none focus:border-red-500 resize-none"
+              />
+            </div>
+
+            <button
+              onClick={handlePauseRequest}
+              className="w-full py-2.5 bg-stone-700 hover:bg-stone-600 text-white rounded-lg text-sm font-semibold transition flex items-center justify-center gap-2"
+            >
+              <PauseCircle className="w-4 h-4" /> Request hold
+            </button>
+          </div>
+        );
+      })()}
 
     </div>
   );

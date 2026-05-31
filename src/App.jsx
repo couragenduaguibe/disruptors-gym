@@ -150,6 +150,20 @@ export default function App() {
           read: false,
         });
       }
+
+      // Pending membership pause requests
+      const pendingPauses = members.filter((m) => m.pauseRequest?.status === "pending");
+      if (pendingPauses.length > 0) {
+        newNotifs.push({
+          id: `notif-pause-${Date.now()}`,
+          userId: account.username,
+          type: "payment",
+          title: `${pendingPauses.length} membership hold request${pendingPauses.length > 1 ? "s" : ""} pending`,
+          body: pendingPauses.map((m) => m.name).join(", "),
+          timestamp: new Date().toISOString(),
+          read: false,
+        });
+      }
     }
 
     // Trainer: today's classes
@@ -378,7 +392,7 @@ export default function App() {
 
           {/* ── PROFILE ────────────────────────────────────────────────────── */}
           {view === "profile" && (
-            <ProfileView user={user} setUser={setUser} />
+            <ProfileView user={user} setUser={setUser} members={members} setMembers={setMembers} />
           )}
         </main>
       </div>

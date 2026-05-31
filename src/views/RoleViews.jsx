@@ -367,6 +367,11 @@ export function MemberQRView({ user, members, setMembers, checkIns, setCheckIns,
 
   const handleCheckIn = (locationId) => {
     if (!me) return;
+    if (me.status === "paused") {
+      setFeedback({ type: "error", message: "Your membership is on hold. Please contact the front desk." });
+      setShowScanner(false);
+      return;
+    }
     if (me.status !== "active") {
       setFeedback({ type: "error", message: "Your membership is expired. Please renew at the front desk." });
       setShowScanner(false);

@@ -1,5 +1,10 @@
 export const PLAN_PRICES = { Basic: 15000, Standard: 25000, Premium: 40000 };
 
+export const BRANCHES = [
+  { id: "b1", name: "Lekki",  address: "Lekki Phase 1, Lagos" },
+  { id: "b2", name: "Ikota",  address: "Ikota Shopping Complex, Lekki" },
+];
+
 export const DEMO_ACCOUNTS = [
   { username: "admin", password: "admin", role: "admin", name: "Aisha Bello", trainerId: null, memberId: null },
   { username: "reception", password: "reception", role: "receptionist", name: "Chioma Eze", trainerId: null, memberId: null },
@@ -15,14 +20,14 @@ export const NAV_BY_ROLE = {
 };
 
 export const seedMembers = [
-  { id: "m1", name: "Amara Okafor", email: "amara@example.com", phone: "+234 801 234 5678", plan: "Premium", joinDate: "2025-08-14", expiryDate: "2026-06-14", status: "active", checkIns: 42, lastVisit: "2026-04-21", trainerId: "t1", photo: null, referralCode: "DIS-AMR001", referredBy: null },
-  { id: "m2", name: "David Chen", email: "d.chen@example.com", phone: "+234 802 555 1212", plan: "Standard", joinDate: "2025-11-03", expiryDate: "2026-06-03", status: "active", checkIns: 28, lastVisit: "2026-04-20", trainerId: "t1", referralCode: "DIS-DVC002", referredBy: "m1" },
-  { id: "m3", name: "Fatima Al-Hassan", email: "fatima.h@example.com", phone: "+234 803 777 8899", plan: "Premium", joinDate: "2024-06-21", expiryDate: "2026-06-21", status: "active", checkIns: 112, lastVisit: "2026-04-22", trainerId: "t2", referralCode: "DIS-FTM003", referredBy: null },
-  { id: "m4", name: "Marcus Thompson", email: "m.thompson@example.com", phone: "+234 805 999 1111", plan: "Basic", joinDate: "2026-01-15", expiryDate: "2026-04-15", status: "expired", checkIns: 9, lastVisit: "2026-03-30", trainerId: "t3", referralCode: "DIS-MRC004", referredBy: null },
-  { id: "m5", name: "Priya Kapoor", email: "priya.k@example.com", phone: "+234 807 222 3344", plan: "Standard", joinDate: "2025-09-28", expiryDate: "2026-05-28", status: "active", checkIns: 56, lastVisit: "2026-04-19", trainerId: "t2", referralCode: "DIS-PRY005", referredBy: null },
-  { id: "m6", name: "Olumide Bakare", email: "olu.b@example.com", phone: "+234 808 444 7777", plan: "Premium", joinDate: "2025-12-12", expiryDate: "2026-06-12", status: "active", checkIns: 38, lastVisit: "2026-04-22", trainerId: "t1", referralCode: "DIS-OLU006", referredBy: "m1" },
-  { id: "m7", name: "Sarah Mwangi", email: "s.mwangi@example.com", phone: "+234 809 333 2222", plan: "Standard", joinDate: "2026-02-08", expiryDate: "2026-05-30", status: "active", checkIns: 18, lastVisit: "2026-04-18", trainerId: "t3", referralCode: "DIS-SRH007", referredBy: null },
-  { id: "m8", name: "Tunde Adeyemi", email: "tunde.a@example.com", phone: "+234 810 555 9999", plan: "Basic", joinDate: "2025-10-22", expiryDate: "2026-05-22", status: "active", checkIns: 31, lastVisit: "2026-04-17", trainerId: "t1", referralCode: "DIS-TND008", referredBy: null },
+  { id: "m1", name: "Amara Okafor",    email: "amara@example.com",       phone: "+234 801 234 5678", plan: "Premium",  joinDate: "2025-08-14", expiryDate: "2026-06-14", status: "active",  checkIns: 42,  lastVisit: "2026-04-21", trainerId: "t1", photo: null, referralCode: "DIS-AMR001", referredBy: null, branchId: "b1", pauseRequest: null },
+  { id: "m2", name: "David Chen",       email: "d.chen@example.com",      phone: "+234 802 555 1212", plan: "Standard", joinDate: "2025-11-03", expiryDate: "2026-06-03", status: "active",  checkIns: 28,  lastVisit: "2026-04-20", trainerId: "t1", referralCode: "DIS-DVC002", referredBy: "m1", branchId: "b1", pauseRequest: null },
+  { id: "m3", name: "Fatima Al-Hassan", email: "fatima.h@example.com",    phone: "+234 803 777 8899", plan: "Premium",  joinDate: "2024-06-21", expiryDate: "2026-06-21", status: "active",  checkIns: 112, lastVisit: "2026-04-22", trainerId: "t2", referralCode: "DIS-FTM003", referredBy: null, branchId: "b2", pauseRequest: null },
+  { id: "m4", name: "Marcus Thompson",  email: "m.thompson@example.com",  phone: "+234 805 999 1111", plan: "Basic",    joinDate: "2026-01-15", expiryDate: "2026-04-15", status: "expired", checkIns: 9,   lastVisit: "2026-03-30", trainerId: "t3", referralCode: "DIS-MRC004", referredBy: null, branchId: "b1", pauseRequest: null },
+  { id: "m5", name: "Priya Kapoor",     email: "priya.k@example.com",     phone: "+234 807 222 3344", plan: "Standard", joinDate: "2025-09-28", expiryDate: "2026-05-28", status: "active",  checkIns: 56,  lastVisit: "2026-04-19", trainerId: "t2", referralCode: "DIS-PRY005", referredBy: null, branchId: "b2", pauseRequest: null },
+  { id: "m6", name: "Olumide Bakare",   email: "olu.b@example.com",       phone: "+234 808 444 7777", plan: "Premium",  joinDate: "2025-12-12", expiryDate: "2026-06-12", status: "active",  checkIns: 38,  lastVisit: "2026-04-22", trainerId: "t1", referralCode: "DIS-OLU006", referredBy: "m1", branchId: "b1", pauseRequest: null },
+  { id: "m7", name: "Sarah Mwangi",     email: "s.mwangi@example.com",    phone: "+234 809 333 2222", plan: "Standard", joinDate: "2026-02-08", expiryDate: "2026-05-30", status: "active",  checkIns: 18,  lastVisit: "2026-04-18", trainerId: "t3", referralCode: "DIS-SRH007", referredBy: null, branchId: "b2", pauseRequest: { status: "pending", duration: "1m", requestedDate: "2026-05-28", startDate: "2026-06-01", note: "Travelling abroad for a month" } },
+  { id: "m8", name: "Tunde Adeyemi",    email: "tunde.a@example.com",     phone: "+234 810 555 9999", plan: "Basic",    joinDate: "2025-10-22", expiryDate: "2026-05-22", status: "active",  checkIns: 31,  lastVisit: "2026-04-17", trainerId: "t1", referralCode: "DIS-TND008", referredBy: null, branchId: "b1", pauseRequest: null },
 ];
 
 export const seedTrainers = [
