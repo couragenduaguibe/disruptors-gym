@@ -314,7 +314,7 @@ export default function App() {
             <ExpensesView user={user} expenses={expenses} setExpenses={setExpenses} payments={payments} />
           )}
           {view === "challenges" && (
-            <ChallengesView user={user} challenges={challenges} setChallenges={setChallenges} members={members} checkIns={checkIns} classes={classes} />
+            <ChallengesView user={user} challenges={challenges} setChallenges={setChallenges} members={members} checkIns={checkIns} classes={classes} loyaltyPoints={loyaltyPoints} workoutLogs={workoutLogs} />
           )}
 
           {/* ── TRAINER VIEWS ──────────────────────────────────────────────── */}
@@ -381,9 +381,6 @@ export default function App() {
           {/* ── NEW MEMBER FEATURES ────────────────────────────────────────── */}
           {view === "my-progress" && (
             <ProgressPhotosView user={user} progressPhotos={progressPhotos} setProgressPhotos={setProgressPhotos} />
-          )}
-          {view === "leaderboard" && (
-            <LeaderboardView members={members} checkIns={checkIns} loyaltyPoints={loyaltyPoints} workoutLogs={workoutLogs} user={user} />
           )}
           {view === "my-plan" && (
             <WorkoutPlanView user={user} workoutPlans={workoutPlans} />

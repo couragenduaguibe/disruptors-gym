@@ -13,10 +13,10 @@ export const DEMO_ACCOUNTS = [
 ];
 
 export const NAV_BY_ROLE = {
-  admin: ["dashboard","members","classes","trainers","checkins","payments","pos","leads","access","messages","member-stocks","chat","analytics","shifts","equipment","expenses","challenges","leaderboard","profile"],
-  receptionist: ["dashboard","members","classes","checkins","payments","pos","leads","messages","member-stocks","chat","equipment","challenges","leaderboard","profile"],
+  admin: ["dashboard","members","classes","trainers","checkins","payments","pos","leads","access","messages","member-stocks","chat","analytics","shifts","equipment","expenses","challenges","profile"],
+  receptionist: ["dashboard","members","classes","checkins","payments","pos","leads","messages","member-stocks","chat","equipment","challenges","profile"],
   trainer: ["trainer-home","my-classes","my-clients","assign-plans","chat","video-library","challenges","profile"],
-  member: ["member-home","my-qr","book-classes","my-history","my-payments","my-shop","my-stock","chat","my-workouts","my-metrics","my-progress","my-plan","my-rewards","my-referrals","friends","challenges","leaderboard","profile"],
+  member: ["member-home","my-qr","book-classes","my-history","my-payments","my-shop","my-stock","chat","my-workouts","my-metrics","my-progress","my-plan","my-rewards","my-referrals","friends","challenges","profile"],
 };
 
 export const seedMembers = [

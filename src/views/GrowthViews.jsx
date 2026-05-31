@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Gift, Copy, Check, Trophy, Plus, Users } from "lucide-react";
 import { EmptyState, Modal } from "../components/ui";
 import { today } from "../utils/storage";
-import { BADGE_DEFS, computeStreak } from "./NewMemberFeatures";
+import { BADGE_DEFS, computeStreak, LeaderboardView } from "./NewMemberFeatures";
 
 // ======================================================================
 // LOYALTY & REWARDS
@@ -220,7 +220,8 @@ export function ReferralView({ user, members }) {
 // ======================================================================
 // GROUP CHALLENGES
 // ======================================================================
-export function ChallengesView({ user, challenges, setChallenges, members, checkIns, classes }) {
+export function ChallengesView({ user, challenges, setChallenges, members, checkIns, classes, loyaltyPoints = [], workoutLogs = [] }) {
+  const [mainTab, setMainTab] = useState("challenges");
   const [showForm, setShowForm] = useState(false);
   const canCreate = user.role === "admin";
   const active = challenges.filter((c) => c.active);
@@ -245,6 +246,26 @@ export function ChallengesView({ user, challenges, setChallenges, members, check
 
   return (
     <div className="space-y-6">
+      {/* Main tab switcher */}
+      <div className="flex gap-1 bg-stone-900 border border-stone-700 rounded-xl p-1">
+        {[
+          { id: "challenges", label: "🏆 Challenges" },
+          { id: "leaderboard", label: "📊 Leaderboard" },
+        ].map((t) => (
+          <button key={t.id} onClick={() => setMainTab(t.id)}
+            className={`flex-1 py-2.5 rounded-lg text-sm font-semibold transition ${mainTab === t.id ? "bg-red-600 text-white" : "text-stone-400 hover:text-white"}`}>
+            {t.label}
+          </button>
+        ))}
+      </div>
+
+      {/* Leaderboard tab */}
+      {mainTab === "leaderboard" && (
+        <LeaderboardView members={members} checkIns={checkIns} loyaltyPoints={loyaltyPoints} workoutLogs={workoutLogs} user={user} />
+      )}
+
+      {/* Challenges tab */}
+      {mainTab === "challenges" && <>
       <div className="flex items-center justify-between">
         <p className="text-sm text-stone-400">Compete, earn prizes, and push each other.</p>
         {canCreate && (
@@ -325,6 +346,7 @@ export function ChallengesView({ user, challenges, setChallenges, members, check
           onClose={() => setShowForm(false)}
         />
       )}
+      </>}
     </div>
   );
 }
